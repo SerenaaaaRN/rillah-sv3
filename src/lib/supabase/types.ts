@@ -1,8 +1,3 @@
-// Minimal Database typing for the `projects` table.
-// Column names match `Project` in `$lib/schema/projects.ts` (kept decoupled to avoid cycles).
-// Shape mirrors `supabase gen types typescript` output (tables carry Relationships,
-// schemas carry Views/Functions/Enums/CompositeTypes) so supabase-js query
-// generics resolve instead of collapsing to `never`.
 export type ProjectsRow = {
 	id: string;
 	title: string;
@@ -21,6 +16,16 @@ export type ProjectsRow = {
 	updated_at: string;
 };
 
+export type CertificatesRow = {
+	id: string;
+	title: string;
+	issuer: string | null;
+	date: string | null;
+	image_url: string | null;
+	display_order: number | null;
+	created_at: string;
+};
+
 export type Database = {
 	public: {
 		Tables: {
@@ -28,6 +33,12 @@ export type Database = {
 				Row: ProjectsRow;
 				Insert: Partial<ProjectsRow> & { title: string; slug: string; description: string };
 				Update: Partial<ProjectsRow>;
+				Relationships: [];
+			};
+			certificates: {
+				Row: CertificatesRow;
+				Insert: Partial<CertificatesRow> & { title: string };
+				Update: Partial<CertificatesRow>;
 				Relationships: [];
 			};
 		};
