@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { Card } from '$lib/components/ui/card/index.js';
 	import type { Component } from 'svelte';
+	import { Card } from '$lib/components/ui/card/index.js';
 
 	type Props = {
 		title: string;

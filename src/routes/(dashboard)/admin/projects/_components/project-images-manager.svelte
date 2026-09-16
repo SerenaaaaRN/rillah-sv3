@@ -5,10 +5,10 @@
 	import Plus from 'phosphor-svelte/lib/Plus';
 	import Trash from 'phosphor-svelte/lib/Trash';
 	import Upload from 'phosphor-svelte/lib/Upload';
-	import { uploadFileViaAction } from '$lib/utils/upload-file.js';
 	import { Button } from '$lib/components/ui/button/index.js';
 	import { Progress } from '$lib/components/ui/progress/index.js';
 	import { cn } from '$lib/utils.js';
+	import { uploadFileViaAction } from '$lib/utils/upload-file.js';
 
 	type ImageItem = {
 		id: string;

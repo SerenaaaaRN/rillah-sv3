@@ -3,11 +3,11 @@
 	import GitBranch from 'phosphor-svelte/lib/GitBranch';
 	import Globe from 'phosphor-svelte/lib/Globe';
 	import BlurFade from '$lib/components/shared/blur-fade.svelte';
-	import SectionHeading from '$lib/components/shared/section-heading.svelte';
 	import MacWindow from '$lib/components/shared/mac-window.svelte';
+	import * as SectionHeading from '$lib/components/shared/section-heading/index.js';
+	import { Badge } from '$lib/components/ui/badge/index.js';
 	import { Button } from '$lib/components/ui/button/index.js';
 	import * as Carousel from '$lib/components/ui/carousel/index.js';
-	import { Badge } from '$lib/components/ui/badge/index.js';
 	import type { PageData } from './$types';
 
 	let { data }: { data: PageData } = $props();
@@ -15,7 +15,6 @@
 	const title = $derived(project.title ?? 'Untitled');
 	const description = $derived(project.description ?? '');
 	const images = $derived(project.image ?? []);
-	// Carousel hanya berisi gambar — video cuma tampil sebagai thumbnail di card list.
 	const carouselItems = $derived(images.filter((u) => u && u !== '/no-image.jpg'));
 </script>
 
@@ -39,7 +38,11 @@
 		</Button>
 	</div>
 
-	<SectionHeading as="h1" eyebrow="Project" {title} {description} class="mb-8" />
+	<SectionHeading.Root class="mb-8">
+		<SectionHeading.Eyebrow>Project</SectionHeading.Eyebrow>
+		<SectionHeading.Title as="h1">{title}</SectionHeading.Title>
+		<SectionHeading.Description>{description}</SectionHeading.Description>
+	</SectionHeading.Root>
 
 	<MacWindow title={`~/projects/${project.slug ?? project.id}`}>
 		<div class="space-y-6">

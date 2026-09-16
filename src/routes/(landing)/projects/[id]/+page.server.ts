@@ -1,6 +1,6 @@
 import { error } from '@sveltejs/kit';
-import type { PageServerLoad } from './$types';
 import { mapRowToProject, PROJECTS_TABLE } from '$lib/schema/projects.js';
+import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ params, locals, setHeaders, depends }) => {
 	depends('supabase:projects');

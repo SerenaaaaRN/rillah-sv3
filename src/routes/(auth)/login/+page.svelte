@@ -1,9 +1,9 @@
 <script lang="ts">
+	import { enhance } from '$app/forms';
 	import Eye from 'phosphor-svelte/lib/Eye';
 	import EyeSlash from 'phosphor-svelte/lib/EyeClosed';
 	import LockKey from 'phosphor-svelte/lib/LockKey';
 	import SpinnerGap from 'phosphor-svelte/lib/SpinnerGap';
-	import { enhance } from '$app/forms';
 	import { Button } from '$lib/components/ui/button';
 	import { Input } from '$lib/components/ui/input';
 	import { Label } from '$lib/components/ui/label';

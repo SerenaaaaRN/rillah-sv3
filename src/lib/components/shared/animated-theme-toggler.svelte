@@ -1,7 +1,7 @@
 <script lang="ts">
-	import Sun from 'phosphor-svelte/lib/Sun';
-	import Moon from 'phosphor-svelte/lib/Moon';
 	import { mode, toggleMode } from 'mode-watcher';
+	import Moon from 'phosphor-svelte/lib/Moon';
+	import Sun from 'phosphor-svelte/lib/Sun';
 
 	let {
 		duration = 400,

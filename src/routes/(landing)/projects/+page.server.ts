@@ -1,10 +1,10 @@
-import type { PageServerLoad } from './$types';
 import {
 	mapRowToProject,
 	PROJECTS_TABLE,
 	toProjectCard,
 	type ProjectCard
 } from '$lib/schema/projects.js';
+import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ locals, setHeaders, depends }) => {
 	depends('supabase:projects');

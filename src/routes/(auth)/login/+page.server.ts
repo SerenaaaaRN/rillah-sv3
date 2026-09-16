@@ -10,7 +10,7 @@ const LoginSchema = z.object({
 
 export const load: PageServerLoad = async ({ locals }) => {
 	const { session } = await locals.safeGetSession();
-	const redirectTo = "/admin"
+	const redirectTo = '/admin';
 	if (session) throw redirect(303, redirectTo);
 	return { redirectTo };
 };
@@ -49,6 +49,6 @@ export const actions: Actions = {
 			});
 		}
 
-		throw redirect(303, "/login");
+		throw redirect(303, '/login');
 	}
 };

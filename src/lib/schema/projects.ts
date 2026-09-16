@@ -1,6 +1,6 @@
 import { z } from 'zod';
-import { parseJsonOrCsv } from '$lib/utils/array.js';
 import type { ProjectsRow } from '$lib/supabase/types.js';
+import { parseJsonOrCsv } from '$lib/utils/array.js';
 
 export const PROJECTS_TABLE = 'projects';
 export const PROJECT_IMAGE_BUCKET = 'project-images';

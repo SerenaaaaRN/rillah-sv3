@@ -1,11 +1,11 @@
 <script lang="ts">
 	import BlurFade from '$lib/components/shared/blur-fade.svelte';
-	import SectionHeading from '$lib/components/shared/section-heading.svelte';
 	import MacWindow from '$lib/components/shared/mac-window.svelte';
+	import * as SectionHeading from '$lib/components/shared/section-heading/index.js';
 	import { Button } from '$lib/components/ui/button/index.js';
-	import type { PageData } from './$types';
 	import ProjectCard from './_components/project-card.svelte';
 	import ProjectsToolbar, { type SortOption } from './_components/projects-toolbar.svelte';
+	import type { PageData } from './$types';
 
 	let { data }: { data: PageData } = $props();
 	const projects = $derived(data.projects);
@@ -48,14 +48,16 @@
 </svelte:head>
 
 <BlurFade delay={0.25} inView>
-	<SectionHeading
-		as="h1"
-		eyebrow="Work"
-		title="Selected"
-		accent="projects"
-		description="I have experience working on a wide range of projects, from basic websites to advanced web applications."
-		class="mb-8"
-	/>
+	<SectionHeading.Root class="mb-8">
+		<SectionHeading.Eyebrow>Work</SectionHeading.Eyebrow>
+		<SectionHeading.Title as="h1"
+			>Selected <SectionHeading.Accent>projects</SectionHeading.Accent></SectionHeading.Title
+		>
+		<SectionHeading.Description
+			>I have experience working on a wide range of projects, from basic websites to advanced web
+			applications.</SectionHeading.Description
+		>
+	</SectionHeading.Root>
 	<MacWindow title="~/projects">
 		<ProjectsToolbar
 			bind:search

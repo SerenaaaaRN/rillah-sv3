@@ -2,6 +2,8 @@
 	import FolderOpen from 'phosphor-svelte/lib/FolderOpen';
 	import GitBranch from 'phosphor-svelte/lib/GitBranch';
 	import Globe from 'phosphor-svelte/lib/Globe';
+	import { Badge } from '$lib/components/ui/badge/index.js';
+	import { Button } from '$lib/components/ui/button/index.js';
 	import {
 		Card,
 		CardContent,
@@ -9,8 +11,6 @@
 		CardHeader,
 		CardTitle
 	} from '$lib/components/ui/card/index.js';
-	import { Button } from '$lib/components/ui/button/index.js';
-	import { Badge } from '$lib/components/ui/badge/index.js';
 	import type { ProjectCard } from '$lib/schema/projects.js';
 
 	let { project }: { project: ProjectCard } = $props();
@@ -32,7 +32,9 @@
 	}
 </script>
 
-<Card class="group flex h-full flex-col overflow-hidden transition-colors hover:border-foreground/20">
+<Card
+	class="group flex h-full flex-col overflow-hidden transition-colors hover:border-foreground/20"
+>
 	<a
 		href="/projects/{project.slug || project.id}"
 		data-sveltekit-preload-code="viewport"
