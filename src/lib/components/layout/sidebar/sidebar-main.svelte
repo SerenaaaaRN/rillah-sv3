@@ -13,7 +13,7 @@
 >
 	<div class="mb-3 px-1">
 		<div class="relative mb-3">
-			<Avatar.Root class="size-24! ring-1 ring-border">
+			<Avatar.Root class="size-25! ring-1 ring-border">
 				<Avatar.Image src={avatar} alt={name} class="object-cover" />
 				<Avatar.Fallback class="rounded-full bg-muted font-display text-lg font-bold"
 					>{name.slice(0, 2).toUpperCase()}</Avatar.Fallback
@@ -30,10 +30,7 @@
 			<div class="mt-2 flex items-center gap-2">
 				<div class="flex items-center gap-2">
 					<div class="relative">
-						<div class="h-3 w-3 rounded-full bg-green-500"></div>
-						<div
-							class="absolute inset-0 h-3 w-3 animate-ping rounded-full bg-green-500 opacity-75"
-						></div>
+						<div class="h-2 w-2 rounded-full bg-green-500"></div>
 					</div>
 					<p class="text-xs font-medium text-green-600 dark:text-green-400">Online</p>
 				</div>

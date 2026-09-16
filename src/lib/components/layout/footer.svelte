@@ -20,9 +20,7 @@
 	<div class="flex flex-col gap-10 md:flex-row md:justify-between">
 		<div class="max-w-xs">
 			<p class="font-display text-lg font-bold tracking-tight">Rillah</p>
-			<p class="mt-2 text-xs leading-relaxed text-muted-foreground sm:text-sm">
-				AI engineer
-			</p>
+			<p class="mt-2 text-xs leading-relaxed text-muted-foreground sm:text-sm">AI engineer</p>
 			<p class="mt-4 font-mono text-[11px] tracking-[0.15em] text-muted-foreground uppercase">
 				© {year} Rillah
 			</p>
