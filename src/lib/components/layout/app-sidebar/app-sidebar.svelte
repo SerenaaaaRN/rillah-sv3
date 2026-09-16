@@ -10,7 +10,7 @@
 	import VersionSwitcher from './version-switcher.svelte';
 	import { page } from '$app/state';
 	import type { ComponentProps } from 'svelte';
-	import { nav } from './constant.ts';
+	import { nav } from './constant.js';
 
 	let { ref = $bindable(null), ...restProps }: ComponentProps<typeof Sidebar.Root> = $props();
 </script>
