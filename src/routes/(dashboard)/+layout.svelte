@@ -16,6 +16,6 @@
 			<Separator orientation="vertical" class="me-2 h-4" />
 			<DynamicBreadcrumb />
 		</header>
-		<main>{@render children()}</main>
+		<main class="mx-auto w-full max-w-6xl flex-1 p-4 md:p-6">{@render children()}</main>
 	</Sidebar.Inset>
 </Sidebar.Provider>

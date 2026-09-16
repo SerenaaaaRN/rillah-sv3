@@ -9,7 +9,6 @@
 	import ProjectVideoManager from './project-video-manager.svelte';
 	import { slugify } from '$lib/utils/slugify.js';
 	import type { Project } from '$lib/schema/projects.js';
-	import { UNSORTED_ORDER } from '$lib/schema/projects.js';
 
 	let { project, mode = 'create' }: { project?: Project; mode: 'create' | 'edit' } = $props();
 
@@ -242,7 +241,7 @@
 						<Input
 							name="display_order"
 							type="number"
-							value={String(project?.display_order ?? UNSORTED_ORDER)}
+							value={String(project?.display_order ?? 99)}
 							class="rounded-none"
 						/>
 					</Field.Field>

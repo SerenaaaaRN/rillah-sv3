@@ -5,6 +5,7 @@
 	import Plus from 'phosphor-svelte/lib/Plus';
 	import Trash from 'phosphor-svelte/lib/Trash';
 	import Upload from 'phosphor-svelte/lib/Upload';
+	import { uploadFileViaAction } from '$lib/utils/upload-file.js';
 	import { Button } from '$lib/components/ui/button/index.js';
 	import { Progress } from '$lib/components/ui/progress/index.js';
 	import { cn } from '$lib/utils.js';
@@ -57,17 +58,10 @@
 
 	async function uploadFile(id: string, file: File) {
 		try {
-			const formData = new FormData();
-			formData.append('file', file);
-			formData.append('slug', slug);
-			const res = await fetch('?/uploadImage', { method: 'POST', body: formData });
-			const json = await res.json();
-			const data = json?.data ?? json;
-			const publicUrl = data?.publicUrl ?? data?.data?.publicUrl ?? '';
-			if (!publicUrl) throw new Error(data?.error ?? 'Upload failed');
+			const publicUrl = await uploadFileViaAction('?/uploadImage', file, slug);
 			updateItem(id, { url: publicUrl, uploading: false });
-		} catch {
-			updateItem(id, { uploading: false, error: 'Upload failed' });
+		} catch (e) {
+			updateItem(id, { uploading: false, error: e instanceof Error ? e.message : 'Upload failed' });
 		}
 	}
 
