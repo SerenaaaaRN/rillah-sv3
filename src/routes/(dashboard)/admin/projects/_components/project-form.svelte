@@ -1,14 +1,14 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
-	import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card/index.js';
 	import { Button } from '$lib/components/ui/button/index.js';
+	import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card/index.js';
+	import * as Field from '$lib/components/ui/field/index.js';
 	import { Input } from '$lib/components/ui/input/index.js';
 	import { Textarea } from '$lib/components/ui/textarea/index.js';
-	import * as Field from '$lib/components/ui/field/index.js';
+	import type { Project } from '$lib/schema/projects.js';
+	import { slugify } from '$lib/utils/slugify.js';
 	import ProjectImagesManager from './project-images-manager.svelte';
 	import ProjectVideoManager from './project-video-manager.svelte';
-	import { slugify } from '$lib/utils/slugify.js';
-	import type { Project } from '$lib/schema/projects.js';
 
 	let { project, mode = 'create' }: { project?: Project; mode: 'create' | 'edit' } = $props();
 

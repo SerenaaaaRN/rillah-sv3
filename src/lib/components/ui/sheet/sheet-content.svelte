@@ -5,12 +5,11 @@
 <script lang="ts">
 	import { Dialog as SheetPrimitive } from 'bits-ui';
 	import XIcon from 'phosphor-svelte/lib/X';
+	import type { ComponentProps, Snippet } from 'svelte';
 	import { Button } from '$lib/components/ui/button/index.js';
 	import { cn, type WithoutChildrenOrChild } from '$lib/utils.js';
 	import SheetOverlay from './sheet-overlay.svelte';
 	import SheetPortal from './sheet-portal.svelte';
-	import type { Snippet } from 'svelte';
-	import type { ComponentProps } from 'svelte';
 
 	let {
 		ref = $bindable(null),

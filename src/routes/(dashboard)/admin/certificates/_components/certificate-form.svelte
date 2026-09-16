@@ -1,13 +1,13 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
-	import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card/index.js';
 	import { Button } from '$lib/components/ui/button/index.js';
-	import { Input } from '$lib/components/ui/input/index.js';
+	import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card/index.js';
 	import * as Field from '$lib/components/ui/field/index.js';
-	import CertificateImageManager from './certificate-image-manager.svelte';
-	import { slugify } from '$lib/utils/slugify.js';
-	import { toDateInputValue } from '$lib/utils/date.js';
+	import { Input } from '$lib/components/ui/input/index.js';
 	import { UNSORTED_ORDER, type Certificate } from '$lib/schema/certificate.js';
+	import { toDateInputValue } from '$lib/utils/date.js';
+	import { slugify } from '$lib/utils/slugify.js';
+	import CertificateImageManager from './certificate-image-manager.svelte';
 
 	let { certificate, mode = 'create' }: { certificate?: Certificate; mode: 'create' | 'edit' } =
 		$props();

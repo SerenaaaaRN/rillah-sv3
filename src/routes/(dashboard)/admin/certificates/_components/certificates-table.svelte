@@ -3,11 +3,11 @@
 	import CertificateIcon from 'phosphor-svelte/lib/Certificate';
 	import Pencil from 'phosphor-svelte/lib/Pencil';
 	import Trash from 'phosphor-svelte/lib/Trash';
-	import * as Table from '$lib/components/ui/table/index.js';
-	import { Button } from '$lib/components/ui/button/index.js';
 	import * as AlertDialog from '$lib/components/ui/alert-dialog/index.js';
-	import { formatFullDate } from '$lib/utils/date.js';
+	import { Button } from '$lib/components/ui/button/index.js';
+	import * as Table from '$lib/components/ui/table/index.js';
 	import type { Certificate } from '$lib/schema/certificate.js';
+	import { formatFullDate } from '$lib/utils/date.js';
 
 	let { certificates }: { certificates: Certificate[] } = $props();
 </script>

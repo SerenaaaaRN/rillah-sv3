@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { cn } from '$lib/utils.js';
 	import CaretDown from 'phosphor-svelte/lib/CaretDown';
 	import CaretUp from 'phosphor-svelte/lib/CaretUp';
 	import Coffee from 'phosphor-svelte/lib/Coffee';
@@ -8,14 +7,15 @@
 	import SealCheck from 'phosphor-svelte/lib/SealCheck';
 	import SignIn from 'phosphor-svelte/lib/SignIn';
 	import User from 'phosphor-svelte/lib/User';
-	import { buttonVariants } from '$lib/components/ui/button/index.js';
+	import type { Component } from 'svelte';
 	import { mainNavData } from '$lib/components/layout/sidebar/constant.js';
 	import SidebarMenu from '$lib/components/layout/sidebar/sidebar-menu.svelte';
+	import * as Avatar from '$lib/components/ui/avatar/index.js';
+	import { buttonVariants } from '$lib/components/ui/button/index.js';
+	import { Separator } from '$lib/components/ui/separator/index.js';
 	import * as Sheet from '$lib/components/ui/sheet/index.js';
 	import * as Tooltip from '$lib/components/ui/tooltip/index.js';
-	import * as Avatar from '$lib/components/ui/avatar/index.js';
-	import { Separator } from '$lib/components/ui/separator/index.js';
-	import type { Component } from 'svelte';
+	import { cn } from '$lib/utils.js';
 
 	const ICONS: Record<string, Component> = {
 		Home: House,

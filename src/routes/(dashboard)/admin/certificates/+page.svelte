@@ -1,10 +1,10 @@
 <script lang="ts">
-	import { Button } from '$lib/components/ui/button/index.js';
-	import StatCard from '$lib/components/shared/stat-card.svelte';
 	import CertificateIcon from 'phosphor-svelte/lib/Certificate';
 	import Plus from 'phosphor-svelte/lib/Plus';
-	import type { PageData } from './$types.js';
+	import StatCard from '$lib/components/shared/stat-card.svelte';
+	import { Button } from '$lib/components/ui/button/index.js';
 	import CertificatesTable from './_components/certificates-table.svelte';
+	import type { PageData } from './$types.js';
 
 	let { data }: { data: PageData } = $props();
 	let certificates = $derived(

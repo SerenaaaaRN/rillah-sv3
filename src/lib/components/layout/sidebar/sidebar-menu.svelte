@@ -1,8 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import { cn } from '$lib/utils.js';
-	import { publicDashboardMenu } from './constant.js';
-	import type { SidebarMenu } from './constant.js';
+	import { mode } from 'mode-watcher';
 	import ArrowRight from 'phosphor-svelte/lib/ArrowRight';
 	import Certificate from 'phosphor-svelte/lib/Certificate';
 	import Coffee from 'phosphor-svelte/lib/Coffee';
@@ -12,11 +10,12 @@
 	import SignIn from 'phosphor-svelte/lib/SignIn';
 	import Sun from 'phosphor-svelte/lib/Sun';
 	import User from 'phosphor-svelte/lib/User';
+	import type { Component } from 'svelte';
+	import AnimatedThemeToggler from '$lib/components/shared/animated-theme-toggler.svelte';
 	import { Button } from '$lib/components/ui/button/index.js';
 	import { Separator } from '$lib/components/ui/separator/index.js';
-	import AnimatedThemeToggler from '$lib/components/shared/animated-theme-toggler.svelte';
-	import { mode } from 'mode-watcher';
-	import type { Component } from 'svelte';
+	import { cn } from '$lib/utils.js';
+	import { publicDashboardMenu, type SidebarMenu } from './constant.js';
 
 	const ICONS: Record<string, Component> = {
 		House,

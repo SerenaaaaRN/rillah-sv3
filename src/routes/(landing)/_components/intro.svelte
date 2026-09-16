@@ -1,10 +1,10 @@
 <script lang="ts">
+	import ArrowRight from 'phosphor-svelte/lib/ArrowRight';
 	import BlurFade from '$lib/components/shared/blur-fade.svelte';
 	import Eyebrow from '$lib/components/shared/eyebrow.svelte';
-	import TypingAnimation from './typing-animation.svelte';
 	import { Button } from '$lib/components/ui/button/index.js';
-	import ArrowRight from 'phosphor-svelte/lib/ArrowRight';
 	import { media_socials } from '$lib/data/social.js';
+	import TypingAnimation from './typing-animation.svelte';
 
 	const roles = ['CS Students', 'NLP & Deep Learning Explorer', 'AI Systems'];
 

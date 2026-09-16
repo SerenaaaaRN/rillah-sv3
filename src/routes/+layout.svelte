@@ -1,8 +1,8 @@
 <script lang="ts">
 	import './layout.css';
 	import { invalidate } from '$app/navigation';
-	import { onMount } from 'svelte';
 	import { ModeWatcher } from 'mode-watcher';
+	import { onMount } from 'svelte';
 
 	let { children, data } = $props();
 

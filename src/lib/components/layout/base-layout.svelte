@@ -1,10 +1,10 @@
 <script lang="ts">
-	import ScrollProgress from '$lib/components/layout/scroll-progress.svelte';
-	import ScrollToTop from '$lib/components/layout/scroll-to-top.svelte';
+	import type { Snippet } from 'svelte';
 	import DockMobile from '$lib/components/layout/dock-mobile.svelte';
 	import Footer from '$lib/components/layout/footer.svelte';
+	import ScrollProgress from '$lib/components/layout/scroll-progress.svelte';
+	import ScrollToTop from '$lib/components/layout/scroll-to-top.svelte';
 	import FlickeringGrid from '$lib/components/shared/flickering-grid.svelte';
-	import type { Snippet } from 'svelte';
 
 	let {
 		children,
