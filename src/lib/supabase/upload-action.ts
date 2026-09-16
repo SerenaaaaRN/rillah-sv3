@@ -15,7 +15,13 @@ export type UploadActionOptions = {
  * to a Supabase Storage bucket. Returns `{ publicUrl }` on success
  * or `fail(...)` with the underlying message so the client can surface it.
  */
-export function createUploadAction({ bucket, maxBytes, mimePrefix, kindLabel, folder }: UploadActionOptions) {
+export function createUploadAction({
+	bucket,
+	maxBytes,
+	mimePrefix,
+	kindLabel,
+	folder
+}: UploadActionOptions) {
 	return async ({ request, locals }: RequestEvent) => {
 		const form = await request.formData();
 		const file = form.get('file');

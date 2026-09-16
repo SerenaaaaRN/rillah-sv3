@@ -3,8 +3,16 @@ import FolderOpen from 'phosphor-svelte/lib/FolderOpen';
 import Globe from 'phosphor-svelte/lib/Globe';
 import SignOut from 'phosphor-svelte/lib/SignOut';
 import SquaresFour from 'phosphor-svelte/lib/SquaresFour';
+import type { Component } from 'svelte';
 
-export const nav = [
+export type NavItem = {
+	title: string;
+	url: string;
+	icon: Component;
+	action?: string;
+};
+
+export const nav: { title: string; items: NavItem[] }[] = [
 	{
 		title: 'Menu Utama',
 		items: [
@@ -35,8 +43,9 @@ export const nav = [
 			},
 			{
 				title: 'Logout',
-				url: '/login',
-				icon: SignOut
+				url: '/logout',
+				icon: SignOut,
+				action: '/logout'
 			}
 		]
 	}

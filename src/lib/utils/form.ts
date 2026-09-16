@@ -1,6 +1,7 @@
 type FormDataPayload = Record<string, FormDataEntryValue | FormDataEntryValue[]>;
 
-export function formDataToPayload(formData: FormData): FormDataPayload {	const payload: FormDataPayload = {};
+export function formDataToPayload(formData: FormData): FormDataPayload {
+	const payload: FormDataPayload = {};
 	formData.forEach((value, key) => {
 		if (Object.hasOwn(payload, key)) {
 			if (Array.isArray(payload[key])) {
