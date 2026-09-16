@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { Button } from '$lib/components/ui/button/index.js';
-	import { Card } from '$lib/components/ui/card/index.js';
+	import StatCard from '$lib/components/shared/stat-card.svelte';
 	import CertificateIcon from 'phosphor-svelte/lib/Certificate';
 	import Plus from 'phosphor-svelte/lib/Plus';
 	import type { PageData } from './$types.js';
@@ -29,36 +29,13 @@
 		>
 	</header>
 
+	<section aria-label="Certificate statistics" class="grid grid-cols-1 gap-4 md:grid-cols-3">
+		<StatCard title="Total Certificates" value={totalCertificates} icon={CertificateIcon} />
+		<StatCard title="With Image" value={withImageCount} icon={CertificateIcon} />
+		<StatCard title="With Issuer" value={withIssuerCount} icon={CertificateIcon} />
+	</section>
+
 	{#if totalCertificates === 0}
-		<section aria-label="Certificate statistics" class="grid grid-cols-1 gap-4 md:grid-cols-3">
-			<Card class="rounded-none p-4"
-				><div class="flex items-center gap-3">
-					<CertificateIcon class="size-5 text-muted-foreground" />
-					<div>
-						<p class="text-sm text-muted-foreground">Total Certificates</p>
-						<p class="text-2xl font-bold">0</p>
-					</div>
-				</div></Card
-			>
-			<Card class="rounded-none p-4"
-				><div class="flex items-center gap-3">
-					<CertificateIcon class="size-5 text-muted-foreground" />
-					<div>
-						<p class="text-sm text-muted-foreground">With Image</p>
-						<p class="text-2xl font-bold">0</p>
-					</div>
-				</div></Card
-			>
-			<Card class="rounded-none p-4"
-				><div class="flex items-center gap-3">
-					<CertificateIcon class="size-5 text-muted-foreground" />
-					<div>
-						<p class="text-sm text-muted-foreground">With Issuer</p>
-						<p class="text-2xl font-bold">0</p>
-					</div>
-				</div></Card
-			>
-		</section>
 		<div class="rounded-none border border-dashed border-border p-8 text-center">
 			<p class="text-sm text-muted-foreground">No certificates yet</p>
 			<Button size="sm" href="/admin/certificates/new" class="mt-3"
@@ -66,35 +43,6 @@
 			>
 		</div>
 	{:else}
-		<section aria-label="Certificate statistics" class="grid grid-cols-1 gap-4 md:grid-cols-3">
-			<Card class="rounded-none p-4"
-				><div class="flex items-center gap-3">
-					<CertificateIcon class="size-5 text-muted-foreground" />
-					<div>
-						<p class="text-sm text-muted-foreground">Total Certificates</p>
-						<p class="text-2xl font-bold">{totalCertificates}</p>
-					</div>
-				</div></Card
-			>
-			<Card class="rounded-none p-4"
-				><div class="flex items-center gap-3">
-					<CertificateIcon class="size-5 text-muted-foreground" />
-					<div>
-						<p class="text-sm text-muted-foreground">With Image</p>
-						<p class="text-2xl font-bold">{withImageCount}</p>
-					</div>
-				</div></Card
-			>
-			<Card class="rounded-none p-4"
-				><div class="flex items-center gap-3">
-					<CertificateIcon class="size-5 text-muted-foreground" />
-					<div>
-						<p class="text-sm text-muted-foreground">With Issuer</p>
-						<p class="text-2xl font-bold">{withIssuerCount}</p>
-					</div>
-				</div></Card
-			>
-		</section>
 		<CertificatesTable {certificates} />
 	{/if}
 </div>
