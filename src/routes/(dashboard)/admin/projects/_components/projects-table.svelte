@@ -69,8 +69,8 @@
 								target="_blank"
 								rel="noopener noreferrer"
 								class="rounded-none p-2 transition-colors hover:bg-muted"
-							title="View Demo"><ArrowSquareOut class="size-4" /></a
-						>
+								title="View Demo"><ArrowSquareOut class="size-4" /></a
+							>
 						{/if}
 						<a
 							href={`/admin/projects/${project.id}`}
