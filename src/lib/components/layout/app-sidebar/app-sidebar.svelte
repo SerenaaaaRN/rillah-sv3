@@ -1,16 +1,9 @@
-<script lang="ts" module>
-	// sample data
-	const data = {
-		versions: ['1.0.1', '1.1.0-alpha', '2.0.0-beta1']
-	};
-</script>
-
 <script lang="ts">
 	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
-	import VersionSwitcher from './version-switcher.svelte';
+	import AppWindow from 'phosphor-svelte/lib/AppWindow';
 	import { page } from '$app/state';
 	import type { ComponentProps } from 'svelte';
-	import { nav } from './constant.ts';
+	import { nav } from './constant.js';
 
 	let { ref = $bindable(null), ...restProps }: ComponentProps<typeof Sidebar.Root> = $props();
 </script>
@@ -20,10 +13,19 @@
 		<Sidebar.MenuItem>
 			<Sidebar.MenuButton isActive={page.url.pathname === item.url}>
 				{#snippet child({ props })}
-					<a href={item.url} {...props}>
-						<item.icon />
-						<span>{item.title}</span>
-					</a>
+					{#if item.action}
+						<form method="POST" action={item.action} class="contents">
+							<button type="submit" {...props}>
+								<item.icon />
+								<span>{item.title}</span>
+							</button>
+						</form>
+					{:else}
+						<a href={item.url} {...props}>
+							<item.icon />
+							<span>{item.title}</span>
+						</a>
+					{/if}
 				{/snippet}
 			</Sidebar.MenuButton>
 		</Sidebar.MenuItem>
@@ -32,7 +34,20 @@
 
 <Sidebar.Root {...restProps} bind:ref>
 	<Sidebar.Header>
-		<VersionSwitcher versions={data.versions} defaultVersion={data.versions[0]} />
+		<Sidebar.Menu>
+			<Sidebar.MenuItem>
+				<Sidebar.MenuButton size="lg">
+					<div
+						class="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground"
+					>
+						<AppWindow class="size-4" />
+					</div>
+					<div class="flex flex-col gap-0.5 leading-none">
+						<span class="font-semibold">Rillah</span>
+					</div>
+				</Sidebar.MenuButton>
+			</Sidebar.MenuItem>
+		</Sidebar.Menu>
 	</Sidebar.Header>
 	<Sidebar.Content>
 		<!-- We create a Sidebar.Group for each parent. -->
