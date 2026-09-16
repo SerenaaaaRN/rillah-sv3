@@ -2,6 +2,7 @@
 	import './layout.css';
 	import { invalidate } from '$app/navigation';
 	import { onMount } from 'svelte';
+	import { ModeWatcher } from 'mode-watcher';
 
 	let { children, data } = $props();
 
@@ -14,5 +15,7 @@
 		return () => listener.subscription.unsubscribe();
 	});
 </script>
+
+<ModeWatcher />
 
 {@render children()}
