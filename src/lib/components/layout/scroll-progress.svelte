@@ -23,7 +23,7 @@
 <Progress
 	value={progress * 100}
 	max={100}
-	class="fixed inset-x-0 top-0 z-[1000] h-1 rounded-none bg-transparent"
+	class="fixed inset-x-0 top-0 z-1000 h-1 rounded-none bg-transparent"
 	aria-hidden="true"
 />
 

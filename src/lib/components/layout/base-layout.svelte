@@ -19,14 +19,13 @@
 
 <ScrollProgress />
 
-<!-- Padding comes from Tailwind `container` (2rem) — do not add extra px-* here. -->
 <div class="container mx-auto min-h-screen pt-12 sm:pt-24">
 	{#if useGridBackground}
 		<div
 			class="pointer-events-none fixed inset-0 z-[-1] flex h-40 items-center justify-center overflow-hidden"
 		>
 			<div
-				class="relative flex h-full w-full flex-col items-center justify-center overflow-hidden bg-background [mask-image:linear-gradient(to_bottom,black,transparent)] [-webkit-mask-image:linear-gradient(to_bottom,black,transparent)]"
+				class="relative flex h-full w-full flex-col items-center justify-center overflow-hidden bg-background mask-[linear-gradient(to_bottom,black,transparent)] [-webkit-mask-image:linear-gradient(to_bottom,black,transparent)]"
 			>
 				<FlickeringGrid
 					class="absolute inset-0 z-0 size-full w-full"

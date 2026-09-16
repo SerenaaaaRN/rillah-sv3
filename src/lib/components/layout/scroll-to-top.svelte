@@ -27,7 +27,7 @@
 	size="icon"
 	onclick={scrollToTop}
 	class={cn(
-		'fixed right-6 bottom-20 z-[9999] size-12 rounded-full shadow-lg transition-all duration-300 ease-in-out hover:scale-110',
+		'fixed right-6 bottom-20 z-9999 size-12 rounded-full shadow-lg transition-all duration-300 ease-in-out hover:scale-110',
 		visible ? 'translate-y-0 opacity-100' : 'pointer-events-none translate-y-4 opacity-0'
 	)}
 	aria-label="Scroll to top"
