@@ -13,8 +13,6 @@
 	import { nav } from './constant.ts';
 
 	let { ref = $bindable(null), ...restProps }: ComponentProps<typeof Sidebar.Root> = $props();
-
-	
 </script>
 
 {#snippet navItems(items: (typeof nav)[number]['items'])}
