@@ -2,6 +2,7 @@
 	import CircleNotch from 'phosphor-svelte/lib/CircleNotch';
 	import Trash from 'phosphor-svelte/lib/Trash';
 	import VideoCamera from 'phosphor-svelte/lib/VideoCamera';
+	import { uploadFileViaAction } from '$lib/utils/upload-file.js';
 	import { Button } from '$lib/components/ui/button/index.js';
 	import { cn } from '$lib/utils.js';
 
@@ -40,15 +41,7 @@
 		try {
 			uploading = true;
 			error = '';
-			const formData = new FormData();
-			formData.append('file', file);
-			formData.append('slug', slug);
-			const res = await fetch('?/uploadVideo', { method: 'POST', body: formData });
-			const json = await res.json();
-			const data = json?.data ?? json;
-			const publicUrl = data?.publicUrl ?? data?.data?.publicUrl ?? '';
-			if (!publicUrl) throw new Error(data?.error ?? 'Upload failed');
-			videoUrl = publicUrl;
+			videoUrl = await uploadFileViaAction('?/uploadVideo', file, slug);
 		} catch (e) {
 			error = e instanceof Error ? e.message : 'Upload failed';
 		} finally {
