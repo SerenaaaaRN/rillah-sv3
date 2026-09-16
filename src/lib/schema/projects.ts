@@ -64,12 +64,29 @@ export type ProjectCard = {
 	video: string;
 	source_code: string | null;
 	tags: string[];
+	featured: string[];
 	created_at: string;
 	updated_at: string;
 };
 
-// --- Supabase row mapping ---
-// Table `projects` columns mirror `Project` 1:1.
+export function toProjectCard(p: Project): ProjectCard {
+	return {
+		id: p.id,
+		slug: p.slug,
+		title: p.title,
+		description: p.description,
+		url: p.demo,
+		image: p.image[0] ?? null,
+		images: p.image,
+		video: p.video ?? '',
+		source_code: p.github || null,
+		tags: p.tags,
+		featured: p.featured,
+		created_at: p.created_at ?? '',
+		updated_at: p.updated_at ?? ''
+	};
+}
+
 const asStringArray = (val: unknown): string[] => {
 	if (Array.isArray(val)) return val.filter((v): v is string => typeof v === 'string');
 	return parseJsonOrCsv(val);
