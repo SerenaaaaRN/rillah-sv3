@@ -1,5 +1,7 @@
 <script lang="ts">
+	import About from './_components/about.svelte';
 	import Intro from './_components/intro.svelte';
+	import Skills from './_components/skills.svelte';
 </script>
 
 <svelte:head>
@@ -12,4 +14,6 @@
 
 <main>
 	<Intro />
+	<About />
+	<Skills />
 </main>
