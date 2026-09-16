@@ -121,7 +121,7 @@
 
 	<div class="relative hidden bg-muted lg:block">
 		<img
-			src="/scroll/login.jpg"
+			src="/login.jpg"
 			alt="Login background"
 			class="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
 		/>
