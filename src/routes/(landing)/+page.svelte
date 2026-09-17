@@ -1,5 +1,9 @@
 <script lang="ts">
+	import { careers } from '$lib/data/career.js';
+	import { educations } from '$lib/data/education.js';
 	import About from './_components/about.svelte';
+	import Career from './_components/career.svelte';
+	import Education from './_components/education.svelte';
 	import Intro from './_components/intro.svelte';
 	import Skills from './_components/skills.svelte';
 </script>
@@ -16,4 +20,6 @@
 	<Intro />
 	<About />
 	<Skills />
+	<Career {careers} />
+	<Education {educations} />
 </main>
