@@ -4,7 +4,6 @@ import { formatDisplayDate } from '$lib/utils/date.js';
 
 export const CERTIFICATES_TABLE = 'certificates';
 export const CERTIFICATE_IMAGE_BUCKET = 'certificate-images';
-
 export const UNSORTED_ORDER = 99;
 
 export type Certificate = {
@@ -33,6 +32,24 @@ export const CertificateSchema = z.object({
 
 export type CertificateInput = z.infer<typeof CertificateSchema>;
 
+export type Certification = {
+	id: string;
+	title: string;
+	provider: string;
+	issuedDisplay: string;
+	image: string | null;
+};
+
+export function mapCertificateToCertification(cert: Certificate): Certification {
+	return {
+		id: cert.id,
+		title: cert.title,
+		provider: cert.issuer,
+		issuedDisplay: cert.date,
+		image: cert.image_url || null
+	};
+}
+
 export function mapRowToCertificate(row: CertificatesRow): Certificate {
 	return {
 		id: row.id,
@@ -50,8 +67,6 @@ export function mapInputToRow(input: CertificateInput): Omit<CertificatesRow, 'i
 	return {
 		title: input.title.trim(),
 		issuer: input.issuer?.trim() ? input.issuer.trim() : null,
-		// Normalize datepicker ISO ("2026-09-15") and legacy strings into the
-		// DB display format "15 September 2026".
 		date: displayDate ? displayDate : null,
 		image_url: input.image_url?.trim() ? input.image_url.trim() : null,
 		display_order: input.display_order ?? UNSORTED_ORDER
