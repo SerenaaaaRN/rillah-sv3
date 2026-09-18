@@ -11,7 +11,7 @@
 
 {#snippet careerLogo(image: string | null, label: string)}
 	<img
-		src={image ?? "/no-image.jpg"}
+		src={image ?? '/no-image.jpg'}
 		alt={`${label} logo`}
 		width={48}
 		height={48}
