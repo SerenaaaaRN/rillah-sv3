@@ -9,6 +9,7 @@
 	import Education from './_components/education.svelte';
 	import Guestbook from './_components/guestbook/guestbook.svelte';
 	import Intro from './_components/intro.svelte';
+	import Scrolltelling from './_components/scrolltelling.svelte';
 	import Skills from './_components/skills.svelte';
 	import type { PageProps } from './$types';
 
@@ -25,6 +26,7 @@
 
 <main>
 	<Intro />
+	<Scrolltelling />
 	<About />
 	<Skills />
 	<Career {careers} />
