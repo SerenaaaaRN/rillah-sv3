@@ -1,9 +1,9 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
-	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
-	import { Separator } from '$lib/components/ui/separator/index.js';
 	import { AppSidebar } from '$lib/components/layout/app-sidebar/index.js';
 	import DynamicBreadcrumb from '$lib/components/layout/dynamic-breadcrumb.svelte';
+	import { Separator } from '$lib/components/ui/separator/index.js';
+	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
 
 	let { children }: { children: Snippet } = $props();
 </script>

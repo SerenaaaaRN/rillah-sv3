@@ -2,9 +2,9 @@
 	import CircleNotch from 'phosphor-svelte/lib/CircleNotch';
 	import Trash from 'phosphor-svelte/lib/Trash';
 	import Upload from 'phosphor-svelte/lib/Upload';
-	import { uploadFileViaAction } from '$lib/utils/upload-file.js';
 	import { Button } from '$lib/components/ui/button/index.js';
 	import { cn } from '$lib/utils.js';
+	import { uploadFileViaAction } from '$lib/utils/upload-file.js';
 
 	let {
 		currentImage = '',

@@ -26,6 +26,13 @@ export type CertificatesRow = {
 	created_at: string;
 };
 
+export type ReviewsRow = {
+	id: number;
+	name: string | null;
+	message: string | null;
+	created_at: string;
+};
+
 export type Database = {
 	public: {
 		Tables: {
@@ -39,6 +46,12 @@ export type Database = {
 				Row: CertificatesRow;
 				Insert: Partial<CertificatesRow> & { title: string };
 				Update: Partial<CertificatesRow>;
+				Relationships: [];
+			};
+			reviews: {
+				Row: ReviewsRow;
+				Insert: Partial<ReviewsRow> & { name: string; message: string };
+				Update: Partial<ReviewsRow>;
 				Relationships: [];
 			};
 		};

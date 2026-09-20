@@ -1,8 +1,8 @@
 <script lang="ts">
-	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
-	import AppWindow from 'phosphor-svelte/lib/AppWindow';
 	import { page } from '$app/state';
+	import AppWindow from 'phosphor-svelte/lib/AppWindow';
 	import type { ComponentProps } from 'svelte';
+	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
 	import { nav } from './constant.js';
 
 	let { ref = $bindable(null), ...restProps }: ComponentProps<typeof Sidebar.Root> = $props();
