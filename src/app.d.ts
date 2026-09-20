@@ -17,7 +17,10 @@ declare global {
 			user?: User | null;
 		}
 		// interface PageState {}
-		// interface Platform {}
+		interface Platform {
+			context: { waitUntil(promise: Promise<unknown>): void };
+			caches: CacheStorage & { default: Cache };
+		}
 	}
 }
 
