@@ -32,7 +32,7 @@
 					<div class="relative">
 						<div class="h-2 w-2 rounded-full bg-green-500"></div>
 					</div>
-					<p class="text-xs font-medium text-green-600 dark:text-green-400">Online</p>
+					<p class="text-xs font-medium text-green-700 dark:text-green-500">Online</p>
 				</div>
 				<p class="text-xs text-primary/55">@duhairillah</p>
 			</div>

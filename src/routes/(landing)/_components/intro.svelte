@@ -59,10 +59,10 @@
 			<div class="animate-fade-in-up" style="animation-delay: 400ms">
 				<div class="flex flex-wrap gap-3">
 					<Button href="/projects">
-						View Projects
+						View My Work
 						<ArrowRight class="size-4" />
 					</Button>
-					<Button variant="outline" href="/changelog">View Changelog</Button>
+					<Button variant="outline" href="/blog">View My Blog</Button>
 				</div>
 			</div>
 
@@ -72,7 +72,6 @@
 					<Eyebrow>Find me on</Eyebrow>
 					<div class="flex flex-wrap items-center gap-2">
 						{#each media_socials as social (social.title)}
-							{@const SocialIcon = social.icon}
 							<a
 								href={social.href}
 								target="_blank"
@@ -80,7 +79,7 @@
 								class="rounded-lg border border-border bg-background p-2.5 transition-colors hover:border-foreground/20 hover:bg-accent hover:text-primary"
 								title={social.title}
 							>
-								<SocialIcon class="size-4" />
+								<social.icon class="size-4" />
 							</a>
 						{/each}
 					</div>

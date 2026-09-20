@@ -59,7 +59,7 @@
 			>
 				{cert.issuer}
 			</p>
-			<time class="shrink-0 font-mono text-[9px] text-muted-foreground">{cert.date}</time>
+			<time class="shrink-0 font-mono text-[10px] text-muted-foreground">{cert.date}</time>
 		</div>
 	</footer>
 </Card>

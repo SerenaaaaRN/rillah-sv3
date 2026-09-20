@@ -10,7 +10,7 @@
 	<div class="mt-10">
 		<SectionHeading.Root>
 			<SectionHeading.Eyebrow>About</SectionHeading.Eyebrow>
-			<SectionHeading.Title as="h1"
+			<SectionHeading.Title
 				>A little <SectionHeading.Accent>about me</SectionHeading.Accent></SectionHeading.Title
 			>
 			<SectionHeading.Description
@@ -21,7 +21,7 @@
 		</SectionHeading.Root>
 
 		<div class="mt-6 flex flex-wrap gap-3">
-			<Button href="blabla" target="_blank" size="sm">
+			<Button href="#" target="_blank" size="sm">
 				View Resume
 				<ArrowSquareOut class="size-3" />
 			</Button>

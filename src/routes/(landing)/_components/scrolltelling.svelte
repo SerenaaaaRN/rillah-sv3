@@ -31,7 +31,7 @@
 					)}
 				>
 					<p
-						class="font-mono text-[10px] font-semibold tracking-[0.3em] text-muted-foreground uppercase"
+						class="font-mono text-[11px] font-semibold tracking-[0.3em] text-muted-foreground uppercase"
 					>
 						{scene.focus}
 					</p>

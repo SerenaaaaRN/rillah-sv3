@@ -14,7 +14,7 @@
 	} from '$lib/data/skills.js';
 	import Marquee from './marquee.svelte';
 
-	let showDetailed = $state(false);
+	let showDetail = $state(false);
 </script>
 
 <BlurFade delay={0.25} inView>
@@ -32,10 +32,10 @@
 			<Button
 				variant="outline"
 				size="sm"
-				onclick={() => (showDetailed = !showDetailed)}
+				onclick={() => (showDetail = !showDetail)}
 				class="flex shrink-0 items-center gap-2"
 			>
-				{#if showDetailed}
+				{#if showDetail}
 					<CaretUp class="h-4 w-4" />
 					Show Less
 				{:else}
@@ -58,7 +58,7 @@
 			</Marquee>
 		</div>
 
-		{#if showDetailed}
+		{#if showDetail}
 			<div class="grid animate-fade-in-up grid-cols-1 gap-3 md:grid-cols-2 md:gap-4 lg:grid-cols-3">
 				{#each skills_data as category (category.name)}
 					<Card class="h-full hover:border-foreground/20">
@@ -66,7 +66,11 @@
 							<CardTitle
 								class="flex items-center justify-between gap-2 font-display text-sm font-bold tracking-tight"
 							>
-								{category.name}
+								<div class="flex items-center gap-2">
+									<category.icon size={20} weight="bold" class="text-foreground/80" />
+									{category.name}
+								</div>
+
 								<Chip>{category.skills.length}</Chip>
 							</CardTitle>
 						</CardHeader>

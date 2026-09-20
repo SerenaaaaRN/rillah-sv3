@@ -31,7 +31,7 @@
 
 			<div class="grid grid-cols-1 gap-3">
 				{#each certifications.slice(0, 3) as cert (cert.id)}
-					<CertificationCard certification={cert} compact={true} />
+					<CertificationCard certification={cert} />
 				{/each}
 			</div>
 		</section>

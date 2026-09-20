@@ -50,7 +50,7 @@
 <BlurFade delay={0.25} inView>
 	<SectionHeading.Root class="mb-8">
 		<SectionHeading.Eyebrow>Work</SectionHeading.Eyebrow>
-		<SectionHeading.Title as="h1"
+		<SectionHeading.Title
 			>Selected <SectionHeading.Accent>projects</SectionHeading.Accent></SectionHeading.Title
 		>
 		<SectionHeading.Description

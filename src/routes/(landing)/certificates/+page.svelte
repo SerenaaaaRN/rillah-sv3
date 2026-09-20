@@ -103,7 +103,7 @@
 <BlurFade delay={0.25} inView>
 	<SectionHeading.Root class="mb-8">
 		<SectionHeading.Eyebrow>Credentials</SectionHeading.Eyebrow>
-		<SectionHeading.Title as="h1">
+		<SectionHeading.Title>
 			All <SectionHeading.Accent>certifications</SectionHeading.Accent>
 		</SectionHeading.Title>
 		<SectionHeading.Description>

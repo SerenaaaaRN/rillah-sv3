@@ -4,50 +4,45 @@
 	import { Card, CardContent } from '$lib/components/ui/card/index.js';
 	import * as Dialog from '$lib/components/ui/dialog/index.js';
 	import type { Certification } from '$lib/schema/certificate.js';
+	import { cn } from '$lib/utils';
 
-	let {
-		certification,
-		compact = false
-	}: {
-		certification: Certification;
-		compact?: boolean;
-	} = $props();
+	let { certification }: { certification: Certification } = $props();
 
-	const ui = $derived({
-		pad: compact ? 'p-4' : 'p-6',
-		gap: compact ? 'gap-3' : 'gap-4',
-		box: compact ? 'size-10' : 'size-16',
-		icon: compact ? 'size-5' : 'size-8',
-		title: compact ? 'text-sm' : 'text-lg',
-		provider: compact ? 'text-xs' : 'text-sm',
-		badge: compact ? 'px-2 py-0 text-[10px]' : 'px-2 py-0 text-xs',
-		metaGap: compact ? 'mt-1.5' : 'mt-3'
-	});
+	const title = $derived(certification.title);
+	const provider = $derived(certification.provider);
+	const issuedDisplay = $derived(certification.issuedDisplay);
+	const image = $derived(certification.image);
 </script>
 
 <Dialog.Root>
-	<Dialog.Trigger aria-label={`Preview ${certification.title}`}>
+	<Dialog.Trigger aria-label={`Preview ${title}`}>
 		{#snippet child({ props })}
 			<Card
 				{...props}
-				class="cursor-pointer border border-border transition-colors hover:border-foreground/20 hover:shadow-none"
+				class={cn(
+					'cursor-pointer border border-border transition-colors hover:border-foreground/20 hover:shadow-none',
+					props.class as string
+				)}
 			>
-				<CardContent class={ui.pad}>
-					<div class={`flex items-start ${ui.gap}`}>
+				<CardContent>
+					<div class="flex items-start gap-3">
 						<div
-							class={`flex shrink-0 items-center justify-center border border-border bg-primary/5 ${ui.box}`}
+							class="flex size-10 shrink-0 items-center justify-center border border-border bg-primary/5"
 						>
-							<CertificateIcon class={`${ui.icon} text-primary`} />
+							<CertificateIcon class="size-5 text-primary" />
 						</div>
 
 						<div class="min-w-0 flex-1">
-							<h3 class={`line-clamp-2 font-display font-semibold ${ui.title}`}>
-								{certification.title}
+							<h3 class="line-clamp-2 font-display text-sm font-semibold">
+								{title}
 							</h3>
-							<p class={`${ui.provider} text-muted-foreground`}>{certification.provider}</p>
-							<div class={ui.metaGap}>
-								<Badge variant="secondary" class={`rounded-none border font-normal ${ui.badge}`}>
-									Issued &middot; {certification.issuedDisplay}
+							<p class="text-xs text-muted-foreground">{provider}</p>
+							<div class="mt-1.5">
+								<Badge
+									variant="secondary"
+									class="rounded-none border px-2 py-0 text-[11px] font-normal"
+								>
+									Issued &middot; {issuedDisplay}
 								</Badge>
 							</div>
 						</div>
@@ -59,15 +54,16 @@
 
 	<Dialog.Content class="sm:max-w-5xl">
 		<Dialog.Header>
-			<Dialog.Title>{certification.title}</Dialog.Title>
+			<Dialog.Title>{title}</Dialog.Title>
 			<Dialog.Description>
-				{certification.provider} &middot; {certification.issuedDisplay}
+				{provider} &middot; {issuedDisplay}
 			</Dialog.Description>
 		</Dialog.Header>
-		{#if certification.image}
+
+		{#if image}
 			<img
-				src={certification.image}
-				alt={`${certification.title} certificate`}
+				src={image}
+				alt={`${title} certificate`}
 				class="max-h-[85vh] w-full rounded-none border border-border object-contain"
 			/>
 		{:else}

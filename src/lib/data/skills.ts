@@ -1,77 +1,75 @@
+import Brain from 'phosphor-svelte/lib/Brain';
+import Code from 'phosphor-svelte/lib/Code';
+import Database from 'phosphor-svelte/lib/Database';
+import HardDrive from 'phosphor-svelte/lib/HardDrive';
+import Monitor from 'phosphor-svelte/lib/Monitor';
+import Robot from 'phosphor-svelte/lib/Robot';
+import type { Component } from 'svelte';
+
 export interface SkillCategory {
 	name: string;
 	skills: string[];
-	icon: string;
-	color: string;
+	icon: Component;
 }
 
 export const skills_data: SkillCategory[] = [
 	{
 		name: 'Frontend Development',
-		skills: ['ReactJS', 'NextJS', 'Typescript', 'SvelteKit', 'Tailwind CSS', 'Shadcn UI'],
-		icon: 'Monitor',
-		color: 'from-blue-500 to-cyan-400'
+		skills: ['React.js', 'Next.js', 'SvelteKit', 'Tanstack', 'Tailwind CSS'],
+		icon: Monitor
 	},
 	{
 		name: 'Backend Development',
 		skills: ['FastAPI', 'Elysia.js'],
-		icon: 'Server',
-		color: 'from-green-500 to-emerald-400'
+		icon: HardDrive
 	},
 	{
 		name: 'Programming Languages',
-		skills: ['Python', 'Typescript', 'Javascript', 'Java', 'Go', 'C++'],
-		icon: 'Code2',
-		color: 'from-violet-500 to-purple-400'
+		skills: ['Python', 'Typescript', 'Javascript', 'Java', 'C++'],
+		icon: Code
 	},
 	{
 		name: 'Databases',
 		skills: ['PostgreSQL', 'MySQL', 'Supabase', 'DrizzleORM'],
-		icon: 'Database',
-		color: 'from-orange-500 to-amber-400'
+		icon: Database
 	},
 	{
 		name: 'Data Science',
-		skills: [
-			'NumPy',
-			'Pandas',
-			'Scikit-learn',
-			'PyTorch',
-			'Keras',
-			'Matplotlib',
-			'Seaborn',
-			'Gradio'
-		],
-		icon: 'Brain',
-		color: 'from-fuchsia-500 to-pink-400'
+		skills: ['Pandas', 'Scikit-learn', 'Seaborn', 'Matplotlib', 'PyTorch', 'Keras', 'Gradio'],
+		icon: Brain
+	},
+	{
+		name: 'AI Tools',
+		skills: ['OpenCode', 'Antigravity', 'Claude Code', 'Cursor'],
+		icon: Robot
 	}
 ];
 
 export const skills_data_top = [
-	'React',
-	'Next.js',
+	'Python',
 	'Typescript',
 	'Javascript',
-	'Python',
-	'Tailwind CSS',
-	'Shadcn UI',
-	'Java',
-	'SvelteKit',
 	'FastAPI',
+	'React.js',
+	'Next.js',
+	'Tailwind CSS',
+	'SvelteKit',
+	'Java',
 	'Bun',
-	'Elysia.js'
+	'Elysia.js',
+	'Claude Code'
 ];
 
 export const skills_data_bottom = [
 	'PostgreSQL',
 	'MySQL',
-	'Go',
 	'Python',
 	'Java',
 	'SvelteKit',
 	'FastAPI',
-	'Bun',
-	'Elysia.js'
+	'Elysia.js',
+	'OpenCode',
+	'Antigravity'
 ];
 
 export const getAllSkills = (): string[] => {

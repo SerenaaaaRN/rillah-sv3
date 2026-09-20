@@ -2,13 +2,7 @@
 	import ChatText from 'phosphor-svelte/lib/ChatText';
 	import PaperPlaneTilt from 'phosphor-svelte/lib/PaperPlaneTilt';
 	import { Button } from '$lib/components/ui/button/index.js';
-	import {
-		Card,
-		CardContent,
-		CardDescription,
-		CardHeader,
-		CardTitle
-	} from '$lib/components/ui/card/index.js';
+	import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card/index.js';
 	import { Input } from '$lib/components/ui/input/index.js';
 	import { Textarea } from '$lib/components/ui/textarea/index.js';
 
@@ -30,12 +24,11 @@
 </script>
 
 <Card class="h-fit rounded-none">
-	<CardHeader class="pb-4">
+	<CardHeader>
 		<CardTitle class="flex items-center gap-2 font-display text-base">
 			<ChatText class="size-4 text-primary" />
 			Guestbook
 		</CardTitle>
-		<CardDescription class="text-xs">Name is required</CardDescription>
 	</CardHeader>
 	<CardContent>
 		<form onsubmit={onSubmit} class="space-y-4">
@@ -44,7 +37,7 @@
 					for="gb-name"
 					class="font-mono text-[11px] font-medium tracking-[0.15em] text-muted-foreground uppercase"
 				>
-					Name *
+					Name
 				</label>
 				<Input
 					id="gb-name"
@@ -61,7 +54,7 @@
 					for="gb-message"
 					class="font-mono text-[11px] font-medium tracking-[0.15em] text-muted-foreground uppercase"
 				>
-					Message *
+					Message
 				</label>
 				<Textarea
 					id="gb-message"

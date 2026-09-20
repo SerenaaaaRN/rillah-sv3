@@ -2,7 +2,7 @@
 	import { tv, type VariantProps } from 'tailwind-variants';
 
 	export const chipVariants = tv({
-		base: 'inline-flex items-center gap-1.5 rounded-none border border-border/70 bg-secondary px-2 py-1 font-mono text-[10px] font-medium uppercase tracking-wider text-muted-foreground transition-colors',
+		base: 'inline-flex items-center gap-1.5 rounded-none border border-border/70 bg-secondary px-2 py-1 font-mono text-[11px] font-medium uppercase tracking-wider text-muted-foreground transition-colors',
 		variants: {
 			variant: {
 				default: '',
