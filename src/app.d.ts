@@ -18,6 +18,10 @@ declare global {
 		}
 		// interface PageState {}
 		interface Platform {
+			env?: {
+				GH_READ_USER_TOKEN_PERSONAL?: string;
+				GITHUB_USERNAME?: string;
+			};
 			context: { waitUntil(promise: Promise<unknown>): void };
 			caches: CacheStorage & { default: Cache };
 		}

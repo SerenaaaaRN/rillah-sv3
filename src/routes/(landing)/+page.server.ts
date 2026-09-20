@@ -29,19 +29,27 @@ async function fetchGithub(
 	username: string,
 	token: string | undefined
 ): Promise<GithubCalendar | null> {
-	if (!token) return null;
+	if (!token) {
+		console.warn('[github] load fallback error=missing_token');
+		return null;
+	}
 	try {
 		const response = await fetch(GITHUB_USER_ENDPOINT, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
-				Authorization: `bearer ${token}`
+				'User-Agent': 'rillah-sv3',
+				Accept: 'application/vnd.github+json',
+				'X-GitHub-Api-Version': '2022-11-28',
+				Authorization: `Bearer ${token.trim()}`
 			},
 			body: JSON.stringify({ query: GITHUB_USER_QUERY, variables: { username } })
 		});
 		const payload = await response.json();
-		if (payload?.errors?.length || response.status > 400) {
-			console.warn(`[github] load fallback status=${response.status}`);
+		if (payload?.errors?.length || !response.ok) {
+			console.warn(
+				`[github] load fallback status=${response.status} errors=${JSON.stringify(payload?.errors ?? payload)}`
+			);
 			return null;
 		}
 		const parsed = GithubCalendarSchema.safeParse(
@@ -88,11 +96,18 @@ async function loadGuestbook(supabase: SupabaseClient): Promise<GuestbookEntry[]
 	}));
 }
 
-export const load: PageServerLoad = async ({ setHeaders }) => {
+export const load: PageServerLoad = async ({ platform, setHeaders }) => {
 	setHeaders({ 'cache-control': 'public, max-age=30, s-maxage=300' });
 
-	const token = env.GH_READ_USER_TOKEN_PERSONAL;
-	const username = env.GITHUB_USERNAME ?? 'SerenaaaaRN';
+	// Di Vercel (Node.js) `env` dari $env/dynamic/private cukup.
+	// Di Cloudflare Workers TIDAK ADA process.env — secret runtime dari dashboard
+	// hanya tersedia via `platform.env`, jadi harus dibaca dari sana dulu.
+	const token =
+		platform?.env?.GH_READ_USER_TOKEN_PERSONAL?.trim() ||
+		env.GH_READ_USER_TOKEN_PERSONAL?.trim() ||
+		undefined;
+	const username =
+		platform?.env?.GITHUB_USERNAME?.trim() || env.GITHUB_USERNAME?.trim() || 'SerenaaaaRN';
 	const supabase = createStaticClient();
 
 	const [github, certifications, guestbook] = await Promise.all([
