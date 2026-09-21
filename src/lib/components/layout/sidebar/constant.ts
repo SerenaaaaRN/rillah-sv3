@@ -1,7 +1,15 @@
+import Certificate from 'phosphor-svelte/lib/Certificate';
+import Coffee from 'phosphor-svelte/lib/Coffee';
+import House from 'phosphor-svelte/lib/House';
+import Rss from 'phosphor-svelte/lib/Rss';
+import SignIn from 'phosphor-svelte/lib/SignIn';
+import User from 'phosphor-svelte/lib/User';
+import type { Component } from 'svelte';
+
 export type Menu = {
 	href: string;
 	label: string;
-	icon: string;
+	icon: Component;
 };
 
 export type SidebarMenu = {
@@ -13,21 +21,21 @@ export const publicDashboardMenu: SidebarMenu[] = [
 	{
 		groupLabel: '',
 		menus: [
-			{ href: '/', label: 'Home', icon: 'House' },
-			{ href: '/projects', label: 'Project', icon: 'Coffee' },
-			{ href: '/blog', label: 'Blog', icon: 'Rss' },
-			{ href: '/certificates', label: 'Certificates', icon: 'Award' }
+			{ href: '/', label: 'Home', icon: House },
+			{ href: '/projects', label: 'Project', icon: Coffee },
+			{ href: '/blog', label: 'Blog', icon: Rss },
+			{ href: '/certificates', label: 'Certificates', icon: Certificate }
 		]
 	}
 ];
 
-export const mainNavData = (isHaveToken: boolean): Menu[] => [
-	{ href: '/', icon: 'House', label: 'Home' },
-	{ href: '/projects', icon: 'Coffee', label: 'Project' },
-	{ href: '/blog', icon: 'Rss', label: 'Blog' },
+export const mainNavData = (isAuthenticated: boolean): Menu[] => [
+	{ href: '/', label: 'Home', icon: House },
+	{ href: '/projects', label: 'Project', icon: Coffee },
+	{ href: '/certificates', label: 'Certificates', icon: Certificate },
 	{
-		href: isHaveToken ? '/profile' : '/login',
-		icon: isHaveToken ? 'User' : 'LogIn',
-		label: isHaveToken ? 'Profile' : 'Login'
+		href: isAuthenticated ? '/profile' : '/login',
+		label: isAuthenticated ? 'Profile' : 'Login',
+		icon: isAuthenticated ? User : SignIn
 	}
 ];

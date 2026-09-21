@@ -12,23 +12,33 @@ export type Career = {
 export const careers: Career[] = [
 	{
 		id: '1',
+		title: 'Member — Frontend Developer',
+		company: 'GDGoC UNSRI',
+		subtitle: 'GDGoC Unsri',
+		duration: 'Jan 2026 - Present',
+		created_at: '2026-08-31',
+		updated_at: '2026-09-01',
+		image: '/logo/gdglogo.png'
+	},
+	{
+		id: '2',
 		title: 'Staff Academic PTI',
-		company: 'Universitas Sriwijaya',
-		subtitle: 'Universitas Sriwijaya',
+		company: 'HMIF Unsri',
+		subtitle: 'HMIF Unsri',
 		duration: 'Feb 2026 - Present',
 		created_at: '2026-08-31',
 		updated_at: '2026-09-01',
 		image: '/logo/hmif.png'
 	},
 	{
-		id: '2',
-		title: 'Member — Frontend Developer',
-		company: 'GDGoC UNSRI',
-		subtitle: 'GDGoC UNSRI',
-		duration: 'Jan 2026 - Present',
-		created_at: '2026-08-31',
-		updated_at: '2026-09-01',
-		image: '/logo/gdglogo.png'
+		id: '3',
+		title: 'Curriculum Coordinator',
+		company: 'GDGoC Unsri',
+		subtitle: 'Redesign Challenge - S.H.I.F.T',
+		duration: 'Jun 2026 - Jul 2026',
+		created_at: '2026-09-21',
+		updated_at: '2026-09-21',
+		image: null
 	}
 ];
 

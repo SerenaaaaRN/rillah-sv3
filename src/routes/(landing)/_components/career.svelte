@@ -9,16 +9,6 @@
 	let groups = $derived(groupCareersByCompany(careers));
 </script>
 
-{#snippet careerLogo(image: string | null, label: string)}
-	<img
-		src={image ?? '/no-image.jpg'}
-		alt={`${label} logo`}
-		width={48}
-		height={48}
-		class="size-12 shrink-0 rounded-full bg-white object-contain p-1 ring-1 ring-border"
-	/>
-{/snippet}
-
 {#snippet careerItem(career: Career, isFirst: boolean)}
 	<div class="relative">
 		{#if !isFirst}
@@ -26,7 +16,13 @@
 		{/if}
 		<div class="mt-3 flex max-w-full flex-row items-start gap-4 text-pretty">
 			{#if isFirst}
-				{@render careerLogo(career.image, career.company)}
+				<img
+					src={career.image ?? '/no-image.jpg'}
+					alt={`${career.company} logo`}
+					width={48}
+					height={48}
+					class="size-12 shrink-0 rounded-full bg-white object-contain p-1 ring-1 ring-border"
+				/>
 			{:else}
 				<div class="size-12 shrink-0"></div>
 			{/if}

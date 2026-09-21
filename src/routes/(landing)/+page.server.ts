@@ -99,9 +99,6 @@ async function loadGuestbook(supabase: SupabaseClient): Promise<GuestbookEntry[]
 export const load: PageServerLoad = async ({ platform, setHeaders }) => {
 	setHeaders({ 'cache-control': 'public, max-age=30, s-maxage=300' });
 
-	// Di Vercel (Node.js) `env` dari $env/dynamic/private cukup.
-	// Di Cloudflare Workers TIDAK ADA process.env — secret runtime dari dashboard
-	// hanya tersedia via `platform.env`, jadi harus dibaca dari sana dulu.
 	const token =
 		platform?.env?.GH_READ_USER_TOKEN_PERSONAL?.trim() ||
 		env.GH_READ_USER_TOKEN_PERSONAL?.trim() ||

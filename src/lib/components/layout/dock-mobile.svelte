@@ -1,13 +1,7 @@
 <script lang="ts">
 	import CaretDown from 'phosphor-svelte/lib/CaretDown';
 	import CaretUp from 'phosphor-svelte/lib/CaretUp';
-	import Coffee from 'phosphor-svelte/lib/Coffee';
-	import House from 'phosphor-svelte/lib/House';
-	import Rss from 'phosphor-svelte/lib/Rss';
 	import SealCheck from 'phosphor-svelte/lib/SealCheck';
-	import SignIn from 'phosphor-svelte/lib/SignIn';
-	import User from 'phosphor-svelte/lib/User';
-	import type { Component } from 'svelte';
 	import { mainNavData } from '$lib/components/layout/sidebar/constant.js';
 	import SidebarMenu from '$lib/components/layout/sidebar/sidebar-menu.svelte';
 	import * as Avatar from '$lib/components/ui/avatar/index.js';
@@ -17,21 +11,9 @@
 	import * as Tooltip from '$lib/components/ui/tooltip/index.js';
 	import { cn } from '$lib/utils.js';
 
-	const ICONS: Record<string, Component> = {
-		Home: House,
-		Project: Coffee,
-		Blog: Rss,
-		Profile: User,
-		Login: SignIn
-	};
-
 	let open = $state(false);
 
 	const mainNav = mainNavData(false);
-
-	function iconFor(label: string): Component {
-		return ICONS[label] ?? House;
-	}
 </script>
 
 <Sheet.Root bind:open>
@@ -50,7 +32,6 @@
 					class="pointer-events-auto relative z-50 flex items-center gap-1 rounded-full border bg-background px-1 py-1 shadow-[0_0_0_1px_rgba(0,0,0,.03),0_2px_4px_rgba(0,0,0,.05),0_12px_24px_rgba(0,0,0,.05)] dark:border-white/10 dark:shadow-[0_-20px_80px_-20px_#ffffff1f_inset]"
 				>
 					{#each mainNav as item (item.label)}
-						{@const Icon = iconFor(item.label)}
 						<Tooltip.Root>
 							<Tooltip.Trigger>
 								{#snippet child({ props })}
@@ -65,7 +46,7 @@
 										aria-label={item.label}
 										{...props}
 									>
-										<Icon class="size-4" />
+										<item.icon class="size-4" />
 									</a>
 								{/snippet}
 							</Tooltip.Trigger>
