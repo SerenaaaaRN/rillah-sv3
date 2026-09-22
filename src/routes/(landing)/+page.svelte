@@ -1,7 +1,9 @@
 <script lang="ts">
+	import SeoHead from '$lib/components/shared/seo-head.svelte';
 	import { Skeleton } from '$lib/components/ui/skeleton/index.js';
 	import { careers } from '$lib/data/career.js';
 	import { educations } from '$lib/data/education.js';
+	import { canonicalUrl, personSchema, webSiteSchema } from '$lib/seo/site.js';
 	import About from './_components/about.svelte';
 	import Career from './_components/career.svelte';
 	import Certification from './_components/certification/certification.svelte';
@@ -16,13 +18,12 @@
 	let { data }: PageProps = $props();
 </script>
 
-<svelte:head>
-	<title>Rillah | AI Engineer</title>
-	<meta
-		name="description"
-		content="Rillah is a AI Engineer building production LLM systems — RAG, MCP, and cloud-native agents."
-	/>
-</svelte:head>
+<SeoHead
+	title="Rillah | AI Engineer"
+	description="Rillah is an AI Engineer building production LLM systems — RAG, MCP, and cloud-native agents."
+	canonical={canonicalUrl('/')}
+	jsonLd={[personSchema(), webSiteSchema()]}
+/>
 
 <main>
 	<Intro />

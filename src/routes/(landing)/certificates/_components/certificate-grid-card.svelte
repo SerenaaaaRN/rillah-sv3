@@ -29,6 +29,7 @@
 				src={cert.image_url}
 				alt={cert.title}
 				loading="lazy"
+				decoding="async"
 				class="h-full w-full object-cover"
 			/>
 			<div

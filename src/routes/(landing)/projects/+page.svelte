@@ -2,7 +2,9 @@
 	import BlurFade from '$lib/components/shared/blur-fade.svelte';
 	import MacWindow from '$lib/components/shared/mac-window.svelte';
 	import * as SectionHeading from '$lib/components/shared/section-heading/index.js';
+	import SeoHead from '$lib/components/shared/seo-head.svelte';
 	import { Button } from '$lib/components/ui/button/index.js';
+	import { breadcrumbSchema, canonicalUrl } from '$lib/seo/site.js';
 	import ProjectCard from './_components/project-card.svelte';
 	import ProjectsToolbar, { type SortOption } from './_components/projects-toolbar.svelte';
 	import type { PageData } from './$types';
@@ -39,13 +41,17 @@
 	}
 </script>
 
-<svelte:head>
-	<title>Selected projects — Rillah</title>
-	<meta
-		name="description"
-		content="Selected projects — from basic websites to advanced web applications."
-	/>
-</svelte:head>
+<SeoHead
+	title="Selected projects — Rillah"
+	description="Selected projects by Rillah — from basic websites to advanced web applications, LLM systems, and cloud-native experiments."
+	canonical={canonicalUrl('/projects')}
+	jsonLd={[
+		breadcrumbSchema([
+			{ name: 'Home', url: canonicalUrl('/') },
+			{ name: 'Projects', url: canonicalUrl('/projects') }
+		])
+	]}
+/>
 
 <BlurFade delay={0.25} inView>
 	<SectionHeading.Root class="mb-8">

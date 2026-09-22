@@ -64,6 +64,7 @@
 			<img
 				src={image}
 				alt={`${title} certificate`}
+				decoding="async"
 				class="max-h-[85vh] w-full rounded-none border border-border object-contain"
 			/>
 		{:else}

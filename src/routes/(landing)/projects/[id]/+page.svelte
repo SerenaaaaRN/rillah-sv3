@@ -5,9 +5,16 @@
 	import BlurFade from '$lib/components/shared/blur-fade.svelte';
 	import MacWindow from '$lib/components/shared/mac-window.svelte';
 	import * as SectionHeading from '$lib/components/shared/section-heading/index.js';
+	import SeoHead from '$lib/components/shared/seo-head.svelte';
 	import { Badge } from '$lib/components/ui/badge/index.js';
 	import { Button } from '$lib/components/ui/button/index.js';
 	import * as Carousel from '$lib/components/ui/carousel/index.js';
+	import {
+		absoluteUrl,
+		breadcrumbSchema,
+		canonicalUrl,
+		creativeWorkSchema
+	} from '$lib/seo/site.js';
 	import type { PageData } from './$types';
 
 	let { data }: { data: PageData } = $props();
@@ -16,12 +23,33 @@
 	const description = $derived(project.description ?? '');
 	const images = $derived(project.image ?? []);
 	const carouselItems = $derived(images.filter((u) => u && u !== '/no-image.jpg'));
+	const slug = $derived(project.slug ?? project.id);
+	const canonical = $derived(canonicalUrl(`/projects/${slug}`));
+	const ogImage = $derived(absoluteUrl(carouselItems[0]));
 </script>
 
-<svelte:head>
-	<title>{title} — Rillah</title>
-	<meta name="description" content={description} />
-</svelte:head>
+<SeoHead
+	{title}
+	{description}
+	{canonical}
+	type="article"
+	image={ogImage}
+	jsonLd={[
+		breadcrumbSchema([
+			{ name: 'Home', url: canonicalUrl('/') },
+			{ name: 'Projects', url: canonicalUrl('/projects') },
+			{ name: title, url: canonical }
+		]),
+		creativeWorkSchema({
+			name: title,
+			description,
+			url: canonical,
+			image: ogImage,
+			datePublished: project.created_at,
+			dateModified: project.updated_at
+		})
+	]}
+/>
 
 <BlurFade delay={0.1} inView>
 	<div class="mb-6">
@@ -54,7 +82,10 @@
 								<img
 									src={url}
 									alt={`${title} ${i + 1}`}
-									class="w-full rounded-none border border-border object-cover"
+									loading={i === 0 ? 'eager' : 'lazy'}
+									fetchpriority={i === 0 ? 'high' : 'auto'}
+									decoding="async"
+									class="aspect-video w-full rounded-none border border-border object-cover"
 								/>
 							</Carousel.Item>
 						{/each}
@@ -66,7 +97,10 @@
 				<img
 					src={carouselItems[0]}
 					alt={title}
-					class="w-full rounded-none border border-border object-cover"
+					loading="eager"
+					fetchpriority="high"
+					decoding="async"
+					class="aspect-video w-full rounded-none border border-border object-cover"
 				/>
 			{:else}
 				<div

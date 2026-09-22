@@ -2,9 +2,11 @@
 	import BlurFade from '$lib/components/shared/blur-fade.svelte';
 	import MacWindow from '$lib/components/shared/mac-window.svelte';
 	import * as SectionHeading from '$lib/components/shared/section-heading/index.js';
+	import SeoHead from '$lib/components/shared/seo-head.svelte';
 	import { Button } from '$lib/components/ui/button/index.js';
 	import * as Dialog from '$lib/components/ui/dialog/index.js';
 	import { UNSORTED_ORDER, type Certificate } from '$lib/schema/certificate.js';
+	import { breadcrumbSchema, canonicalUrl } from '$lib/seo/site.js';
 	import CertificateGridCard from './_components/certificate-grid-card.svelte';
 	import CertificateLightbox from './_components/certificate-lightbox.svelte';
 	import CertificatesToolbar, { type SortOption } from './_components/certificates-toolbar.svelte';
@@ -92,19 +94,23 @@
 
 <svelte:window onkeydown={handleKeydown} />
 
-<svelte:head>
-	<title>Certificates — Rillah</title>
-	<meta
-		name="description"
-		content="Professional training credentials, technical awards, and course milestones achieved by Rillah."
-	/>
-</svelte:head>
+<SeoHead
+	title="Certificates — Rillah"
+	description="Professional training credentials, technical awards, and course milestones achieved by Rillah."
+	canonical={canonicalUrl('/certificates')}
+	jsonLd={[
+		breadcrumbSchema([
+			{ name: 'Home', url: canonicalUrl('/') },
+			{ name: 'Certificates', url: canonicalUrl('/certificates') }
+		])
+	]}
+/>
 
 <BlurFade delay={0.25} inView>
 	<SectionHeading.Root class="mb-8">
 		<SectionHeading.Eyebrow>Credentials</SectionHeading.Eyebrow>
 		<SectionHeading.Title as="h1">
-			All <SectionHeading.Accent>certifications</SectionHeading.Accent>
+			All <SectionHeading.Accent>certificates</SectionHeading.Accent>
 		</SectionHeading.Title>
 		<SectionHeading.Description>
 			Technical achievements, professional training, and courses completed along my engineering

@@ -3,15 +3,16 @@
 	import BlurFade from '$lib/components/shared/blur-fade.svelte';
 	import MacWindow from '$lib/components/shared/mac-window.svelte';
 	import * as SectionHeading from '$lib/components/shared/section-heading/index.js';
+	import SeoHead from '$lib/components/shared/seo-head.svelte';
+	import { canonicalUrl } from '$lib/seo/site.js';
 </script>
 
-<svelte:head>
-	<title>Blog & notes — Rillah</title>
-	<meta
-		name="description"
-		content="I write about my experiences, thoughts, and ideas on various topics."
-	/>
-</svelte:head>
+<SeoHead
+	title="Blog & notes — Rillah"
+	description="I write about my experiences, thoughts, and ideas on various topics."
+	canonical={canonicalUrl('/blog')}
+	noindex
+/>
 
 <BlurFade delay={0.25} inView>
 	<SectionHeading.Root class="mb-8">

@@ -18,6 +18,7 @@
 					src={scene.image}
 					alt={`Visual representation of ${scene.focus}`}
 					loading="lazy"
+					decoding="async"
 					class="h-72 w-full object-cover mix-blend-luminosity brightness-[0.9] contrast-[1.12] grayscale md:h-96 dark:brightness-[0.7]"
 				/>
 				<div

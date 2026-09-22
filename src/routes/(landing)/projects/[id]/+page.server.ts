@@ -1,4 +1,4 @@
-import { error } from '@sveltejs/kit';
+import { error, redirect } from '@sveltejs/kit';
 import { mapRowToProject, PROJECTS_TABLE } from '$lib/schema/projects.js';
 import type { PageServerLoad } from './$types';
 
@@ -34,6 +34,10 @@ export const load: PageServerLoad = async ({ params, locals, setHeaders, depends
 	}
 
 	if (!row) throw error(404, 'Project not found');
+
+	if (isUuid && row.slug && row.slug !== param) {
+		throw redirect(301, `/projects/${row.slug}`);
+	}
 
 	return { project: mapRowToProject(row) };
 };

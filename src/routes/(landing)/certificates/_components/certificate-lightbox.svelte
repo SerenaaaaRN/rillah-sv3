@@ -33,6 +33,7 @@
 			<img
 				src={cert.image_url}
 				alt={cert.title}
+				decoding="async"
 				class="max-h-[75dvh] w-full rounded-none border border-border object-contain"
 			/>
 		{:else}

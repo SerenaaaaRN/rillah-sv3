@@ -1,7 +1,26 @@
 import type { Handle } from '@sveltejs/kit';
 import { createSupabaseServerClient } from '$lib/supabase/server.js';
 
+function seoRedirect(url: URL): Response | null {
+	const original = url.pathname;
+	const lower = original.toLowerCase();
+
+	if (lower !== original) {
+		return Response.redirect(new URL(lower + url.search, url), 301);
+	}
+
+	const normalized = lower !== '/' ? lower.replace(/\/+$/, '') : lower;
+	if (normalized !== lower) {
+		return Response.redirect(new URL(normalized + url.search, url), 301);
+	}
+
+	return null;
+}
+
 export const handle: Handle = async ({ event, resolve }) => {
+	const redirect = seoRedirect(event.url);
+	if (redirect) return redirect;
+
 	const supabase = createSupabaseServerClient(event);
 
 	event.locals.supabase = supabase;

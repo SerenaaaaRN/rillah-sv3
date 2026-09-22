@@ -43,10 +43,17 @@
 	>
 		<div class="relative h-44 w-full overflow-hidden bg-muted">
 			{#if hasVideo}
-				<video src={video} autoplay muted loop playsinline poster={hasImage ? thumbnail : undefined}
+				<video
+					src={video}
+					autoplay
+					muted
+					loop
+					playsinline
+					preload="metadata"
+					poster={hasImage ? thumbnail : undefined}
 				></video>
 			{:else if hasImage}
-				<img src={thumbnail} alt={project.title} loading="lazy" />
+				<img src={thumbnail} alt={project.title} loading="lazy" decoding="async" />
 			{/if}
 		</div>
 
