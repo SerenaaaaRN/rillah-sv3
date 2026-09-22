@@ -1,10 +1,9 @@
 <script lang="ts">
 	import SealCheck from 'phosphor-svelte/lib/SealCheck';
-	import * as Avatar from '$lib/components/ui/avatar/index.js';
 	import SidebarMenu from './sidebar-menu.svelte';
 
 	const name = 'Rillah';
-	const avatar = '/rillah.jpeg';
+	const avatar = '/rillah-avatar.avif';
 </script>
 
 <aside
@@ -14,12 +13,16 @@
 >
 	<header class="mb-3 px-1">
 		<div class="relative mb-3">
-			<Avatar.Root class="size-25! ring-1 ring-border">
-				<Avatar.Image src={avatar} alt={name} class="object-cover" />
-				<Avatar.Fallback class="rounded-full bg-muted font-display text-lg font-bold">
-					{name.slice(0, 2).toUpperCase()}
-				</Avatar.Fallback>
-			</Avatar.Root>
+			<img
+				src={avatar}
+				alt={name}
+				width={100}
+				height={100}
+				loading="eager"
+				fetchpriority="high"
+				decoding="async"
+				class="size-25! rounded-full object-cover ring-1 ring-border"
+			/>
 		</div>
 
 		<div class="space-y-1">

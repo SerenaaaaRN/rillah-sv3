@@ -26,6 +26,11 @@ export const handle: Handle = async ({ event, resolve }) => {
 	event.locals.supabase = supabase;
 
 	event.locals.safeGetSession = async () => {
+		const hasSessionCookie = event.cookies
+			.getAll()
+			.some((c) => c.name.startsWith('sb-') && c.name.includes('auth-token'));
+		if (!hasSessionCookie) return { session: null, user: null };
+
 		const {
 			data: { user },
 			error

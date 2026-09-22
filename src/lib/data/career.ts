@@ -18,7 +18,7 @@ export const careers: Career[] = [
 		duration: 'Jan 2026 - Present',
 		created_at: '2026-08-31',
 		updated_at: '2026-09-01',
-		image: '/logo/gdglogo.png'
+		image: '/logo/gdglogo.avif'
 	},
 	{
 		id: '2',
@@ -28,7 +28,7 @@ export const careers: Career[] = [
 		duration: 'Feb 2026 - Present',
 		created_at: '2026-08-31',
 		updated_at: '2026-09-01',
-		image: '/logo/hmif.png'
+		image: '/logo/hmif.avif'
 	},
 	{
 		id: '3',

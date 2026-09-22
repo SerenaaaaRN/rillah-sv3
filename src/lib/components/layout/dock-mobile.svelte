@@ -4,7 +4,6 @@
 	import SealCheck from 'phosphor-svelte/lib/SealCheck';
 	import { mainNavData } from '$lib/components/layout/sidebar/constant.js';
 	import SidebarMenu from '$lib/components/layout/sidebar/sidebar-menu.svelte';
-	import * as Avatar from '$lib/components/ui/avatar/index.js';
 	import { buttonVariants } from '$lib/components/ui/button/index.js';
 	import { Separator } from '$lib/components/ui/separator/index.js';
 	import * as Sheet from '$lib/components/ui/sheet/index.js';
@@ -92,10 +91,15 @@
 	>
 		<div class="mx-auto mb-4 h-1.5 w-12 rounded-full bg-muted"></div>
 		<div class="mb-4 flex items-center gap-4">
-			<Avatar.Root class="size-16! shrink-0 ring-1 ring-border">
-				<Avatar.Image src="/rillah.jpeg" alt="Rillah" class="object-cover" />
-				<Avatar.Fallback class="rounded-full bg-muted font-display font-bold">RH</Avatar.Fallback>
-			</Avatar.Root>
+			<img
+				src="/rillah-avatar.avif"
+				alt="Rillah"
+				width={64}
+				height={64}
+				loading="eager"
+				decoding="async"
+				class="size-16! shrink-0 rounded-full object-cover ring-1 ring-border"
+			/>
 			<div class="flex-1 space-y-1">
 				<h4 class="flex items-center gap-2 font-display text-base font-bold">
 					Rillah

@@ -25,6 +25,25 @@ const GITHUB_USER_QUERY = `query($username: String!) {
 
 type SupabaseClient = ReturnType<typeof createStaticClient>;
 
+const GITHUB_TTL_MS = 6 * 60 * 60 * 1000;
+let githubCache: { at: number; data: GithubCalendar | null } | null = null;
+
+async function fetchGithubCached(
+	username: string,
+	token: string | undefined
+): Promise<GithubCalendar | null> {
+	if (!token) {
+		console.warn('[github] load fallback error=missing_token');
+		return null;
+	}
+	const now = Date.now();
+	if (githubCache && now - githubCache.at < GITHUB_TTL_MS) return githubCache.data;
+	const data = await fetchGithub(username, token);
+	// Cache only successful responses so a GitHub outage retries next request.
+	if (data) githubCache = { at: now, data };
+	return data;
+}
+
 async function fetchGithub(
 	username: string,
 	token: string | undefined
@@ -107,11 +126,9 @@ export const load: PageServerLoad = async ({ platform, setHeaders }) => {
 		platform?.env?.GITHUB_USERNAME?.trim() || env.GITHUB_USERNAME?.trim() || 'SerenaaaaRN';
 	const supabase = createStaticClient();
 
-	const [github, certifications, guestbook] = await Promise.all([
-		fetchGithub(username, token),
-		loadCertifications(supabase),
-		loadGuestbook(supabase)
-	]);
-
-	return { github, certifications, guestbook };
+	return {
+		github: fetchGithubCached(username, token),
+		certifications: loadCertifications(supabase),
+		guestbook: loadGuestbook(supabase)
+	};
 };

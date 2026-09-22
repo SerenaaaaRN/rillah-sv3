@@ -112,8 +112,8 @@
 		<div class="relative w-fit">
 			<div class="absolute inset-0 rounded-full bg-primary/10 blur-2xl"></div>
 			<img
-				src="/rillah.jpeg"
-				alt="rillah"
+				src="/rillah-avatar.avif"
+				alt="Rillah"
 				width={200}
 				height={200}
 				class="relative size-28 rounded-full object-cover shadow-xl ring-2 ring-border ring-offset-2 ring-offset-background md:size-40 lg:size-48"
