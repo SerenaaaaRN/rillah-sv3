@@ -12,27 +12,23 @@
 
 <ScrollProgress />
 
-<div class="container mx-auto min-h-screen pt-12 sm:pt-24">
-	<div
-		class="pointer-events-none fixed inset-0 z-[-1] flex h-40 items-center justify-center overflow-hidden"
-	>
-		<div
-			class="relative flex h-full w-full flex-col items-center justify-center overflow-hidden bg-background mask-[linear-gradient(to_bottom,black,transparent)] [-webkit-mask-image:linear-gradient(to_bottom,black,transparent)]"
-		>
-			<FlickeringGrid
-				class="absolute inset-0 z-0 size-full w-full"
-				squareSize={4}
-				gridGap={6}
-				color="#6B7280"
-				maxOpacity={0.5}
-				flickerChance={0.1}
-				height={800}
-				width={2000}
-			/>
-		</div>
-	</div>
+<div
+	class="pointer-events-none fixed inset-x-0 top-0 z-[-1] h-40 overflow-hidden mask-[linear-gradient(to_bottom,black,transparent)]"
+>
+	<FlickeringGrid
+		class="size-full"
+		squareSize={4}
+		gridGap={6}
+		color="#6B7280"
+		maxOpacity={0.5}
+		flickerChance={0.1}
+		height={800}
+		width={2000}
+	/>
+</div>
 
-	<nav class="block md:hidden" aria-label="Mobile navigation">
+<div class="container mx-auto min-h-screen pt-12 sm:pt-24">
+	<nav class="md:hidden" aria-label="Mobile navigation">
 		<DockMobile />
 	</nav>
 

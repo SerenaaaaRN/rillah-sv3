@@ -1,6 +1,8 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
 	import type { HTMLAttributes } from 'svelte/elements';
+	import { on } from 'svelte/events';
+	import { createSubscriber } from 'svelte/reactivity';
 
 	let {
 		class: className,
@@ -20,48 +22,63 @@
 		blur?: string;
 	} = $props();
 
-	// svelte-ignore state_referenced_locally
-	let visible = $state(!inView);
-	let element: HTMLDivElement | undefined = $state(undefined);
+	const subscribeReducedMotion =
+		typeof window !== 'undefined'
+			? createSubscriber((update) => {
+					const mql = window.matchMedia('(prefers-reduced-motion: reduce)');
+					const off = on(mql, 'change', update);
+					return () => off();
+				})
+			: () => {};
 
-	function inViewAction(node: HTMLElement) {
-		if (!inView) return;
+	const prefersReducedMotion = $derived.by(() => {
+		subscribeReducedMotion();
+		return typeof window !== 'undefined'
+			? window.matchMedia('(prefers-reduced-motion: reduce)').matches
+			: false;
+	});
+
+	let isIntersected = $state(false);
+	const visible = $derived(prefersReducedMotion || !inView || isIntersected);
+
+	function observeInView(node: HTMLElement) {
+		if (!inView || prefersReducedMotion) return;
+
 		const observer = new IntersectionObserver(
 			(entries) => {
 				for (const entry of entries) {
 					if (entry.isIntersecting) {
-						visible = true;
+						isIntersected = true;
 						observer.disconnect();
 						break;
 					}
 				}
 			},
-			{ rootMargin: '-50px', threshold: 0.1 }
+			{ rootMargin: '0px', threshold: 0.1 }
 		);
+
 		observer.observe(node);
-		return {
-			destroy() {
-				observer.disconnect();
-			}
+
+		return () => {
+			observer.disconnect();
 		};
 	}
-
-	$effect(() => {
-		if (!inView && !visible) {
-			const t = setTimeout(() => (visible = true), (0.04 + delay) * 1000);
-			return () => clearTimeout(t);
-		}
-	});
 </script>
 
 <div
-	bind:this={element}
-	use:inViewAction
+	{@attach observeInView}
 	class={className}
+	style:--duration="{duration}s"
+	style:--delay="{delay}s"
+	style:--y-offset="{yOffset}px"
+	style:--blur={blur}
 	style:opacity={visible ? '1' : '0'}
-	style:transform={visible ? `translateY(${-yOffset}px)` : `translateY(${yOffset}px)`}
-	style:filter={visible ? 'blur(0px)' : `blur(${blur})`}
-	style:transition={`transform ${duration}s ease-out ${0.04 + delay}s, opacity ${duration}s ease-out ${0.04 + delay}s, filter ${duration}s ease-out ${0.04 + delay}s`}
+	style:transform={visible ? 'translateY(0)' : 'translateY(var(--y-offset))'}
+	style:filter={visible ? 'blur(0px)' : 'blur(var(--blur))'}
+	style:transition={prefersReducedMotion
+		? 'none'
+		: 'transform var(--duration) ease-out var(--delay), opacity var(--duration) ease-out var(--delay), filter var(--duration) ease-out var(--delay)'}
+	style:will-change={visible ? 'auto' : 'transform, opacity, filter'}
 	{...restProps}
 >
 	{@render children?.()}

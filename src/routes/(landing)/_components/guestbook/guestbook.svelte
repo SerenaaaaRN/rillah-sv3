@@ -1,69 +1,22 @@
 <script lang="ts">
+	import { enhance } from '$app/forms';
 	import BlurFade from '$lib/components/shared/blur-fade.svelte';
 	import * as SectionHeading from '$lib/components/shared/section-heading';
-	import { validateGuestbook, type GuestbookEntry } from '$lib/schema/guestbook.js';
+	import type { GuestbookEntry } from '$lib/schema/guestbook.js';
 	import GuestbookForm from './guestbook-form.svelte';
 	import MessageList from './message-list.svelte';
 
-	let { entries = [] }: { entries: GuestbookEntry[] } = $props();
+	interface Props {
+		entries?: GuestbookEntry[];
+	}
+
+	let { entries = [] }: Props = $props();
 
 	let name = $state('');
 	let message = $state('');
 	let isSubmitting = $state(false);
 	let formError = $state<string | null>(null);
 	let notice = $state<string | null>(null);
-	let pending = $state<GuestbookEntry[]>([]);
-	let confirmed = $state<GuestbookEntry[]>([]);
-
-	let localEntries = $derived([...pending, ...confirmed, ...entries]);
-
-	async function handleSubmit(e: Event) {
-		e.preventDefault();
-		const { data, error: validationError } = validateGuestbook({
-			name: name.trim(),
-			message: message.trim()
-		});
-		if (!data) {
-			formError = validationError ?? 'Invalid input';
-			return;
-		}
-		formError = null;
-		notice = null;
-		isSubmitting = true;
-		const optimistic: GuestbookEntry = {
-			id: `optimistic-${Date.now()}`,
-			name: data.name,
-			message: data.message,
-			created_at: new Date().toISOString()
-		};
-		pending = [optimistic, ...pending];
-		try {
-			const res = await fetch('/api/guestbook', {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ name: data.name, message: data.message })
-			});
-			const payload = await res.json().catch(() => ({}));
-			if (!res.ok) throw new Error(payload.error ?? 'Failed to send');
-			notice = 'Comment posted!';
-			name = '';
-			message = '';
-			pending = pending.filter((entry) => entry.id !== optimistic.id);
-			confirmed = [
-				{
-					...optimistic,
-					id: payload.id ?? optimistic.id,
-					created_at: payload.created_at ?? optimistic.created_at
-				},
-				...confirmed
-			];
-		} catch (err) {
-			pending = pending.filter((entry) => entry.id !== optimistic.id);
-			formError = err instanceof Error ? err.message : 'Failed to send';
-		} finally {
-			isSubmitting = false;
-		}
-	}
 </script>
 
 <BlurFade delay={0.25} inView>
@@ -79,15 +32,30 @@
 		</SectionHeading.Root>
 
 		<div class="mx-auto grid max-w-4xl grid-cols-1 gap-8 lg:grid-cols-2">
-			<GuestbookForm
-				bind:name
-				bind:message
-				{isSubmitting}
-				error={formError}
-				{notice}
-				onSubmit={handleSubmit}
-			/>
-			<MessageList entries={localEntries} />
+			<form
+				method="POST"
+				action="?/guestbook"
+				use:enhance={() => {
+					isSubmitting = true;
+					formError = null;
+					notice = null;
+
+					return async ({ result, update }) => {
+						isSubmitting = false;
+						if (result.type === 'success') {
+							name = '';
+							message = '';
+							notice = 'Comment posted!';
+							await update();
+						} else if (result.type === 'failure') {
+							formError = (result.data?.error as string) ?? 'Failed to submit';
+						}
+					};
+				}}
+			>
+				<GuestbookForm bind:name bind:message {isSubmitting} error={formError} {notice} />
+			</form>
+			<MessageList {entries} />
 		</div>
 	</section>
 </BlurFade>

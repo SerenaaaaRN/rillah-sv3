@@ -25,68 +25,85 @@
 
 	let canvasRef: HTMLCanvasElement | undefined = $state(undefined);
 	let containerRef: HTMLDivElement | undefined = $state(undefined);
-	let isInView = $state(false);
-	let canvasSize = $state({ width: 0, height: 0 });
 
-	function toRGBA(colorStr: string): string {
-		if (typeof window === 'undefined') return 'rgba(0, 0, 0,';
-		const canvas = document.createElement('canvas');
-		canvas.width = canvas.height = 1;
-		const ctx = canvas.getContext('2d');
-		if (!ctx) return 'rgba(0, 0, 0,';
-		ctx.fillStyle = colorStr;
-		ctx.fillRect(0, 0, 1, 1);
-		const [r, g, b] = Array.from(ctx.getImageData(0, 0, 1, 1).data);
-		return `rgba(${r}, ${g}, ${b},`;
+	// Singleton context untuk parse warna agar tidak membuat canvas baru di setiap render
+	let sharedCtx: CanvasRenderingContext2D | null = null;
+	function parseToRGBPrefix(colorStr: string): string {
+		if (typeof window === 'undefined') return 'rgba(0, 0, 0, ';
+		if (!sharedCtx) {
+			const c = document.createElement('canvas');
+			c.width = c.height = 1;
+			sharedCtx = c.getContext('2d', { willReadFrequently: true });
+		}
+		if (!sharedCtx) return 'rgba(0, 0, 0, ';
+
+		sharedCtx.fillStyle = colorStr;
+		sharedCtx.fillRect(0, 0, 1, 1);
+		const [r, g, b] = sharedCtx.getImageData(0, 0, 1, 1).data;
+		return `rgba(${r}, ${g}, ${b}, `;
 	}
 
-	const memoizedColor = $derived(toRGBA(color));
+	interface GridState {
+		cols: number;
+		rows: number;
+		squares: Float32Array;
+		dpr: number;
+	}
 
-	function setupCanvas(canvas: HTMLCanvasElement, w: number, h: number) {
+	function setupGrid(
+		w: number,
+		h: number,
+		sqSize: number,
+		gap: number,
+		opacityLimit: number
+	): GridState {
 		const dpr = typeof window !== 'undefined' ? window.devicePixelRatio || 1 : 1;
-		canvas.width = w * dpr;
-		canvas.height = h * dpr;
-		canvas.style.width = `${w}px`;
-		canvas.style.height = `${h}px`;
-		const cols = Math.floor(w / (squareSize + gridGap));
-		const rows = Math.floor(h / (squareSize + gridGap));
+		const step = sqSize + gap;
+		const cols = Math.floor(w / step);
+		const rows = Math.floor(h / step);
 		const squares = new Float32Array(cols * rows);
+
 		for (let i = 0; i < squares.length; i++) {
-			squares[i] = Math.random() * maxOpacity;
+			squares[i] = Math.random() * opacityLimit;
 		}
+
 		return { cols, rows, squares, dpr };
 	}
 
-	function updateSquares(squares: Float32Array, deltaTime: number) {
+	function updateGridSquares(
+		squares: Float32Array,
+		deltaTime: number,
+		chance: number,
+		opacityLimit: number
+	) {
+		const threshold = chance * deltaTime;
 		for (let i = 0; i < squares.length; i++) {
-			if (Math.random() < flickerChance * deltaTime) {
-				squares[i] = Math.random() * maxOpacity;
+			if (Math.random() < threshold) {
+				squares[i] = Math.random() * opacityLimit;
 			}
 		}
 	}
 
-	function drawGrid(
+	function renderGrid(
 		ctx: CanvasRenderingContext2D,
-		w: number,
-		h: number,
-		cols: number,
-		rows: number,
-		squares: Float32Array,
-		dpr: number
+		grid: GridState,
+		sqSize: number,
+		gap: number,
+		rgbPrefix: string
 	) {
-		ctx.clearRect(0, 0, w, h);
-		ctx.fillStyle = 'transparent';
-		ctx.fillRect(0, 0, w, h);
-		for (let i = 0; i < cols; i++) {
-			for (let j = 0; j < rows; j++) {
-				const opacity = squares[i * rows + j];
-				ctx.fillStyle = `${memoizedColor}${opacity})`;
-				ctx.fillRect(
-					i * (squareSize + gridGap) * dpr,
-					j * (squareSize + gridGap) * dpr,
-					squareSize * dpr,
-					squareSize * dpr
-				);
+		ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+		const step = (sqSize + gap) * grid.dpr;
+		const size = sqSize * grid.dpr;
+
+		for (let i = 0; i < grid.cols; i++) {
+			const x = i * step;
+			for (let j = 0; j < grid.rows; j++) {
+				const opacity = grid.squares[i * grid.rows + j];
+				// Optimasi: skip square transparan agar menghemat draw call
+				if (opacity < 0.01) continue;
+
+				ctx.fillStyle = `${rgbPrefix}${opacity})`;
+				ctx.fillRect(x, j * step, size, size);
 			}
 		}
 	}
@@ -95,85 +112,112 @@
 		const canvas = canvasRef;
 		const container = containerRef;
 		if (!canvas || !container) return;
+
 		const ctx = canvas.getContext('2d');
 		if (!ctx) return;
 
+		// Snapshot props ke local dependencies (bersih dari warning ESLint & reaktif secara eksplisit)
+		const currentSquareSize = squareSize;
+		const currentGridGap = gridGap;
+		const currentFlickerChance = flickerChance;
+		const currentMaxOpacity = maxOpacity;
+		const explicitWidth = width;
+		const explicitHeight = height;
+		const rgbPrefix = parseToRGBPrefix(color);
+
+		// WCAG: preferensi reduced motion
+		const prefersReducedMotion =
+			typeof window !== 'undefined' &&
+			window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
 		let animationFrameId = 0;
-		let gridParams: ReturnType<typeof setupCanvas> | undefined;
-
-		const updateCanvasSize = () => {
-			const newWidth = width ?? container.clientWidth;
-			const newHeight = height ?? container.clientHeight;
-			canvasSize = { width: newWidth, height: newHeight };
-			gridParams = setupCanvas(canvas, newWidth, newHeight);
-			// initial draw
-			if (gridParams) {
-				drawGrid(
-					ctx,
-					canvas.width,
-					canvas.height,
-					gridParams.cols,
-					gridParams.rows,
-					gridParams.squares,
-					gridParams.dpr
-				);
-			}
-		};
-
-		updateCanvasSize();
-
+		let isVisible = true; 
 		let lastTime = 0;
-		const animate = (time: number) => {
-			if (!isInView) {
-				animationFrameId = requestAnimationFrame(animate);
-				return;
-			}
-			const deltaTime = (time - lastTime) / 1000;
-			lastTime = time;
-			if (gridParams) {
-				updateSquares(gridParams.squares, deltaTime);
-				drawGrid(
-					ctx,
-					canvas.width,
-					canvas.height,
-					gridParams.cols,
-					gridParams.rows,
-					gridParams.squares,
-					gridParams.dpr
-				);
-			}
-			animationFrameId = requestAnimationFrame(animate);
+		let grid: GridState | null = null;
+
+		const draw = () => {
+			if (!grid || grid.cols === 0 || grid.rows === 0) return;
+			renderGrid(ctx, grid, currentSquareSize, currentGridGap, rgbPrefix);
 		};
+
+		const resize = () => {
+			const w = explicitWidth ?? container.clientWidth;
+			const h = explicitHeight ?? container.clientHeight;
+			if (w <= 0 || h <= 0) return;
+
+			grid = setupGrid(w, h, currentSquareSize, currentGridGap, currentMaxOpacity);
+			canvas.width = w * grid.dpr;
+			canvas.height = h * grid.dpr;
+			canvas.style.width = `${w}px`;
+			canvas.style.height = `${h}px`;
+
+			draw();
+		};
+
+		const loop = (time: number) => {
+			if (!isVisible || prefersReducedMotion) return;
+
+			if (!lastTime) lastTime = time;
+			const deltaTime = Math.min((time - lastTime) / 1000, 0.1);
+			lastTime = time;
+
+			if (grid) {
+				updateGridSquares(grid.squares, deltaTime, currentFlickerChance, currentMaxOpacity);
+				draw();
+			}
+
+			animationFrameId = requestAnimationFrame(loop);
+		};
+
+		const start = () => {
+			if (prefersReducedMotion) return;
+			lastTime = 0;
+			cancelAnimationFrame(animationFrameId);
+			animationFrameId = requestAnimationFrame(loop);
+		};
+
+		const stop = () => {
+			cancelAnimationFrame(animationFrameId);
+		};
+
+		// Sinkron render pertama
+		resize();
+		start();
 
 		const resizeObserver = new ResizeObserver(() => {
-			updateCanvasSize();
+			resize();
 		});
 		resizeObserver.observe(container);
 
 		const intersectionObserver = new IntersectionObserver(
 			([entry]) => {
-				isInView = entry.isIntersecting;
+				isVisible = entry.isIntersecting;
+				if (isVisible) {
+					start();
+				} else {
+					stop();
+				}
 			},
 			{ threshold: 0 }
 		);
 		intersectionObserver.observe(canvas);
 
-		// start loop
-		animationFrameId = requestAnimationFrame(animate);
-
 		return () => {
-			cancelAnimationFrame(animationFrameId);
+			stop();
 			resizeObserver.disconnect();
 			intersectionObserver.disconnect();
 		};
 	});
 </script>
 
-<div bind:this={containerRef} class={cn('h-full w-full', className)} {...restProps}>
+<div
+	bind:this={containerRef}
+	class={cn('relative h-full w-full overflow-hidden', className)}
+	{...restProps}
+>
 	<canvas
 		bind:this={canvasRef}
-		class="pointer-events-none"
-		style:width={`${canvasSize.width}px`}
-		style:height={`${canvasSize.height}px`}
+		aria-hidden="true"
+		class="pointer-events-none absolute inset-0 block h-full w-full"
 	></canvas>
 </div>

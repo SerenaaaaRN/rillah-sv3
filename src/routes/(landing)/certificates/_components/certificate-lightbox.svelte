@@ -5,19 +5,15 @@
 	import * as Dialog from '$lib/components/ui/dialog/index.js';
 	import type { Certificate } from '$lib/schema/certificate.js';
 
-	let {
-		cert,
-		index,
-		total,
-		onPrev,
-		onNext
-	}: {
+	interface Props {
 		cert: Certificate;
 		index: number;
 		total: number;
 		onPrev: () => void;
 		onNext: () => void;
-	} = $props();
+	}
+
+	let { cert, index, total, onPrev, onNext }: Props = $props();
 </script>
 
 <Dialog.Content class="sm:max-w-5xl">
@@ -48,7 +44,7 @@
 				variant="outline"
 				size="icon"
 				onclick={onPrev}
-				class="absolute top-1/2 left-2 size-11 -translate-y-1/2 rounded-full"
+				class="absolute top-1/2 left-2 size-11 rounded-full"
 				aria-label="Previous certificate"
 			>
 				<CaretLeft class="size-5" aria-hidden="true" />
@@ -58,7 +54,7 @@
 				variant="outline"
 				size="icon"
 				onclick={onNext}
-				class="absolute top-1/2 right-2 size-11 -translate-y-1/2 rounded-full"
+				class="absolute top-1/2 right-2 size-11 rounded-full"
 				aria-label="Next certificate"
 			>
 				<CaretRight class="size-5" aria-hidden="true" />

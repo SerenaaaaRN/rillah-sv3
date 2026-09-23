@@ -6,7 +6,7 @@
 	import { canonicalUrl, personSchema, webSiteSchema } from '$lib/seo/site.js';
 	import About from './_components/about.svelte';
 	import Career from './_components/career.svelte';
-	import Certification from './_components/certification/certification.svelte';
+	import Certification from './_components/certificates/certificates-landing.svelte';
 	import Contribution from './_components/contribution/contribution.svelte';
 	import Education from './_components/education.svelte';
 	import Guestbook from './_components/guestbook/guestbook.svelte';
@@ -19,8 +19,8 @@
 </script>
 
 <SeoHead
-	title="Rillah | AI Engineer"
-	description="Rillah is an AI Engineer building production LLM systems — RAG, MCP, and cloud-native agents."
+	title="Rillah | Software Engineer"
+	description="Rillah is a software engineering student crafting scalable, production-ready systems."
 	canonical={canonicalUrl('/')}
 	jsonLd={[personSchema(), webSiteSchema()]}
 />

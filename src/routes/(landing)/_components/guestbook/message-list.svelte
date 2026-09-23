@@ -4,7 +4,11 @@
 	import type { GuestbookEntry } from '$lib/schema/guestbook.js';
 	import { timeAgo } from '$lib/utils/date.js';
 
-	let { entries = [] }: { entries: GuestbookEntry[] } = $props();
+	interface Props {
+		entries?: GuestbookEntry[];
+	}
+
+	let { entries = [] }: Props = $props();
 </script>
 
 <div class="space-y-3">
@@ -34,7 +38,7 @@
 								>{timeAgo(entry.created_at)}</span
 							>
 							{#if entry.id.startsWith('optimistic-')}
-								<span class="font-mono text-[10px] text-amber-600">sending…</span>
+								<span class="font-mono text-[10px] text-muted-foreground italic">sending…</span>
 							{/if}
 						</div>
 						<p

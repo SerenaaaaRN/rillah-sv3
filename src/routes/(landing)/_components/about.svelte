@@ -14,9 +14,11 @@
 				>A little <SectionHeading.Accent>about me</SectionHeading.Accent></SectionHeading.Title
 			>
 			<SectionHeading.Description
-				>I am is a first-year Informatics student at Sriwijaya University currently focused on
-				building well-structured web applications with an emphasis on clean architecture and
-				maintainable code organization.</SectionHeading.Description
+				>I'm a third-semester Informatics student at Sriwijaya University, currently focused on
+				applied Deep Learning, Natural Language and building scalable software architectures with
+				Python. When I'm not fine-tuning models or wrangling data pipelines, you'll find me
+				experimenting with new frameworks, writing about what I learn, or contributing to
+				open-source projects.</SectionHeading.Description
 			>
 		</SectionHeading.Root>
 

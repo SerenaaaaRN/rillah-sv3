@@ -1,3 +1,4 @@
+import { fail } from '@sveltejs/kit';
 import { env } from '$env/dynamic/private';
 import { GithubCalendarSchema, type GithubCalendar } from '$lib/data/github';
 import {
@@ -5,9 +6,9 @@ import {
 	mapRowToCertificate,
 	type Certification
 } from '$lib/schema/certificate';
-import type { GuestbookEntry } from '$lib/schema/guestbook';
+import { GuestbookSchema, type GuestbookEntry } from '$lib/schema/guestbook';
 import { createStaticClient } from '$lib/supabase/static';
-import type { PageServerLoad } from './$types';
+import type { Actions, PageServerLoad } from './$types';
 
 const GITHUB_USER_ENDPOINT = 'https://api.github.com/graphql';
 const GITHUB_USER_QUERY = `query($username: String!) {
@@ -39,7 +40,6 @@ async function fetchGithubCached(
 	const now = Date.now();
 	if (githubCache && now - githubCache.at < GITHUB_TTL_MS) return githubCache.data;
 	const data = await fetchGithub(username, token);
-	// Cache only successful responses so a GitHub outage retries next request.
 	if (data) githubCache = { at: now, data };
 	return data;
 }
@@ -115,9 +115,7 @@ async function loadGuestbook(supabase: SupabaseClient): Promise<GuestbookEntry[]
 	}));
 }
 
-export const load: PageServerLoad = async ({ platform, setHeaders }) => {
-	setHeaders({ 'cache-control': 'public, max-age=30, s-maxage=300' });
-
+export const load: PageServerLoad = async ({ platform }) => {
 	const token =
 		platform?.env?.GH_READ_USER_TOKEN_PERSONAL?.trim() ||
 		env.GH_READ_USER_TOKEN_PERSONAL?.trim() ||
@@ -126,9 +124,52 @@ export const load: PageServerLoad = async ({ platform, setHeaders }) => {
 		platform?.env?.GITHUB_USERNAME?.trim() || env.GITHUB_USERNAME?.trim() || 'SerenaaaaRN';
 	const supabase = createStaticClient();
 
+	const [github, certifications, guestbook] = await Promise.all([
+		fetchGithubCached(username, token),
+		loadCertifications(supabase),
+		loadGuestbook(supabase)
+	]);
+
 	return {
-		github: fetchGithubCached(username, token),
-		certifications: loadCertifications(supabase),
-		guestbook: loadGuestbook(supabase)
+		github,
+		certifications,
+		guestbook
 	};
+};
+
+export const actions: Actions = {
+	guestbook: async ({ request }) => {
+		const formData = await request.formData();
+
+		const honeypot = formData.get('website');
+		if (honeypot) {
+			return fail(400, { error: 'Spam detected' });
+		}
+
+		const raw = {
+			name: formData.get('name')?.toString().trim(),
+			message: formData.get('message')?.toString().trim()
+		};
+
+		const parsed = GuestbookSchema.safeParse(raw);
+		if (!parsed.success) {
+			return fail(400, {
+				error: parsed.error.issues[0]?.message ?? 'Invalid input'
+			});
+		}
+
+		const supabase = createStaticClient();
+		const { error } = await supabase.from('reviews').insert({
+			name: parsed.data.name,
+			message: parsed.data.message
+		});
+
+		if (error) {
+			return fail(500, {
+				error: error.message || 'Failed to post message'
+			});
+		}
+
+		return { success: true };
+	}
 };

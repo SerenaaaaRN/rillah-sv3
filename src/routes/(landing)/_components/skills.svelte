@@ -46,12 +46,12 @@
 		</div>
 
 		<div class="relative mb-8 w-full flex-col">
-			<Marquee class="[--duration:25s]">
+			<Marquee duration="25s">
 				{#each skills_data_top as skill (skill)}
 					<Chip class="mx-1">{skill}</Chip>
 				{/each}
 			</Marquee>
-			<Marquee reverse class="[--duration:25s]">
+			<Marquee reverse duration="25s">
 				{#each skills_data_bottom as skill (skill)}
 					<Chip class="mx-1">{skill}</Chip>
 				{/each}

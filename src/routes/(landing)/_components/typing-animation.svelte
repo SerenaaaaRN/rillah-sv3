@@ -1,48 +1,62 @@
 <script lang="ts">
 	import { cn } from '$lib/utils.js';
 
-	let {
-		words = [],
-		class: className = '',
-		duration = 120,
-		pauseDelay = 2500,
-		loop = true,
-		showCursor = true,
-		cursorStyle = 'line' as 'line' | 'block' | 'underscore'
-	}: {
+	interface Props {
 		words?: string[];
 		class?: string;
-		duration?: number;
+		typeSpeed?: number;
+		deleteSpeed?: number;
 		pauseDelay?: number;
 		loop?: boolean;
 		showCursor?: boolean;
 		cursorStyle?: 'line' | 'block' | 'underscore';
-	} = $props();
+		ariaLabel?: string;
+	}
+
+	let {
+		words = [],
+		class: className = '',
+		typeSpeed = 120,
+		deleteSpeed = 80,
+		pauseDelay = 2500,
+		loop = true,
+		showCursor = true,
+		cursorStyle = 'line',
+		ariaLabel
+	}: Props = $props();
 
 	let displayedText = $state('');
 	let currentWordIndex = $state(0);
 	let currentCharIndex = $state(0);
 	let phase: 'typing' | 'pause' | 'deleting' = $state('typing');
 
-	function getCursorChar() {
-		switch (cursorStyle) {
-			case 'block':
-				return '▌';
-			case 'underscore':
-				return '_';
-			case 'line':
-			default:
-				return '|';
+	const cursorChar = $derived(
+		cursorStyle === 'block' ? '▌' : cursorStyle === 'underscore' ? '_' : '|'
+	);
+
+	// Segmenter untuk handle emoji/grapheme cluster dengan benar
+	const segmenter =
+		typeof Intl !== 'undefined' ? new Intl.Segmenter(undefined, { granularity: 'grapheme' }) : null;
+
+	function getGraphemes(str: string): string[] {
+		if (segmenter) {
+			return [...segmenter.segment(str)].map((s) => s.segment);
 		}
+		return Array.from(str);
 	}
 
 	$effect(() => {
 		const list = words;
-		const typeMs = duration;
-		const eraseMs = duration / 2;
-		const holdMs = pauseDelay;
-		const shouldLoop = loop;
-		if (list.length === 0) return;
+		if (list.length === 0) {
+			displayedText = '';
+			return;
+		}
+
+		// reset state saat words berubah
+		currentWordIndex = 0;
+		currentCharIndex = 0;
+		phase = 'typing';
+		displayedText = '';
 
 		let cancelled = false;
 		let timer: ReturnType<typeof setTimeout> | undefined;
@@ -54,38 +68,41 @@
 
 		const tick = () => {
 			if (cancelled) return;
-			const currentWord = list[currentWordIndex] ?? '';
-			const graphemes = Array.from(currentWord);
+
+			const word = list[currentWordIndex] ?? '';
+			const graphemes = getGraphemes(word);
 
 			if (phase === 'typing') {
 				if (currentCharIndex < graphemes.length) {
-					currentCharIndex += 1;
+					currentCharIndex++;
 					displayedText = graphemes.slice(0, currentCharIndex).join('');
-					schedule(typeMs);
-				} else if (list.length > 1 || shouldLoop) {
-					const isLast = currentWordIndex === list.length - 1;
-					if (!isLast || shouldLoop) {
+					schedule(typeSpeed);
+				} else {
+					// Selesai mengetik
+					const isLast = currentWordIndex >= list.length - 1;
+					if (!isLast || loop) {
 						phase = 'pause';
-						schedule(holdMs);
+						schedule(pauseDelay);
 					}
+					// Jika !loop && isLast → berhenti total (tidak schedule lagi)
 				}
 			} else if (phase === 'pause') {
 				phase = 'deleting';
-				schedule(eraseMs);
+				schedule(deleteSpeed);
 			} else if (phase === 'deleting') {
 				if (currentCharIndex > 0) {
-					currentCharIndex -= 1;
+					currentCharIndex--;
 					displayedText = graphemes.slice(0, currentCharIndex).join('');
-					schedule(eraseMs);
+					schedule(deleteSpeed);
 				} else {
 					currentWordIndex = (currentWordIndex + 1) % list.length;
 					phase = 'typing';
-					schedule(typeMs);
+					schedule(typeSpeed);
 				}
 			}
 		};
 
-		schedule(typeMs);
+		schedule(typeSpeed);
 
 		return () => {
 			cancelled = true;
@@ -93,14 +110,20 @@
 		};
 	});
 
-	const shouldShowCursor = $derived(showCursor);
+	const fullText = $derived(words.join(', '));
 </script>
 
 <span class={cn('leading-8 tracking-[-0.02em]', className)}>
-	{displayedText}
-	{#if shouldShowCursor}
-		<span class="animate-blink-cursor inline-block">{getCursorChar()}</span>
-	{/if}
+	<span aria-hidden="true">
+		{displayedText}
+		{#if showCursor}
+			<span class="inline-block animate-[blink-cursor_1.2s_step-end_infinite]">{cursorChar}</span>
+		{/if}
+	</span>
+
+	<span class="sr-only">
+		{ariaLabel ?? fullText}
+	</span>
 </span>
 
 <style>
@@ -113,8 +136,5 @@
 		100% {
 			opacity: 0;
 		}
-	}
-	.animate-blink-cursor {
-		animation: blink-cursor 1.2s step-end infinite;
 	}
 </style>

@@ -17,15 +17,15 @@
 				<img
 					src={scene.image}
 					alt={`Visual representation of ${scene.focus}`}
-					loading="lazy"
+					loading={i === 0 ? 'eager' : 'lazy'}
 					decoding="async"
-					class="h-72 w-full object-cover mix-blend-luminosity brightness-[0.9] contrast-[1.12] grayscale md:h-96 dark:brightness-[0.7]"
+					class="h-72 w-full object-cover grayscale md:h-96"
 				/>
 				<div
 					aria-hidden="true"
-					class="absolute inset-0 bg-linear-to-t from-background via-background/45 to-transparent"
+					class="absolute inset-x-0 bottom-0 h-2/3 bg-linear-to-t from-background/95 via-background/40 to-transparent"
 				></div>
-				<div
+				<figcaption
 					class={cn(
 						'absolute inset-x-0 bottom-0 flex flex-col gap-3 p-6 md:p-8',
 						flipped ? 'items-end text-right' : 'items-start text-left'
@@ -37,11 +37,11 @@
 						{scene.focus}
 					</p>
 					<h2
-						class="max-w-xl font-display text-lg leading-snug font-normal tracking-tight text-balance md:text-2xl"
+						class="max-w-xl font-display text-lg leading-snug font-normal tracking-tight text-balance text-foreground md:text-2xl"
 					>
 						{scene.text}
 					</h2>
-				</div>
+				</figcaption>
 			</figure>
 		</BlurFade>
 	{/each}

@@ -6,13 +6,13 @@
 	import { media_socials } from '$lib/data/social.js';
 	import TypingAnimation from './typing-animation.svelte';
 
-	const roles = ['CS Students', 'NLP & Deep Learning Explorer', 'AI Systems'];
+	const roles = ['Software Engineer', 'CS Student'];
 
 	const HERO_STATS = [
-		{ label: 'Current Focus', value: 'NLP & LLM Systems' },
-		{ label: 'Stack', value: 'TS, Python' },
-		{ label: 'Ecosystem', value: 'PyTorch · HuggingFace' },
-		{ label: 'Availability', value: 'Open to Collab' }
+		{ label: 'Current Focus', value: 'Scalable Architectures' },
+		{ label: 'Stack', value: 'Python, TS' },
+		{ label: 'Availability', value: 'Open to Work' },
+		{ label: 'Current Semester', value: '3' }
 	];
 </script>
 
@@ -40,8 +40,6 @@
 					<TypingAnimation
 						words={roles}
 						class="min-w-0 text-base font-semibold text-primary md:text-lg"
-						duration={120}
-						pauseDelay={2500}
 					/>
 				</div>
 			</div>
@@ -49,9 +47,9 @@
 			<!-- Bio -->
 			<div class="animate-fade-in-up" style="animation-delay: 300ms">
 				<p class="max-w-xl text-xs leading-relaxed text-muted-foreground sm:text-sm">
-					CS undergraduate diving deep into applied Deep Learning, NLP, and modern LLM
-					architectures. Currently experimenting with model fine-tuning (PEFT / QLoRA), retrieval
-					systems (RAG), and turning transformer models into scalable software using Python
+					CS undergraduate diving deep into applied Deep Learning, Natural Language and Software
+					Engineering architectures. Currently experimenting with model fine-tuning and applied data
+					science workflows to build scalable software using Python
 				</p>
 			</div>
 

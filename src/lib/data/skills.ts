@@ -15,22 +15,22 @@ export interface SkillCategory {
 export const skills_data: SkillCategory[] = [
 	{
 		name: 'Frontend Development',
-		skills: ['React.js', 'Next.js', 'SvelteKit', 'Tanstack', 'Tailwind CSS'],
+		skills: ['React.js', 'Next.js', 'SvelteKit', 'TanStack', 'Tailwind CSS'],
 		icon: Monitor
 	},
 	{
 		name: 'Backend Development',
-		skills: ['FastAPI', 'Elysia.js'],
+		skills: ['Bun', 'Elysia.js', 'FastAPI'],
 		icon: HardDrive
 	},
 	{
 		name: 'Programming Languages',
-		skills: ['Python', 'Typescript', 'Javascript', 'Java', 'C++'],
+		skills: ['Python', 'TypeScript', 'JavaScript', 'Java', 'C++'],
 		icon: Code
 	},
 	{
 		name: 'Databases',
-		skills: ['PostgreSQL', 'MySQL', 'Supabase', 'DrizzleORM'],
+		skills: ['PostgreSQL', 'MySQL', 'Supabase', 'Drizzle ORM'],
 		icon: Database
 	},
 	{
