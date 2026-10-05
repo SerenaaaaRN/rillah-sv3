@@ -3,8 +3,9 @@
 	import Trash from 'phosphor-svelte/lib/Trash';
 	import VideoCamera from 'phosphor-svelte/lib/VideoCamera';
 	import { Button } from '$lib/components/ui/button/index.js';
+	import { uploadPublicFile } from '$lib/supabase/client.js';
+	import { PROJECT_IMAGE_BUCKET, PROJECT_VIDEO_FOLDER } from '$lib/supabase/types.js';
 	import { cn } from '$lib/utils.js';
-	import { uploadFileViaAction } from '$lib/utils/upload-file.js';
 
 	let {
 		currentVideo = '',
@@ -41,7 +42,11 @@
 		try {
 			uploading = true;
 			error = '';
-			videoUrl = await uploadFileViaAction('?/uploadVideo', file, slug);
+			videoUrl = await uploadPublicFile(PROJECT_IMAGE_BUCKET, file, {
+				slug,
+				folder: PROJECT_VIDEO_FOLDER,
+				maxBytes: 50 * 1024 * 1024
+			});
 		} catch (e) {
 			error = e instanceof Error ? e.message : 'Upload failed';
 		} finally {

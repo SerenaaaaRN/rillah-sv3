@@ -8,9 +8,10 @@ const LoginSchema = z.object({
 	redirectTo: z.string().optional().default('/admin')
 });
 
-export const load: PageServerLoad = async ({ locals }) => {
+export const load: PageServerLoad = async ({ locals, url }) => {
 	const { session } = await locals.safeGetSession();
-	const redirectTo = '/admin';
+	const requested = url.searchParams.get('redirectTo') ?? '/admin';
+	const redirectTo = requested.startsWith('/') ? requested : '/admin';
 	if (session) throw redirect(303, redirectTo);
 	return { redirectTo };
 };
@@ -49,6 +50,6 @@ export const actions: Actions = {
 			});
 		}
 
-		throw redirect(303, '/login');
+		throw redirect(303, parsed.data.redirectTo.startsWith('/') ? parsed.data.redirectTo : '/admin');
 	}
 };

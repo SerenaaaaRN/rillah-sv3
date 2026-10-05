@@ -23,13 +23,6 @@
 
 	const visibleTags = $derived(project.tags.slice(0, 3));
 	const hiddenTagCount = $derived(Math.max(0, project.tags.length - 3));
-
-	function toPlainText(html: string): string {
-		return html
-			.replace(/<\/?[^>]+(>|$)/g, ' ')
-			.replace(/\s+/g, ' ')
-			.trim();
-	}
 </script>
 
 <Card
@@ -66,7 +59,7 @@
 			<p
 				class="line-clamp-2 font-sans text-xs leading-snug text-pretty text-muted-foreground sm:text-sm"
 			>
-				{toPlainText(project.description)}
+				{project.description}
 			</p>
 		</CardHeader>
 

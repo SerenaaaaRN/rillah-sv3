@@ -6,8 +6,14 @@ import {
 	mapRowToCertificate,
 	type Certification
 } from '$lib/schema/certificate';
-import { GuestbookSchema, type GuestbookEntry } from '$lib/schema/guestbook';
+import { validateGuestbook, type GuestbookEntry } from '$lib/schema/guestbook';
 import { createStaticClient } from '$lib/supabase/static';
+import {
+	CERTIFICATES_SELECT,
+	CERTIFICATES_TABLE,
+	REVIEWS_SELECT,
+	REVIEWS_TABLE
+} from '$lib/supabase/types.js';
 import type { Actions, PageServerLoad } from './$types';
 
 const GITHUB_USER_ENDPOINT = 'https://api.github.com/graphql';
@@ -87,11 +93,11 @@ async function fetchGithub(
 
 async function loadCertifications(supabase: SupabaseClient): Promise<Certification[]> {
 	const { data, error } = await supabase
-		.from('certificates')
-		.select('*')
+		.from(CERTIFICATES_TABLE)
+		.select(CERTIFICATES_SELECT)
 		.order('display_order', { ascending: true });
 	if (error) {
-		console.error('loadCertifications error', error.message);
+		console.error('[landing] loadCertifications failed:', error.message);
 		return [];
 	}
 	return (data ?? []).map(mapRowToCertificate).map(mapCertificateToCertification);
@@ -99,12 +105,11 @@ async function loadCertifications(supabase: SupabaseClient): Promise<Certificati
 
 async function loadGuestbook(supabase: SupabaseClient): Promise<GuestbookEntry[]> {
 	const { data, error } = await supabase
-		.from('reviews')
-		.select('*')
-		.order('created_at', { ascending: false })
-		.limit(20);
+		.from(REVIEWS_TABLE)
+		.select(REVIEWS_SELECT)
+		.order('created_at', { ascending: false });
 	if (error) {
-		console.warn('loadGuestbook error', error.message);
+		console.warn('[landing] loadGuestbook failed:', error.message);
 		return [];
 	}
 	return (data ?? []).map((r) => ({
@@ -130,45 +135,25 @@ export const load: PageServerLoad = async ({ platform }) => {
 		loadGuestbook(supabase)
 	]);
 
-	return {
-		github,
-		certifications,
-		guestbook
-	};
+	return { github, certifications, guestbook };
 };
 
 export const actions: Actions = {
 	guestbook: async ({ request }) => {
 		const formData = await request.formData();
 
-		const honeypot = formData.get('website');
-		if (honeypot) {
-			return fail(400, { error: 'Spam detected' });
-		}
+		if (formData.get('website')) return fail(400, { error: 'Spam detected' });
 
-		const raw = {
+		const { data, error: validationError } = validateGuestbook({
 			name: formData.get('name')?.toString().trim(),
 			message: formData.get('message')?.toString().trim()
-		};
-
-		const parsed = GuestbookSchema.safeParse(raw);
-		if (!parsed.success) {
-			return fail(400, {
-				error: parsed.error.issues[0]?.message ?? 'Invalid input'
-			});
-		}
-
-		const supabase = createStaticClient();
-		const { error } = await supabase.from('reviews').insert({
-			name: parsed.data.name,
-			message: parsed.data.message
 		});
+		if (!data) return fail(400, { error: validationError ?? 'Invalid input' });
 
-		if (error) {
-			return fail(500, {
-				error: error.message || 'Failed to post message'
-			});
-		}
+		const { error } = await createStaticClient()
+			.from(REVIEWS_TABLE)
+			.insert({ name: data.name, message: data.message });
+		if (error) return fail(500, { error: error.message || 'Failed to post message' });
 
 		return { success: true };
 	}

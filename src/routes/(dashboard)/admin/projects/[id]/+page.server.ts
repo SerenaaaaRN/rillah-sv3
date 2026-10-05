@@ -1,20 +1,13 @@
 import { error, fail, redirect } from '@sveltejs/kit';
-import {
-	mapInputToRow,
-	mapRowToProject,
-	PROJECT_IMAGE_BUCKET,
-	PROJECT_VIDEO_FOLDER,
-	PROJECTS_TABLE,
-	ProjectSchema
-} from '$lib/schema/projects.js';
-import { createUploadAction } from '$lib/supabase/upload-action.js';
+import { mapInputToRow, mapRowToProject, ProjectSchema } from '$lib/schema/projects.js';
+import { PROJECTS_SELECT, PROJECTS_TABLE } from '$lib/supabase/types.js';
 import { formDataToRecord } from '$lib/utils/form.js';
 import type { Actions, PageServerLoad } from './$types.js';
 
 export const load: PageServerLoad = async ({ params, locals }) => {
 	const { data, error: dbError } = await locals.supabase
 		.from(PROJECTS_TABLE)
-		.select('*')
+		.select(PROJECTS_SELECT)
 		.eq('id', params.id)
 		.single();
 
@@ -53,20 +46,5 @@ export const actions: Actions = {
 		if (dbError) return fail(500, { error: dbError.message });
 
 		throw redirect(303, '/admin/projects');
-	},
-
-	uploadImage: createUploadAction({
-		bucket: PROJECT_IMAGE_BUCKET,
-		maxBytes: 5 * 1024 * 1024,
-		mimePrefix: 'image/',
-		kindLabel: 'images'
-	}),
-
-	uploadVideo: createUploadAction({
-		bucket: PROJECT_IMAGE_BUCKET,
-		folder: PROJECT_VIDEO_FOLDER,
-		maxBytes: 50 * 1024 * 1024,
-		mimePrefix: 'video/',
-		kindLabel: 'videos'
-	})
+	}
 };

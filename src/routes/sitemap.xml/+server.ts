@@ -1,5 +1,5 @@
-import { PROJECTS_TABLE } from '$lib/schema/projects.js';
 import { canonicalUrl } from '$lib/seo/site.js';
+import { PROJECTS_TABLE } from '$lib/supabase/types.js';
 import type { RequestHandler } from './$types';
 
 function escapeXml(value: string): string {

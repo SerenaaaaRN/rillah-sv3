@@ -17,3 +17,20 @@ export function createSupabaseServerClient(event: RequestEvent) {
 		}
 	});
 }
+
+type LayoutCookies = { name: string; value: string }[];
+
+/**
+ * Read-only client for `+layout.ts` SSR. Session was already validated
+ * via `safeGetSession` in `+layout.server.ts`, so only `getAll` is needed.
+ */
+export function createSupabaseLayoutServerClient(cookies: LayoutCookies, fetchFn: typeof fetch) {
+	return createServerClient<Database>(PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_PUBLISHABLE_KEY, {
+		global: { fetch: fetchFn },
+		cookies: {
+			getAll() {
+				return cookies;
+			}
+		}
+	});
+}

@@ -5,8 +5,9 @@
 	import SeoHead from '$lib/components/shared/seo-head.svelte';
 	import { Button } from '$lib/components/ui/button/index.js';
 	import * as Dialog from '$lib/components/ui/dialog/index.js';
-	import { UNSORTED_ORDER, type Certificate } from '$lib/schema/certificate.js';
+	import { type Certificate } from '$lib/schema/certificate.js';
 	import { breadcrumbSchema, canonicalUrl } from '$lib/seo/site.js';
+	import { UNSORTED_ORDER } from '$lib/supabase/types.js';
 	import CertificateGridCard from './_components/certificate-grid-card.svelte';
 	import CertificateLightbox from './_components/certificate-lightbox.svelte';
 	import CertificatesToolbar, { type SortOption } from './_components/certificates-toolbar.svelte';

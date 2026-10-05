@@ -131,7 +131,7 @@
 			window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 		let animationFrameId = 0;
-		let isVisible = true; 
+		let isVisible = true;
 		let lastTime = 0;
 		let grid: GridState | null = null;
 

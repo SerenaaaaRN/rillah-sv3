@@ -1,18 +1,12 @@
 import { fail, redirect } from '@sveltejs/kit';
-import {
-	CERTIFICATE_IMAGE_BUCKET,
-	CERTIFICATES_TABLE,
-	CertificateSchema,
-	mapInputToRow
-} from '$lib/schema/certificate.js';
-import { createUploadAction } from '$lib/supabase/upload-action.js';
+import { CertificateSchema, mapInputToRow } from '$lib/schema/certificate.js';
+import { CERTIFICATES_TABLE } from '$lib/supabase/types.js';
 import { formDataToRecord } from '$lib/utils/form.js';
 import type { Actions } from './$types.js';
 
 export const actions: Actions = {
 	create: async ({ request, locals }) => {
-		const form = await request.formData();
-		const parsed = CertificateSchema.safeParse(formDataToRecord(form));
+		const parsed = CertificateSchema.safeParse(formDataToRecord(await request.formData()));
 		if (!parsed.success) {
 			return fail(400, {
 				error: 'Validation failed.',
@@ -20,18 +14,11 @@ export const actions: Actions = {
 			});
 		}
 
-		const row = mapInputToRow(parsed.data);
-
-		const { error } = await locals.supabase.from(CERTIFICATES_TABLE).insert(row);
+		const { error } = await locals.supabase
+			.from(CERTIFICATES_TABLE)
+			.insert(mapInputToRow(parsed.data));
 		if (error) return fail(500, { error: error.message });
 
 		throw redirect(303, '/admin/certificates');
-	},
-
-	uploadImage: createUploadAction({
-		bucket: CERTIFICATE_IMAGE_BUCKET,
-		maxBytes: 5 * 1024 * 1024,
-		mimePrefix: 'image/',
-		kindLabel: 'images'
-	})
+	}
 };

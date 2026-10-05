@@ -1,19 +1,13 @@
 import { error, fail, redirect } from '@sveltejs/kit';
-import {
-	CERTIFICATE_IMAGE_BUCKET,
-	CERTIFICATES_TABLE,
-	CertificateSchema,
-	mapInputToRow,
-	mapRowToCertificate
-} from '$lib/schema/certificate.js';
-import { createUploadAction } from '$lib/supabase/upload-action.js';
+import { CertificateSchema, mapInputToRow, mapRowToCertificate } from '$lib/schema/certificate.js';
+import { CERTIFICATES_SELECT, CERTIFICATES_TABLE } from '$lib/supabase/types.js';
 import { formDataToRecord } from '$lib/utils/form.js';
 import type { Actions, PageServerLoad } from './$types.js';
 
 export const load: PageServerLoad = async ({ params, locals }) => {
 	const { data, error: dbError } = await locals.supabase
 		.from(CERTIFICATES_TABLE)
-		.select('*')
+		.select(CERTIFICATES_SELECT)
 		.eq('id', params.id)
 		.single();
 
@@ -35,21 +29,12 @@ export const actions: Actions = {
 			});
 		}
 
-		const row = mapInputToRow(parsed.data);
-
 		const { error: dbError } = await locals.supabase
 			.from(CERTIFICATES_TABLE)
-			.update(row)
+			.update(mapInputToRow(parsed.data))
 			.eq('id', id);
 		if (dbError) return fail(500, { error: dbError.message });
 
 		throw redirect(303, '/admin/certificates');
-	},
-
-	uploadImage: createUploadAction({
-		bucket: CERTIFICATE_IMAGE_BUCKET,
-		maxBytes: 5 * 1024 * 1024,
-		mimePrefix: 'image/',
-		kindLabel: 'images'
-	})
+	}
 };

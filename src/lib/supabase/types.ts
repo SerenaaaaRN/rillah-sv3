@@ -61,3 +61,23 @@ export type Database = {
 		CompositeTypes: Record<string, never>;
 	};
 };
+
+/**
+ * Supabase identifiers: table names, explicit column lists
+ */
+
+export const PROJECTS_TABLE = 'projects';
+export const PROJECTS_SELECT =
+	'id,title,slug,description,content,github,demo,tags,featured,features,display_order,image,video,created_at,updated_at';
+export const PROJECT_IMAGE_BUCKET = 'project-images';
+export const PROJECT_VIDEO_FOLDER = 'videos';
+
+export const CERTIFICATES_TABLE = 'certificates';
+export const CERTIFICATES_SELECT = 'id,title,issuer,date,image_url,display_order,created_at';
+export const CERTIFICATE_IMAGE_BUCKET = 'certificate-images';
+
+export const REVIEWS_TABLE = 'reviews';
+export const REVIEWS_SELECT = 'id,name,message,created_at';
+
+/** Fallback display_order for unsorted rows. */
+export const UNSORTED_ORDER = 99;

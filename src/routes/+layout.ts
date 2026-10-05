@@ -1,22 +1,14 @@
-import { createBrowserClient, createServerClient, isBrowser } from '@supabase/ssr';
-import { PUBLIC_SUPABASE_PUBLISHABLE_KEY, PUBLIC_SUPABASE_URL } from '$env/static/public';
+import { isBrowser } from '@supabase/ssr';
+import { createSupabaseBrowserClient } from '$lib/supabase/client.js';
+import { createSupabaseLayoutServerClient } from '$lib/supabase/server.js';
 import type { LayoutLoad } from './$types.js';
 
 export const load: LayoutLoad = async ({ fetch, data, depends }) => {
 	depends('supabase:auth');
 
 	const supabase = isBrowser()
-		? createBrowserClient(PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_PUBLISHABLE_KEY, {
-				global: { fetch }
-			})
-		: createServerClient(PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_PUBLISHABLE_KEY, {
-				global: { fetch },
-				cookies: {
-					getAll() {
-						return data.cookies;
-					}
-				}
-			});
+		? createSupabaseBrowserClient(fetch)
+		: createSupabaseLayoutServerClient(data.cookies, fetch);
 
 	// getSession is safe here: on the client it reads local storage, on the server
 	// it reads the session already validated via safeGetSession in +layout.server.ts.

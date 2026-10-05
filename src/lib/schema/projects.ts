@@ -2,10 +2,6 @@ import { z } from 'zod';
 import type { ProjectsRow } from '$lib/supabase/types.js';
 import { parseJsonOrCsv } from '$lib/utils/array.js';
 
-export const PROJECTS_TABLE = 'projects';
-export const PROJECT_IMAGE_BUCKET = 'project-images';
-export const PROJECT_VIDEO_FOLDER = 'videos';
-
 export const ProjectSchema = z.object({
 	title: z.string().min(1, 'Title is required.').max(200),
 	slug: z.string().min(1, 'Slug is required.').max(200),

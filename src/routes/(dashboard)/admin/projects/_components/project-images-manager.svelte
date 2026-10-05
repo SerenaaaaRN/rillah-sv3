@@ -7,8 +7,9 @@
 	import Upload from 'phosphor-svelte/lib/Upload';
 	import { Button } from '$lib/components/ui/button/index.js';
 	import { Progress } from '$lib/components/ui/progress/index.js';
+	import { uploadPublicFile } from '$lib/supabase/client.js';
+	import { PROJECT_IMAGE_BUCKET } from '$lib/supabase/types.js';
 	import { cn } from '$lib/utils.js';
-	import { uploadFileViaAction } from '$lib/utils/upload-file.js';
 
 	type ImageItem = {
 		id: string;
@@ -58,7 +59,7 @@
 
 	async function uploadFile(id: string, file: File) {
 		try {
-			const publicUrl = await uploadFileViaAction('?/uploadImage', file, slug);
+			const publicUrl = await uploadPublicFile(PROJECT_IMAGE_BUCKET, file, { slug });
 			updateItem(id, { url: publicUrl, uploading: false });
 		} catch (e) {
 			updateItem(id, { uploading: false, error: e instanceof Error ? e.message : 'Upload failed' });

@@ -3,8 +3,9 @@
 	import Trash from 'phosphor-svelte/lib/Trash';
 	import Upload from 'phosphor-svelte/lib/Upload';
 	import { Button } from '$lib/components/ui/button/index.js';
+	import { uploadPublicFile } from '$lib/supabase/client.js';
+	import { CERTIFICATE_IMAGE_BUCKET } from '$lib/supabase/types.js';
 	import { cn } from '$lib/utils.js';
-	import { uploadFileViaAction } from '$lib/utils/upload-file.js';
 
 	let {
 		currentImage = '',
@@ -41,7 +42,7 @@
 		try {
 			uploading = true;
 			error = '';
-			imageUrl = await uploadFileViaAction('?/uploadImage', file, slug);
+			imageUrl = await uploadPublicFile(CERTIFICATE_IMAGE_BUCKET, file, { slug });
 		} catch (e) {
 			error = e instanceof Error ? e.message : 'Upload failed';
 		} finally {

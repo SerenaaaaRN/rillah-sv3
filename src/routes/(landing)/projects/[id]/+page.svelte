@@ -69,7 +69,6 @@
 	<SectionHeading.Root class="mb-8">
 		<SectionHeading.Eyebrow>Project</SectionHeading.Eyebrow>
 		<SectionHeading.Title as="h1">{title}</SectionHeading.Title>
-		<SectionHeading.Description>{description}</SectionHeading.Description>
 	</SectionHeading.Root>
 
 	<MacWindow title={`~/projects/${project.slug ?? project.id}`}>
@@ -119,9 +118,6 @@
 			{/if}
 
 			<p class="text-sm leading-relaxed text-muted-foreground">{description}</p>
-			{#if project.content}<p class="text-sm leading-relaxed text-foreground">
-					{project.content}
-				</p>{/if}
 
 			{#if project.features?.length}
 				<ul class="list-disc space-y-1 pl-5 text-sm text-muted-foreground">

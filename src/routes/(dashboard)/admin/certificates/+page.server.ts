@@ -1,11 +1,12 @@
 import { fail } from '@sveltejs/kit';
-import { CERTIFICATES_TABLE, mapRowToCertificate } from '$lib/schema/certificate.js';
+import { mapRowToCertificate } from '$lib/schema/certificate.js';
+import { CERTIFICATES_SELECT, CERTIFICATES_TABLE } from '$lib/supabase/types.js';
 import type { Actions, PageServerLoad } from './$types.js';
 
 export const load: PageServerLoad = async ({ locals }) => {
 	const { data, error } = await locals.supabase
 		.from(CERTIFICATES_TABLE)
-		.select('*')
+		.select(CERTIFICATES_SELECT)
 		.order('display_order', { ascending: true })
 		.order('created_at', { ascending: false });
 
@@ -13,7 +14,6 @@ export const load: PageServerLoad = async ({ locals }) => {
 		console.error('[admin/certificates] load failed:', error.message);
 		return { certificates: [] };
 	}
-
 	return { certificates: (data ?? []).map(mapRowToCertificate) };
 };
 

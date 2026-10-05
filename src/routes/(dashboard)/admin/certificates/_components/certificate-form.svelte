@@ -4,7 +4,8 @@
 	import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card/index.js';
 	import * as Field from '$lib/components/ui/field/index.js';
 	import { Input } from '$lib/components/ui/input/index.js';
-	import { UNSORTED_ORDER, type Certificate } from '$lib/schema/certificate.js';
+	import { type Certificate } from '$lib/schema/certificate.js';
+	import { UNSORTED_ORDER } from '$lib/supabase/types.js';
 	import { toDateInputValue } from '$lib/utils/date.js';
 	import { slugify } from '$lib/utils/slugify.js';
 	import CertificateImageManager from './certificate-image-manager.svelte';

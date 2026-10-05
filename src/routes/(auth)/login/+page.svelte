@@ -9,7 +9,7 @@
 	import { Label } from '$lib/components/ui/label';
 	import type { ActionData } from './$types';
 
-	let { form }: { form?: ActionData } = $props();
+	let { data, form }: { data: { redirectTo: string }; form?: ActionData } = $props();
 
 	let showPassword = $state(false);
 	let isPending = $state(false);
@@ -37,6 +37,7 @@
 			}}
 			class="mx-auto w-full max-w-xs space-y-6"
 		>
+			<input type="hidden" name="redirectTo" value={data.redirectTo} />
 			{#if form?.status === 'error'}
 				<div
 					role="alert"

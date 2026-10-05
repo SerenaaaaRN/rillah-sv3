@@ -1,8 +1,5 @@
-import {
-	CERTIFICATES_TABLE,
-	mapRowToCertificate,
-	type Certificate
-} from '$lib/schema/certificate.js';
+import { mapRowToCertificate, type Certificate } from '$lib/schema/certificate.js';
+import { CERTIFICATES_SELECT, CERTIFICATES_TABLE } from '$lib/supabase/types.js';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ locals, setHeaders, depends }) => {
@@ -11,7 +8,7 @@ export const load: PageServerLoad = async ({ locals, setHeaders, depends }) => {
 
 	const { data, error } = await locals.supabase
 		.from(CERTIFICATES_TABLE)
-		.select('*')
+		.select(CERTIFICATES_SELECT)
 		.order('display_order', { ascending: true })
 		.order('created_at', { ascending: false });
 
@@ -19,6 +16,5 @@ export const load: PageServerLoad = async ({ locals, setHeaders, depends }) => {
 		console.error('[landing/certificates] load failed:', error.message);
 		return { certificates: [] as Certificate[] };
 	}
-
 	return { certificates: (data ?? []).map(mapRowToCertificate) };
 };
