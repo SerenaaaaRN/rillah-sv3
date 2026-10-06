@@ -218,6 +218,9 @@
 							placeholder="https://github.com/..."
 							class="rounded-none"
 						/>
+						<Field.Description
+							>Jika tanpa upload foto, thumbnail GitHub dipakai otomatis.</Field.Description
+						>
 					</Field.Field>
 					<Field.Field>
 						<Field.Label>Demo URL</Field.Label>

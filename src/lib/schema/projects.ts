@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import type { ProjectsRow } from '$lib/supabase/types.js';
 import { parseJsonOrCsv } from '$lib/utils/array.js';
+import { getGithubThumbnailUrl } from '$lib/utils/form.js';
 
 export const ProjectSchema = z.object({
 	title: z.string().min(1, 'Title is required.').max(200),
@@ -111,6 +112,11 @@ export function mapRowToProject(row: ProjectsRow): Project {
 export function mapInputToRow(
 	input: ProjectInput
 ): Omit<ProjectsRow, 'id' | 'created_at' | 'updated_at'> {
+	let image = input.image;
+	if (image.length === 0) {
+		const thumbnail = getGithubThumbnailUrl(input.github ?? '');
+		if (thumbnail) image = [thumbnail];
+	}
 	return {
 		title: input.title.trim(),
 		slug: input.slug.trim(),
@@ -122,7 +128,7 @@ export function mapInputToRow(
 		featured: input.featured,
 		features: input.features,
 		display_order: input.display_order ?? 99,
-		image: input.image,
+		image,
 		video: input.video || null
 	};
 }
