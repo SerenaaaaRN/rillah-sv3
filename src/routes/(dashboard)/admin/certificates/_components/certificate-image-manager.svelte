@@ -3,7 +3,7 @@
 	import Trash from 'phosphor-svelte/lib/Trash';
 	import Upload from 'phosphor-svelte/lib/Upload';
 	import { Button } from '$lib/components/ui/button/index.js';
-	import { uploadPublicFile } from '$lib/supabase/client.js';
+	import { uploadTask } from '$lib/hooks/upload-task.svelte.js';
 	import { CERTIFICATE_IMAGE_BUCKET } from '$lib/supabase/types.js';
 	import { cn } from '$lib/utils.js';
 
@@ -17,9 +17,13 @@
 		onUploadStateChange?: (v: boolean) => void;
 	} = $props();
 
+	const task = uploadTask({
+		bucket: CERTIFICATE_IMAGE_BUCKET,
+		slug: () => slug,
+		mimePrefix: 'image/'
+	});
+
 	let imageUrl = $state('');
-	let uploading = $state(false);
-	let error = $state('');
 	let isDragging = $state(false);
 	let fileInput: HTMLInputElement | null = $state(null);
 	let seeded = $state(false);
@@ -35,45 +39,29 @@
 	let hasImage = $derived(imageUrl.startsWith('/') || imageUrl.startsWith('http'));
 
 	$effect(() => {
-		onUploadStateChange?.(uploading);
+		onUploadStateChange?.(task.uploading);
 	});
 
-	async function uploadFile(file: File) {
-		try {
-			uploading = true;
-			error = '';
-			imageUrl = await uploadPublicFile(CERTIFICATE_IMAGE_BUCKET, file, { slug });
-		} catch (e) {
-			error = e instanceof Error ? e.message : 'Upload failed';
-		} finally {
-			uploading = false;
-		}
-	}
+	const uploadFile = async (file: File) => {
+		const url = await task.upload(file);
+		if (url) imageUrl = url;
+	};
 
-	function handleFile(files: FileList | null) {
+	const handleFile = (files: FileList | null) => {
 		if (!files || files.length === 0) return;
-		const file = files[0];
-		if (!file.type.startsWith('image/')) {
-			error = 'Only image/* allowed.';
-			return;
-		}
-		if (file.size > 5 * 1024 * 1024) {
-			error = 'Image too large. Max 5MB.';
-			return;
-		}
-		uploadFile(file);
-	}
+		uploadFile(files[0]);
+	};
 
-	function handleDrop(e: DragEvent) {
+	const handleDrop = (e: DragEvent) => {
 		e.preventDefault();
 		isDragging = false;
 		handleFile((e as DragEvent & { dataTransfer: DataTransfer }).dataTransfer.files);
-	}
+	};
 
-	function removeImage() {
+	const removeImage = () => {
 		imageUrl = '';
-		error = '';
-	}
+		task.reset();
+	};
 </script>
 
 <div class="flex flex-col gap-4">
@@ -109,7 +97,7 @@
 				class="group relative aspect-16/10 overflow-hidden rounded-none border border-border bg-background"
 			>
 				<img src={imageUrl} alt="Certificate" class="size-full object-cover" />
-				{#if uploading}
+				{#if task.uploading}
 					<div
 						class="absolute inset-0 z-20 flex flex-col items-center justify-center gap-2 bg-background/70 backdrop-blur-xs"
 					>
@@ -117,12 +105,12 @@
 						<span class="font-mono text-[10px] font-medium tracking-wide">UPLOADING...</span>
 					</div>
 				{/if}
-				{#if error}
+				{#if task.error}
 					<div
 						class="absolute inset-0 z-20 flex flex-col items-center justify-center gap-2 bg-destructive/10 p-2 text-center backdrop-blur-xs"
 					>
 						<span class="text-[10px] font-semibold tracking-wider text-destructive uppercase"
-							>{error}</span
+							>{task.error}</span
 						>
 						<Button
 							type="button"
@@ -133,7 +121,7 @@
 						>
 					</div>
 				{/if}
-				{#if !uploading && !error}
+				{#if !task.uploading && !task.error}
 					<div
 						class="absolute inset-0 flex flex-col justify-between bg-foreground/60 p-2 opacity-0 transition-opacity duration-200 group-hover:opacity-100"
 					>

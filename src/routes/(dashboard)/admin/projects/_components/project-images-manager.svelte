@@ -7,7 +7,7 @@
 	import Upload from 'phosphor-svelte/lib/Upload';
 	import { Button } from '$lib/components/ui/button/index.js';
 	import { Progress } from '$lib/components/ui/progress/index.js';
-	import { uploadPublicFile } from '$lib/supabase/client.js';
+	import { uploadTask } from '$lib/hooks/upload-task.svelte.js';
 	import { PROJECT_IMAGE_BUCKET } from '$lib/supabase/types.js';
 	import { cn } from '$lib/utils.js';
 
@@ -28,6 +28,12 @@
 		slug?: string;
 		onUploadStateChange?: (v: boolean) => void;
 	} = $props();
+
+	const task = uploadTask({
+		bucket: PROJECT_IMAGE_BUCKET,
+		slug: () => slug,
+		mimePrefix: 'image/'
+	});
 
 	let items: ImageItem[] = $state([]);
 
@@ -53,20 +59,17 @@
 		onUploadStateChange?.(isAnyUploading);
 	});
 
-	function updateItem(id: string, updates: Partial<ImageItem>) {
+	const updateItem = (id: string, updates: Partial<ImageItem>) => {
 		items = items.map((item) => (item.id === id ? { ...item, ...updates } : item));
-	}
+	};
 
-	async function uploadFile(id: string, file: File) {
-		try {
-			const publicUrl = await uploadPublicFile(PROJECT_IMAGE_BUCKET, file, { slug });
-			updateItem(id, { url: publicUrl, uploading: false });
-		} catch (e) {
-			updateItem(id, { uploading: false, error: e instanceof Error ? e.message : 'Upload failed' });
-		}
-	}
+	const uploadFile = async (id: string, file: File) => {
+		const publicUrl = await task.upload(file);
+		if (publicUrl) updateItem(id, { url: publicUrl, uploading: false });
+		else updateItem(id, { uploading: false, error: task.error || 'Upload failed' });
+	};
 
-	function handleFiles(files: FileList | null) {
+	const handleFiles = (files: FileList | null) => {
 		if (!files) return;
 		for (let i = 0; i < files.length; i++) {
 			const file = files[i];
@@ -77,28 +80,28 @@
 			items = [...items, newItem];
 			uploadFile(tempId, file);
 		}
-	}
+	};
 
-	function handleDrop(e: DragEvent) {
+	const handleDrop = (e: DragEvent) => {
 		e.preventDefault();
 		isDragging = false;
 		handleFiles((e as DragEvent & { dataTransfer: DataTransfer }).dataTransfer.files);
-	}
+	};
 
-	function removeImage(id: string) {
+	const removeImage = (id: string) => {
 		const item = items.find((i) => i.id === id);
 		if (item?.url.startsWith('blob:')) URL.revokeObjectURL(item.url);
 		items = items.filter((i) => i.id !== id);
-	}
+	};
 
-	function moveItem(index: number, dir: 'left' | 'right') {
+	const moveItem = (index: number, dir: 'left' | 'right') => {
 		const target = dir === 'left' ? index - 1 : index + 1;
 		if (target < 0 || target >= items.length) return;
 		const updated = [...items];
 		const [moved] = updated.splice(index, 1);
 		updated.splice(target, 0, moved);
 		items = updated;
-	}
+	};
 
 	let savedUrls: string[] = $derived(
 		items.filter((i) => !i.uploading && !i.error).map((i) => i.url)
