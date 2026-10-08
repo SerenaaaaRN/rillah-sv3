@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { ReducedMotion } from '$lib/hooks/reduced-motion.svelte.js';
 	import { cn } from '$lib/utils.js';
 
 	let {
@@ -26,9 +27,11 @@
 	let canvasRef: HTMLCanvasElement | undefined = $state(undefined);
 	let containerRef: HTMLDivElement | undefined = $state(undefined);
 
+	const reducedMotion = new ReducedMotion();
+
 	// Singleton context untuk parse warna agar tidak membuat canvas baru di setiap render
 	let sharedCtx: CanvasRenderingContext2D | null = null;
-	function parseToRGBPrefix(colorStr: string): string {
+	const parseToRGBPrefix = (colorStr: string): string => {
 		if (typeof window === 'undefined') return 'rgba(0, 0, 0, ';
 		if (!sharedCtx) {
 			const c = document.createElement('canvas');
@@ -41,7 +44,7 @@
 		sharedCtx.fillRect(0, 0, 1, 1);
 		const [r, g, b] = sharedCtx.getImageData(0, 0, 1, 1).data;
 		return `rgba(${r}, ${g}, ${b}, `;
-	}
+	};
 
 	interface GridState {
 		cols: number;
@@ -50,13 +53,13 @@
 		dpr: number;
 	}
 
-	function setupGrid(
+	const setupGrid = (
 		w: number,
 		h: number,
 		sqSize: number,
 		gap: number,
 		opacityLimit: number
-	): GridState {
+	): GridState => {
 		const dpr = typeof window !== 'undefined' ? window.devicePixelRatio || 1 : 1;
 		const step = sqSize + gap;
 		const cols = Math.floor(w / step);
@@ -68,29 +71,29 @@
 		}
 
 		return { cols, rows, squares, dpr };
-	}
+	};
 
-	function updateGridSquares(
+	const updateGridSquares = (
 		squares: Float32Array,
 		deltaTime: number,
 		chance: number,
 		opacityLimit: number
-	) {
+	) => {
 		const threshold = chance * deltaTime;
 		for (let i = 0; i < squares.length; i++) {
 			if (Math.random() < threshold) {
 				squares[i] = Math.random() * opacityLimit;
 			}
 		}
-	}
+	};
 
-	function renderGrid(
+	const renderGrid = (
 		ctx: CanvasRenderingContext2D,
 		grid: GridState,
 		sqSize: number,
 		gap: number,
 		rgbPrefix: string
-	) {
+	) => {
 		ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 		const step = (sqSize + gap) * grid.dpr;
 		const size = sqSize * grid.dpr;
@@ -106,7 +109,7 @@
 				ctx.fillRect(x, j * step, size, size);
 			}
 		}
-	}
+	};
 
 	$effect(() => {
 		const canvas = canvasRef;
@@ -126,9 +129,7 @@
 		const rgbPrefix = parseToRGBPrefix(color);
 
 		// WCAG: preferensi reduced motion
-		const prefersReducedMotion =
-			typeof window !== 'undefined' &&
-			window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+		const prefersReducedMotion = reducedMotion.current;
 
 		let animationFrameId = 0;
 		let isVisible = true;

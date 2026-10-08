@@ -4,6 +4,7 @@
 	import * as SectionHeading from '$lib/components/shared/section-heading/index.js';
 	import SeoHead from '$lib/components/shared/seo-head.svelte';
 	import { Button } from '$lib/components/ui/button/index.js';
+	import { searchFilter } from '$lib/hooks/search-filter.svelte.js';
 	import { breadcrumbSchema, canonicalUrl } from '$lib/seo/site.js';
 	import ProjectCard from './_components/project-card.svelte';
 	import ProjectsToolbar, { type SortOption } from './_components/projects-toolbar.svelte';
@@ -12,20 +13,19 @@
 	let { data }: { data: PageData } = $props();
 	const projects = $derived(data.projects);
 
-	let search = $state('');
 	let sortBy: SortOption = $state('newest');
 
+	const filter = searchFilter({
+		items: () => projects,
+		filterFn: (p, q) =>
+			p.title.toLowerCase().includes(q) ||
+			(p.description?.toLowerCase().includes(q) ?? false) ||
+			(p.tags?.some((t) => t.toLowerCase().includes(q)) ?? false),
+		debounceMs: 300
+	});
+
 	const filteredProjects = $derived.by(() => {
-		let result = projects;
-		const q = search.trim().toLowerCase();
-		if (q) {
-			result = result.filter(
-				(p) =>
-					p.title.toLowerCase().includes(q) ||
-					(p.description?.toLowerCase().includes(q) ?? false) ||
-					(p.tags?.some((t) => t.toLowerCase().includes(q)) ?? false)
-			);
-		}
+		const result = filter.filteredItems;
 		return [...result].sort((a, b) =>
 			sortBy === 'title'
 				? a.title.localeCompare(b.title)
@@ -33,12 +33,12 @@
 		);
 	});
 
-	const hasActiveQuery = $derived(search.trim() !== '' || sortBy !== 'newest');
+	const hasActiveQuery = $derived(filter.query.trim() !== '' || sortBy !== 'newest');
 
-	function clearSearch() {
-		search = '';
+	const clearSearch = () => {
+		filter.clear();
 		sortBy = 'newest';
-	}
+	};
 </script>
 
 <SeoHead
@@ -66,7 +66,7 @@
 	</SectionHeading.Root>
 	<MacWindow title="~/projects">
 		<ProjectsToolbar
-			bind:search
+			bind:search={filter.query}
 			bind:sortBy
 			total={projects.length}
 			count={filteredProjects.length}

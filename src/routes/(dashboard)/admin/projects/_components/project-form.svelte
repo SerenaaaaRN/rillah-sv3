@@ -1,47 +1,27 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
+	import { untrack } from 'svelte';
 	import { Button } from '$lib/components/ui/button/index.js';
 	import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card/index.js';
 	import * as Field from '$lib/components/ui/field/index.js';
 	import { Input } from '$lib/components/ui/input/index.js';
 	import { Textarea } from '$lib/components/ui/textarea/index.js';
+	import { slugField } from '$lib/hooks/slug-field.svelte.js';
 	import type { Project } from '$lib/schema/projects.js';
-	import { slugify } from '$lib/utils/slugify.js';
 	import ProjectImagesManager from './project-images-manager.svelte';
 	import ProjectVideoManager from './project-video-manager.svelte';
 
 	let { project, mode = 'create' }: { project?: Project; mode: 'create' | 'edit' } = $props();
 
-	let title = $state('');
-	let slug = $state('');
-	let slugLocked = $state(false);
-	let seeded = $state(false);
+	// Read once: form remounts on navigation, props never change during its lifetime.
+	const source = untrack(() => ({ project, mode }));
+	const field = slugField({
+		initialTitle: source.project?.title ?? '',
+		initialSlug: source.project?.slug ?? '',
+		locked: source.mode !== 'create'
+	});
 	let isUploading = $state(false);
 	let error = $state('');
-
-	$effect.pre(() => {
-		if (!seeded) {
-			title = project?.title ?? '';
-			slug = project?.slug ?? '';
-			slugLocked = mode !== 'create';
-			seeded = true;
-		}
-	});
-
-	function handleTitleChange(e: Event) {
-		title = (e.target as HTMLInputElement).value;
-		if (!slugLocked) slug = slugify(title);
-	}
-
-	function handleSlugChange(e: Event) {
-		slug = slugify((e.target as HTMLInputElement).value);
-		slugLocked = true;
-	}
-
-	function toggleSlugMode() {
-		slugLocked = !slugLocked;
-		if (!slugLocked) slug = slugify(title);
-	}
 </script>
 
 <div class="mx-auto flex max-w-6xl flex-col gap-8 py-4">
@@ -83,8 +63,8 @@
 							<Field.Label>Title *</Field.Label>
 							<Input
 								name="title"
-								value={title}
-								oninput={handleTitleChange}
+								value={field.title}
+								oninput={field.handleTitleInput}
 								placeholder="My Awesome Project"
 								required
 								class="rounded-none"
@@ -96,16 +76,16 @@
 								{#if mode === 'create'}
 									<button
 										type="button"
-										onclick={toggleSlugMode}
+										onclick={field.toggleSlugMode}
 										class="rounded-full bg-muted px-2 py-0.5 text-[10px] text-muted-foreground hover:text-foreground"
-										>{slugLocked ? 'manual' : 'auto'}</button
+										>{field.slugLocked ? 'manual' : 'auto'}</button
 									>
 								{/if}
 							</Field.Label>
 							<Input
 								name="slug"
-								bind:value={slug}
-								oninput={handleSlugChange}
+								bind:value={field.slug}
+								oninput={field.handleSlugInput}
 								placeholder="my-awesome-project"
 								required
 								class="rounded-none font-mono"
@@ -187,7 +167,7 @@
 				<CardContent class="pt-4">
 					<ProjectVideoManager
 						currentVideo={project?.video ?? ''}
-						{slug}
+						slug={field.slug}
 						onUploadStateChange={(v) => (isUploading = v)}
 					/>
 				</CardContent>
@@ -199,7 +179,7 @@
 				<CardContent class="pt-4">
 					<ProjectImagesManager
 						currentImages={project?.image ?? []}
-						{slug}
+						slug={field.slug}
 						onUploadStateChange={(v) => (isUploading = v)}
 					/>
 				</CardContent>

@@ -1,8 +1,7 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
 	import type { HTMLAttributes } from 'svelte/elements';
-	import { on } from 'svelte/events';
-	import { createSubscriber } from 'svelte/reactivity';
+	import { ReducedMotion } from '$lib/hooks/reduced-motion.svelte.js';
 
 	let {
 		class: className,
@@ -22,26 +21,13 @@
 		blur?: string;
 	} = $props();
 
-	const subscribeReducedMotion =
-		typeof window !== 'undefined'
-			? createSubscriber((update) => {
-					const mql = window.matchMedia('(prefers-reduced-motion: reduce)');
-					const off = on(mql, 'change', update);
-					return () => off();
-				})
-			: () => {};
-
-	const prefersReducedMotion = $derived.by(() => {
-		subscribeReducedMotion();
-		return typeof window !== 'undefined'
-			? window.matchMedia('(prefers-reduced-motion: reduce)').matches
-			: false;
-	});
+	const reducedMotion = new ReducedMotion();
+	const prefersReducedMotion = $derived(reducedMotion.current);
 
 	let isIntersected = $state(false);
 	const visible = $derived(prefersReducedMotion || !inView || isIntersected);
 
-	function observeInView(node: HTMLElement) {
+	const observeInView = (node: HTMLElement) => {
 		if (!inView || prefersReducedMotion) return;
 
 		const observer = new IntersectionObserver(
@@ -62,7 +48,7 @@
 		return () => {
 			observer.disconnect();
 		};
-	}
+	};
 </script>
 
 <div

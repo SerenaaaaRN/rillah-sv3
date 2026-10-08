@@ -3,11 +3,11 @@
 
 	let progress = $state(0);
 
-	function update() {
+	const update = () => {
 		const scrollTop = window.scrollY || document.documentElement.scrollTop;
 		const docHeight = document.documentElement.scrollHeight - window.innerHeight;
 		progress = docHeight > 0 ? Math.min(scrollTop / docHeight, 1) : 0;
-	}
+	};
 
 	$effect(() => {
 		update();

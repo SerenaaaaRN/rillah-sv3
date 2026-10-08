@@ -2,7 +2,7 @@ import { setMode, userPrefersMode } from 'mode-watcher';
 
 type Mode = 'light' | 'dark' | 'system';
 
-export const useTheme = (themes: Mode[] = ['light', 'dark']) => {
+export const theme = (themes: Mode[] = ['light', 'dark']) => {
 	$effect(() => {
 		const handleKeyDown = (e: KeyboardEvent) => {
 			const target = e.target as HTMLElement;

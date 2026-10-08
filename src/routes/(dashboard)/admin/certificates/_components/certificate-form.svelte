@@ -1,35 +1,24 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
+	import { untrack } from 'svelte';
 	import { Button } from '$lib/components/ui/button/index.js';
 	import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card/index.js';
 	import * as Field from '$lib/components/ui/field/index.js';
 	import { Input } from '$lib/components/ui/input/index.js';
+	import { slugField } from '$lib/hooks/slug-field.svelte.js';
 	import { type Certificate } from '$lib/schema/certificate.js';
 	import { UNSORTED_ORDER } from '$lib/supabase/types.js';
 	import { toDateInputValue } from '$lib/utils/date.js';
-	import { slugify } from '$lib/utils/slugify.js';
 	import CertificateImageManager from './certificate-image-manager.svelte';
 
 	let { certificate, mode = 'create' }: { certificate?: Certificate; mode: 'create' | 'edit' } =
 		$props();
 
-	let title = $state('');
-	let seeded = $state(false);
+	// Read once: form remounts on navigation, props never change during its lifetime.
+	const source = untrack(() => certificate);
+	const field = slugField({ initialTitle: source?.title ?? '', fallback: 'temp' });
 	let isUploading = $state(false);
 	let error = $state('');
-
-	$effect.pre(() => {
-		if (!seeded) {
-			title = certificate?.title ?? '';
-			seeded = true;
-		}
-	});
-
-	let slug = $derived(slugify(title) || 'temp');
-
-	function handleTitleInput(e: Event) {
-		title = (e.target as HTMLInputElement).value;
-	}
 </script>
 
 <div class="mx-auto flex max-w-5xl flex-col gap-8 py-4">
@@ -70,8 +59,8 @@
 						<Field.Label>Title *</Field.Label>
 						<Input
 							name="title"
-							value={title}
-							oninput={handleTitleInput}
+							value={field.title}
+							oninput={field.handleTitleInput}
 							placeholder="AWS Certified Solutions Architect"
 							required
 							class="rounded-none"
@@ -112,7 +101,7 @@
 						<Field.Label>Certificate Image</Field.Label>
 						<CertificateImageManager
 							currentImage={certificate?.image_url ?? ''}
-							{slug}
+							slug={field.slug}
 							onUploadStateChange={(v) => (isUploading = v)}
 						/>
 						<Field.Description>PNG, JPG up to 5MB — stored in certificate-images.</Field.Description

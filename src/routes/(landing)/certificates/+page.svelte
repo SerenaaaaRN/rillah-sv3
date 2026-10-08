@@ -5,6 +5,7 @@
 	import SeoHead from '$lib/components/shared/seo-head.svelte';
 	import { Button } from '$lib/components/ui/button/index.js';
 	import * as Dialog from '$lib/components/ui/dialog/index.js';
+	import { searchFilter } from '$lib/hooks/search-filter.svelte.js';
 	import { type Certificate } from '$lib/schema/certificate.js';
 	import { breadcrumbSchema, canonicalUrl } from '$lib/seo/site.js';
 	import { UNSORTED_ORDER } from '$lib/supabase/types.js';
@@ -16,34 +17,33 @@
 	let { data }: { data: PageData } = $props();
 	const certificates = $derived(data.certificates);
 
-	let search = $state('');
 	let selectedIssuer = $state('All');
 	let sortBy: SortOption = $state('highlight');
 	let selectedId: string | null = $state(null);
 	let lightboxOpen = $state(false);
+
+	const filter = searchFilter({
+		items: () =>
+			selectedIssuer === 'All'
+				? certificates
+				: certificates.filter((c) => c.issuer.trim() === selectedIssuer),
+		filterFn: (c, q) => c.title.toLowerCase().includes(q) || c.issuer.toLowerCase().includes(q),
+		debounceMs: 300
+	});
 
 	const issuers = $derived([
 		'All',
 		...new Set(certificates.map((c) => c.issuer.trim()).filter(Boolean))
 	]);
 
-	function getTime(date: string): number {
+	const getTime = (date: string): number => {
 		if (!date) return 0;
 		const time = new Date(date).getTime();
 		return Number.isNaN(time) ? 0 : time;
-	}
+	};
 
 	const filteredCertificates = $derived.by(() => {
-		let result =
-			selectedIssuer === 'All'
-				? certificates
-				: certificates.filter((c) => c.issuer.trim() === selectedIssuer);
-		const q = search.trim().toLowerCase();
-		if (q) {
-			result = result.filter(
-				(c) => c.title.toLowerCase().includes(q) || c.issuer.toLowerCase().includes(q)
-			);
-		}
+		const result = filter.filteredItems;
 		return [...result].sort((a, b) => {
 			if (sortBy === 'timeline') return getTime(b.date) - getTime(a.date);
 			const orderA = a.display_order === UNSORTED_ORDER ? Infinity : a.display_order;
@@ -53,14 +53,14 @@
 	});
 
 	const hasActiveQuery = $derived(
-		search.trim() !== '' || selectedIssuer !== 'All' || sortBy !== 'highlight'
+		filter.query.trim() !== '' || selectedIssuer !== 'All' || sortBy !== 'highlight'
 	);
 
-	function clearFilters() {
-		search = '';
+	const clearFilters = () => {
+		filter.clear();
 		selectedIssuer = 'All';
 		sortBy = 'highlight';
-	}
+	};
 
 	const selectedIndex = $derived(
 		selectedId ? filteredCertificates.findIndex((c) => c.id === selectedId) : -1
@@ -70,13 +70,13 @@
 	);
 	const dialogOpen = $derived(lightboxOpen && selectedCert !== null);
 
-	function openLightbox(cert: Certificate) {
+	const openLightbox = (cert: Certificate) => {
 		if (!cert.image_url.trim()) return;
 		selectedId = cert.id;
 		lightboxOpen = true;
-	}
+	};
 
-	function navigate(direction: 1 | -1) {
+	const navigate = (direction: 1 | -1) => {
 		if (filteredCertificates.length === 0) return;
 		const current = selectedIndex === -1 ? 0 : selectedIndex;
 		const next =
@@ -84,13 +84,13 @@
 				(current + direction + filteredCertificates.length) % filteredCertificates.length
 			];
 		selectedId = next?.id ?? null;
-	}
+	};
 
-	function handleKeydown(e: KeyboardEvent) {
+	const handleKeydown = (e: KeyboardEvent) => {
 		if (!dialogOpen) return;
 		if (e.key === 'ArrowLeft') navigate(-1);
 		if (e.key === 'ArrowRight') navigate(1);
-	}
+	};
 </script>
 
 <svelte:window onkeydown={handleKeydown} />
@@ -121,7 +121,7 @@
 
 	<MacWindow title="~/certificates">
 		<CertificatesToolbar
-			bind:search
+			bind:search={filter.query}
 			bind:selectedIssuer
 			bind:sortBy
 			{issuers}

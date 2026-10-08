@@ -5,10 +5,10 @@
 
 	let visible = $state(false);
 
-	function toggle() {
+	const toggle = () => {
 		const top = window.scrollY || document.documentElement.scrollTop;
 		visible = top > 300;
-	}
+	};
 
 	$effect(() => {
 		toggle();
@@ -16,10 +16,10 @@
 		return () => window.removeEventListener('scroll', toggle);
 	});
 
-	function scrollToTop() {
+	const scrollToTop = () => {
 		window.scrollTo({ top: 0, behavior: 'smooth' });
 		document.documentElement.scrollTo({ top: 0, behavior: 'smooth' });
-	}
+	};
 </script>
 
 <Button
