@@ -70,7 +70,6 @@ export const PROJECTS_TABLE = 'projects';
 export const PROJECTS_SELECT =
 	'id,title,slug,description,content,github,demo,tags,featured,features,display_order,image,video,created_at,updated_at';
 export const PROJECT_IMAGE_BUCKET = 'project-images';
-export const PROJECT_VIDEO_FOLDER = 'videos';
 
 export const CERTIFICATES_TABLE = 'certificates';
 export const CERTIFICATES_SELECT = 'id,title,issuer,date,image_url,display_order,created_at';

@@ -38,22 +38,20 @@ function sanitizeSegment(value: string | undefined, fallback: string): string {
 	return sanitized || fallback;
 }
 
-function buildStoragePath(
-	folder: string | undefined,
-	slug: string | undefined,
-	filename: string
-): string {
+function buildStoragePath(slug: string | undefined, file: File): string {
 	const safeSlug = sanitizeSegment(slug, 'temp');
-	const safeName = sanitizeSegment(filename, 'file');
-	const prefix = folder?.replace(/^\/+|\/+$/g, '') || '';
-	const basePath = prefix ? `${prefix}/${safeSlug}` : safeSlug;
+	const ext =
+		file.name
+			.split('.')
+			.pop()
+			?.toLowerCase()
+			.replace(/[^a-z0-9]+/g, '') || 'bin';
 
-	return `${basePath}/${Date.now()}-${safeName}`;
+	return `${safeSlug}/${safeSlug}-${Date.now()}.${ext}`;
 }
 
 export interface UploadPublicFileOptions {
 	slug?: string;
-	folder?: string;
 	maxBytes?: number;
 	contentType?: string;
 }
@@ -69,7 +67,7 @@ export async function uploadPublicFile(
 	}
 
 	const supabase = getBrowserClient();
-	const path = buildStoragePath(opts.folder, opts.slug, file.name);
+	const path = buildStoragePath(opts.slug, file);
 	const contentType = opts.contentType || file.type || 'application/octet-stream';
 
 	const { error: uploadError } = await supabase.storage.from(bucket).upload(path, file, {

@@ -36,19 +36,16 @@
 	});
 
 	let items: ImageItem[] = $state([]);
+	let seeded = $state(false);
 
-	$effect(() => {
-		if (items.some((i) => i.uploading)) return;
-		const seeded = currentImages.map((url, idx) => ({
+	$effect.pre(() => {
+		if (seeded) return;
+		items = currentImages.map((url, idx) => ({
 			id: `existing-${idx}`,
 			url,
 			name: url.split('/').pop() ?? `image-${idx}`
 		}));
-		const currentUrls = items.map((i) => i.url).join('|');
-		const seededUrls = seeded.map((i) => i.url).join('|');
-		if (currentUrls !== seededUrls && items.every((i) => !i.id.startsWith('new-'))) {
-			items = seeded;
-		}
+		seeded = true;
 	});
 
 	let isDragging = $state(false);

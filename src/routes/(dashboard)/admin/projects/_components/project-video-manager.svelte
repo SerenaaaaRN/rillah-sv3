@@ -4,7 +4,7 @@
 	import VideoCamera from 'phosphor-svelte/lib/VideoCamera';
 	import { Button } from '$lib/components/ui/button/index.js';
 	import { uploadTask } from '$lib/hooks/upload-task.svelte.js';
-	import { PROJECT_IMAGE_BUCKET, PROJECT_VIDEO_FOLDER } from '$lib/supabase/types.js';
+	import { PROJECT_IMAGE_BUCKET } from '$lib/supabase/types.js';
 	import { cn } from '$lib/utils.js';
 
 	let {
@@ -20,7 +20,6 @@
 	const task = uploadTask({
 		bucket: PROJECT_IMAGE_BUCKET,
 		slug: () => slug,
-		folder: PROJECT_VIDEO_FOLDER,
 		kind: 'video'
 	});
 
