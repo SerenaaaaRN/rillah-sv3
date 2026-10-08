@@ -10,6 +10,7 @@
 	import { uploadTask } from '$lib/hooks/upload-task.svelte.js';
 	import { PROJECT_IMAGE_BUCKET } from '$lib/supabase/types.js';
 	import { cn } from '$lib/utils.js';
+	import { errorMessage } from '$lib/utils/error.js';
 
 	type ImageItem = {
 		id: string;
@@ -31,8 +32,7 @@
 
 	const task = uploadTask({
 		bucket: PROJECT_IMAGE_BUCKET,
-		slug: () => slug,
-		mimePrefix: 'image/'
+		slug: () => slug
 	});
 
 	let items: ImageItem[] = $state([]);
@@ -66,7 +66,7 @@
 	const uploadFile = async (id: string, file: File) => {
 		const publicUrl = await task.upload(file);
 		if (publicUrl) updateItem(id, { url: publicUrl, uploading: false });
-		else updateItem(id, { uploading: false, error: task.error || 'Upload failed' });
+		else updateItem(id, { uploading: false, error: errorMessage(task.error) });
 	};
 
 	const handleFiles = (files: FileList | null) => {

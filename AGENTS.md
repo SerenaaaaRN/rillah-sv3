@@ -29,17 +29,19 @@ Personal portfolio + headless CMS for Duhairillah (AI Engineer, `https://rillah.
 
 SvelteKit 2 + Svelte 5 (runes forced) + Cloudflare Workers. No separate backend; SvelteKit server `load`/`actions` + 3 Supabase client factories + zod schemas are the API layer. No REST `/api/*` except `src/routes/sitemap.xml/+server.ts`, `src/routes/robots.txt/+server.ts`, `src/routes/(auth)/logout/+server.ts`.
 
-| Package                     | Role                                                                                                                       | Status                    |
-| --------------------------- | -------------------------------------------------------------------------------------------------------------------------- | ------------------------- |
-| `src/routes/(landing)`      | Public SEO landing, blog, projects, certificates                                                                           | Active                    |
-| `src/routes/(auth)`         | Login/logout only (`login/+page.server.ts`, `logout/+server.ts`)                                                           | Active                    |
-| `src/routes/(dashboard)`    | Auth-gated admin CMS (`admin/projects`, `admin/certificates`)                                                              | Active                    |
-| `src/lib/supabase`          | `server.ts` (cookie-aware), `client.ts` (browser), `static.ts` (anon for public loads), `upload.ts`, `upload-action.ts`    | Active, canonical         |
-| `src/lib/schema`            | zod source of truth: `projects.ts`, `certificate.ts`, `guestbook.ts`                                                       | Active, canonical         |
-| `src/lib/data`              | Static content: `career.ts`, `education.ts`, `skills.ts`, `social.ts`, `scrolltelling.ts`, `github.ts` (zod)               | Active                    |
-| `src/lib/components/ui`     | shadcn-svelte primitives (button, card, table, sidebar, sheet, field, select, etc.)                                        | Active — DO NOT duplicate |
-| `src/lib/components/shared` | `seo-head.svelte`, `surface.svelte`, `stat-card.svelte`, `chip.svelte`, `blur-fade.svelte`, `section-heading/*`            | Active                    |
-| `src/lib/components/layout` | `app-sidebar/*`, `sidebar/*`, `dynamic-breadcrumb.svelte`, `dock-mobile.svelte`, `footer.svelte`, `scroll-progress.svelte` | Active                    |
+| Package                     | Role                                                                                                                                                                                                                                | Status                    |
+| --------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------- |
+| `src/routes/(landing)`      | Public SEO landing, blog, projects, certificates                                                                                                                                                                                    | Active                    |
+| `src/routes/(auth)`         | Login/logout only (`login/+page.server.ts`, `logout/+server.ts`)                                                                                                                                                                    | Active                    |
+| `src/routes/(dashboard)`    | Auth-gated admin CMS (`admin/projects`, `admin/certificates`)                                                                                                                                                                       | Active                    |
+| `src/lib/supabase`          | `server.ts` (cookie-aware + layout SSR), `client.ts` (browser + `uploadPublicFile`), `static.ts` (anon for public loads), `types.ts` (manual DB types + table/bucket consts)                                                        | Active, canonical         |
+| `src/lib/hooks`             | `debounce` (internal, used by `searchFilter`), `searchFilter`, `ReducedMotion`, `slugField`, `uploadTask` (owns `kind`→limit policy), `IsMobile`, `theme()` — no `use-` prefix, arrow functions                                     | Active, canonical         |
+| `src/lib/schema`            | zod source of truth: `projects.ts`, `certificate.ts`, `guestbook.ts`                                                                                                                                                                | Active, canonical         |
+| `src/lib/utils`             | `array.ts` (`parseJsonOrCsv`, `asStringArray`), `bytes.ts` (`mb`, `formatBytes`), `date.ts` (id-ID format/parse), `error.ts` (`errorMessage`), `form.ts` (`formDataToRecord` + `getGithubThumbnailUrl` ⚠️ github concern misplaced) | Active, canonical         |
+| `src/lib/data`              | Static content: `career.ts`, `education.ts`, `skills.ts`, `social.ts`, `scrolltelling.ts`, `github.ts` (zod)                                                                                                                        | Active                    |
+| `src/lib/components/ui`     | shadcn-svelte primitives (button, card, table, sidebar, sheet, field, select, etc.)                                                                                                                                                 | Active — DO NOT duplicate |
+| `src/lib/components/shared` | `seo-head.svelte`, `surface.svelte`, `stat-card.svelte`, `chip.svelte`, `blur-fade.svelte`, `section-heading/*`                                                                                                                     | Active                    |
+| `src/lib/components/layout` | `app-sidebar/*`, `sidebar/*`, `dynamic-breadcrumb.svelte`, `dock-mobile.svelte`, `footer.svelte`, `scroll-progress.svelte`                                                                                                          | Active                    |
 
 ## Project Structure
 
@@ -55,7 +57,7 @@ rillah-sv3/
 ├── src/app.html              # Shell. DO NOT add script tags; use +layout.svelte.
 ├── src/app.d.ts              # App.Locals {supabase:SupabaseClient<Database>, safeGetSession, session, user}, PageData {session,user}, Platform.env {GH_READ_USER_TOKEN_PERSONAL,GITHUB_USERNAME}. Update here when adding env/locals.
 ├── src/hooks.server.ts       # Canonical middleware: 1) seoRedirect (lowercase+trailing-slash 301, lines 4-18), 2) createSupabaseServerClient(event)->event.locals.supabase, 3) safeGetSession (sb-*-auth-token cookie check -> getUser -> getSession, lines 28-44). DO NOT call getSession without cookie guard.
-├── src/routes/+layout.svelte # Imports ./layout.css, ModeWatcher, useTheme(), onAuthStateChange->invalidate('supabase:auth'). Root only; no UI.
+├── src/routes/+layout.svelte # Imports ./layout.css, ModeWatcher, theme(), onAuthStateChange->invalidate('supabase:auth'). Root only; no UI.
 ├── src/routes/+layout.ts     # Creates browser/server supabase client, depends('supabase:auth'), getSession. Returns {supabase,session,user}.
 ├── src/routes/+layout.server.ts # Returns {session,user,cookies:getAll()} via safeGetSession. Feeds +layout.ts cookies for SSR.
 ├── src/routes/layout.css      # Tailwind v4: @import tailwindcss+tw-animate-css+shadcn-svelte/tailwind.css, @font-face Inter/Bricolage/Instrument Serif/JetBrains Mono, @custom-variant dark, CSS vars neutral + --radius:0rem (sharp, lines 165-172). Design token source.
@@ -63,7 +65,7 @@ rillah-sv3/
 ├── src/routes/(landing)/projects/[id]/+page.server.ts # Canonical slug/UUID loader: depends('supabase:projects'), cache-control public max-age=30 s-maxage=300, UUID regex -> by id else by slug, 301 /projects/:slug if UUID hit with slug (lines 38-40).
 ├── src/routes/(auth)/login/+page.server.ts # LoginSchema zod (email wajib diisi, password wajib diisi, redirectTo default /admin). signInWithPassword, Indonesian error mapping Invalid login credentials->Email atau password salah.
 ├── src/routes/(dashboard)/+layout.server.ts # THE guard: safeGetSession, if !session redirect 303 /login?redirectTo=<encoded path>. All /admin/* inherit. DO NOT add second guard.
-├── src/routes/(dashboard)/admin/projects|certificates/ # CRUD: +page.server.ts list, new/+page.server.ts insert, [id]/+page.server.ts update, project-form.svelte/certificate-form.svelte + *-table.svelte + *-manager.svelte. Upload actions via createUploadAction.
+├── src/routes/(dashboard)/admin/projects|certificates/ # CRUD: +page.server.ts list, new/+page.server.ts insert, [id]/+page.server.ts update, project-form.svelte/certificate-form.svelte + *-table.svelte + *-manager.svelte. Uploads via `uploadTask` hook + `uploadPublicFile`.
 └── src/lib/supabase/types.ts # Manual DB types (NOT supabase gen): ProjectsRow/CertificatesRow/ReviewsRow + Database. Update manually when SQL changes.
 ```
 
@@ -87,59 +89,16 @@ rillah-sv3/
 
 No REST. Canonical is SvelteKit `load` + named `actions` + `locals.supabase` + zod + `fail()` / `redirect()`.
 
-DO use this module pattern for every admin table (verified in `src/routes/(dashboard)/admin/projects/[id]/+page.server.ts:25-56`):
-
-```ts
-import { error, fail, redirect } from '@sveltejs/kit';
-import {
-	mapInputToRow,
-	mapRowToProject,
-	PROJECTS_TABLE,
-	ProjectSchema
-} from '$lib/schema/projects.js';
-import { formDataToRecord } from '$lib/utils/form.js';
-
-export const load = async ({ params, locals }) => {
-	const { data, error: dbError } = await locals.supabase
-		.from(PROJECTS_TABLE)
-		.select('*')
-		.eq('id', params.id)
-		.single();
-	if (dbError || !data) throw error(404, 'Project not found.');
-	return { project: mapRowToProject(data) };
-};
-export const actions = {
-	update: async ({ request, locals, params }) => {
-		const form = await request.formData();
-		const parsed = ProjectSchema.safeParse(formDataToRecord(form)); // Wajib: formDataToRecord skips Files
-		if (!parsed.success)
-			return fail(400, { error: 'Validation failed.', errors: parsed.error.flatten().fieldErrors });
-		const row = mapInputToRow(parsed.data); // Wajib: trim + null-normalize
-		const { data: clash } = await locals.supabase
-			.from(PROJECTS_TABLE)
-			.select('id')
-			.eq('slug', row.slug)
-			.neq('id', id)
-			.maybeSingle();
-		if (clash) return fail(400, { error: `Slug "${row.slug}" already used.` });
-		const { error: dbError } = await locals.supabase
-			.from(PROJECTS_TABLE)
-			.update({ ...row, updated_at: new Date().toISOString() })
-			.eq('id', id);
-		if (dbError) return fail(500, { error: dbError.message });
-		throw redirect(303, '/admin/projects');
-	}
-};
-```
+Canonical module pattern for every admin table (see `src/routes/(dashboard)/admin/projects/[id]/+page.server.ts`): `load` fetches one row by `id` via `locals.supabase` and throws 404 if missing; `update`/`create` actions parse `FormData` via `formDataToRecord` into the zod schema, return `fail(400)` on validation error, check slug clash with `.neq('id', id).maybeSingle()`, return `fail(500)` on DB error, and `throw redirect(303, ...)` on success.
 
 Rules:
 
-- ALWAYS `formDataToRecord(form)` (`src/lib/utils/form.ts:20-26`) before zod. NEVER `Object.fromEntries(formData)` — it leaks `File` into string schemas.
+- ALWAYS `formDataToRecord(form)` (`src/lib/utils/form.ts`) before zod. NEVER `Object.fromEntries(formData)` — it leaks `File` into string schemas.
 - ALWAYS `mapRowTo*` on read, `mapInputToRow` on write (`src/lib/schema/projects.ts:95-132`, `certificate.ts:53-74`). NEVER inline row mapping.
-- ALWAYS slug clash check with `.neq('id', id).maybeSingle()` before update (projects `[id]/+page.server.ts:41-47`). Certificates: ⚠️ UNCERTAIN — no clash check found, verify before adding.
+- ALWAYS slug clash check with `.neq('id', id).maybeSingle()` before update (projects `[id]/+page.server.ts`). Certificates have no `slug` column — no clash check applicable.
 - ALWAYS `fail(400,{error,errors})` for validation, `fail(500,{error:dbError.message})` for DB, `throw redirect(303,...)` on success. Public guestbook returns `{success:true}` without redirect (`(landing)/+page.server.ts:174`).
 - ALWAYS `locals.supabase` in `load`/`actions` under `(dashboard)` (cookie-authenticated). Use `createStaticClient()` (`src/lib/supabase/static.ts:4-5`) ONLY for public reads in `(landing)/+page.server.ts:125` and guestbook insert `:161`. NEVER use static client in admin — it bypasses user session.
-- Uploads: ONLY via `createUploadAction({bucket,maxBytes,mimePrefix,kindLabel,folder})` (`src/lib/supabase/upload-action.ts:18-42`) + `uploadToBucket()` path `{folder/}{slug}/{Date.now()}-{sanitized}` (`upload.ts:26`). Limits: images `5MB mimePrefix:'image/'`, videos `50MB mimePrefix:'video/'`, bucket `project-images` / `certificate-images`, video folder `videos` (`src/lib/schema/projects.ts:6-7`). Validate `file instanceof File && file.size>0 && file.type.startsWith(mimePrefix)`.
+- Uploads: ONLY via `uploadTask({bucket, slug, folder, kind})` hook (`src/lib/hooks/upload-task.svelte.ts`) + `uploadPublicFile()` (`src/lib/supabase/client.ts`). Limits owned by hook `kind` preset: images `5MB mimePrefix:'image/'`, videos `50MB mimePrefix:'video/'`; explicit `maxBytes`/`mimePrefix` override allowed. Buckets `project-images` / `certificate-images`, video folder `videos`. Storage path `{folder/}{slug}/{Date.now()}-{sanitized}`. Hook pre-validates `file instanceof File && file.size>0 && file.type.startsWith(prefix)` with `formatBytes()` message.
 - Ordering: ALWAYS `.order('display_order',{ascending:true})` then `.order('created_at',{ascending:false})` for projects; certificates `.order('display_order')`; guestbook `.order('created_at',{ascending:false}).limit(20)`.
 - Logging: `console.error('[admin/projects] load failed:', ...)` for admin, `console.warn('[github] load fallback ...')` for public fallbacks returning `[]`/`null`. NEVER throw on public load failure.
 
@@ -148,7 +107,8 @@ Rules:
 - Routing: SvelteKit route groups `(landing)`, `(auth)`, `(dashboard)`. Co-locate private components as `_components/*` or `*/_components/*` (e.g. `(landing)/_components/guestbook/guestbook.svelte`, `admin/projects/_components/project-form.svelte`). Files starting `_` are NOT routes. NEVER put shared UI in routes — put in `src/lib/components/*`.
 - State: Svelte 5 runes ONLY (`$props()`, `$state`, `$derived`, `$effect`). `vite.config.ts:20-23` forces `runes:true`. Example canonical: `let { children, data } = $props()` in `src/routes/+layout.svelte:8`. NEVER use Svelte 4 `export let`, stores for local UI, or `on:` directives.
 - Data fetching: SvelteKit `load` only. No tanstack-query/fetch wrappers. `depends('supabase:auth')` in `src/routes/+layout.ts:6` + `invalidate('supabase:auth')` on auth change (`+layout.svelte:12-16`); `depends('supabase:projects')` in `projects/[id]/+page.server.ts:6`. After mutation, `throw redirect` or `invalidate()`. NEVER client-fetch Supabase directly for SSR data.
-- Components: `shadcn-svelte` `ui/*` primitives + `cn()` (`src/lib/utils.ts:4-6`) + `WithoutChild`/`WithoutChildren`/`WithElementRef` types. Shared: `seo-head.svelte` (JSON-LD via `src/lib/seo/site.ts:30-87`), `section-heading/*`, `surface`/`chip`/`stat-card`/`blur-fade`. Icons: `phosphor-svelte` ONLY. Theme: `mode-watcher` + `useTheme()` (`src/lib/hooks/useTheme.svelte.ts`) — `d` key toggles mode, ignores inputs (`closest('input,textarea,select,button,a[href]')`). NEVER hardcode colors; use `bg-background text-foreground border-border` tokens.
+- Components: `shadcn-svelte` `ui/*` primitives + `cn()` (`src/lib/utils.ts:4-6`) + `WithoutChild`/`WithoutChildren`/`WithElementRef` types. Shared: `seo-head.svelte` (JSON-LD via `src/lib/seo/site.ts:30-87`), `section-heading/*`, `surface`/`chip`/`stat-card`/`blur-fade`. Icons: `phosphor-svelte` ONLY. Theme: `mode-watcher` + `theme()` (`src/lib/hooks/theme.svelte.ts`) — `d` key toggles mode, ignores inputs (`closest('input,textarea,select,button,a[href]')`). NEVER hardcode colors; use `bg-background text-foreground border-border` tokens.
+- Hooks: `src/lib/hooks/*.svelte.ts` — no `use-` prefix, arrow functions, `kebab-case` filenames. Current set: `debounce` (internal, only used by `searchFilter`), `searchFilter` (landing projects + certificates pages), `ReducedMotion` (`blur-fade`, `flickering-grid`), `slugField` (project + certificate forms), `uploadTask` (3 upload managers, owns `kind`→limit/mime policy), `IsMobile` (sidebar only), `theme()` (`+layout.svelte`, `d`-key toggle). New hook layak only if reactive state (`$state`/`$derived`/`$effect`) + used in ≥2 places. `blur-fade`/`flickering-grid` keep inline `IntersectionObserver`; `scroll-progress`/`scroll-to-top` fully inline (no hook).
 - Styling: Tailwind v4 in `layout.css`. Fonts via `font-sans`/`font-display`/`font-serif`/`font-mono` theme vars (`layout.css:127-130`). Radius is `0px` everywhere — Dilarang adding `rounded-*`. Dark variant `@custom-variant dark (&:is(.dark *))`.
 - Naming: `kebab-case.svelte` files, `PascalCase` zod schemas (`ProjectSchema`), `UPPER_SNAKE` table/bucket consts (`PROJECTS_TABLE`, `PROJECT_IMAGE_BUCKET`), `mapRowToX`/`mapInputToRow`/`toProjectCard` mappers. Form state type `{status:'idle'|'success'|'error',message,errors?}` (`schema/projects.ts:50-54`).
 - SEO: Every landing page MUST use `SeoHead` + `canonicalUrl()`/`absoluteUrl()`/`personSchema()`/`breadcrumbSchema()`/`creativeWorkSchema()` from `src/lib/seo/site.ts`. `SITE_URL=https://rillah.dev`. `hooks.server.ts:4-18` lowercases + strips trailing slash (301). Sitemap/robots via `+server.ts`. NEVER add meta tags manually.
@@ -169,7 +129,7 @@ Rules:
 - IDs: projects/certificates `uuid` (gen server-side), reviews `number`. NEVER coerce project id to number.
 - Arrays stored as `text[]\|null` but forms submit CSV/JSON strings → ALWAYS `parseJsonOrCsv()` (`utils/array.ts:1-19`) via zod `.transform()` + `asStringArray()` on read. NEVER store raw CSV string.
 - Dates: certificates store display string `15 September 2026`, NOT ISO. ALWAYS `formatDisplayDate()` before insert (`certificate.ts:66`), `toDateInputValue()` for `<input type=date>`, `formatDate`/`formatFullDate`/`timeAgo` (`baru saja`/`mnt lalu`/`jam lalu`/`hari lalu` Indonesian) for display. NEVER `new Date(row.date)` directly.
-- Storage buckets: `project-images` (images + `videos/` folder), `certificate-images`. Public URLs via `getPublicUrl()`. Path sanitized `sanitizeFileName()` + slug prefix (`upload.ts:6-11`).
+- Storage buckets: `project-images` (images + `videos/` folder), `certificate-images`. Public URLs via `getPublicUrl()`. Upload entry is `uploadPublicFile()` + `UploadPublicFileOptions` (`client.ts`); path sanitized + slug prefix inside `buildStoragePath()`.
 
 ## Auth & Authorization
 
@@ -180,16 +140,7 @@ Single-admin, NO RBAC/roles. `hooks.server.ts` + `(dashboard)/+layout.server.ts`
 | Anonymous                                | ✅ read via `createStaticClient` / `locals.supabase`        | ✅ with honeypot+zod+XSS check | ✅ view + POST                 | ❌ 303 → `/login?redirectTo=%2Fadmin...`          | —                        |
 | Authenticated (any `supabase.auth` user) | ✅                                                          | ✅                             | ❌ 303 → `/admin` (if session) | ✅ full CRUD                                      | ✅ `POST` clears session |
 
-Canonical guard (`src/routes/(dashboard)/+layout.server.ts:4-11`):
-
-```ts
-export const load = async ({ locals, url }) => {
-	const { session } = await locals.safeGetSession();
-	if (!session)
-		throw redirect(303, `/login?redirectTo=${encodeURIComponent(url.pathname + url.search)}`);
-	return {};
-};
-```
+Canonical guard (`src/routes/(dashboard)/+layout.server.ts`): `load` calls `locals.safeGetSession()`, and if there is no session throws `redirect(303, ...)` to `/login` with the current path as encoded `redirectTo`. All `/admin/*` routes inherit it.
 
 - ALWAYS rely on this layout guard for admin. Dilarang adding per-page session checks — redundant.
 - ALWAYS `locals.safeGetSession()` (cookie `sb-*-auth-token` pre-check in `hooks.server.ts:29-32`), NEVER `supabase.auth.getSession()` server-side for auth decisions (unsafe). `+layout.ts:25` `getSession()` is ONLY for reactive client sync after `safeGetSession` already validated.
@@ -215,10 +166,10 @@ export const load = async ({ locals, url }) => {
 4. ❌ DO NOT add a second auth guard in `admin/*/​+page.server.ts`. ✅ DO rely on `(dashboard)/+layout.server.ts` redirect. Duplicate redirects break `redirectTo` param.
 5. ❌ DO NOT store CSV string or `null` mishandled for `tags`/`featured`/`features`/`image`. ✅ DO zod `.transform(parseJsonOrCsv)` + `mapInputToRow` trim/null-coalesce (`github||null`, `video||null`, `display_order??99`). DB expects arrays/null.
 6. ❌ DO NOT store certificate `date` as ISO or raw datepicker value. ✅ DO `formatDisplayDate(input.date)` on write (`schema/certificate.ts:66`), `toDateInputValue()` for inputs, `formatDate`/`formatFullDate` for display. DB format is `15 September 2026`.
-7. ❌ DO NOT upload without `createUploadAction` factory or skip mime/size checks. ✅ DO `createUploadAction({bucket:'project-images',maxBytes:5MB|50MB,mimePrefix:'image/'|'video/',kindLabel,folder:'videos'})`. Images 5 MB, videos 50 MB — enforced in `upload.ts:21-23`.
+7. ❌ DO NOT upload without `uploadTask` hook or skip mime/size checks. ✅ DO `uploadTask({bucket, slug, folder, kind:'image'|'video'})`. Images 5 MB, videos 50 MB — owned by hook `kind` preset.
 8. ❌ DO NOT use Svelte 4 syntax (`export let`, `$$props`, `on:click`, writable stores for local state) or `rounded-*` classes. ✅ DO runes (`$props`/`$state`/`$derived`/`$effect`), `onclick={}`, `cn()` + square `radius 0` tokens. `vite.config.ts` forces runes; prettier/tailwind plugins enforce style.
 9. ❌ DO NOT client-fetch GitHub GraphQL directly or remove the 6h cache. ✅ DO `fetchGithubCached()` (`GITHUB_TTL_MS=6*60*60*1000`, module `githubCache` in `(landing)/+page.server.ts:29-45`) with `platform.env` token + `User-Agent:rillah-sv3` + `X-GitHub-Api-Version` headers. Missing token must fallback to `null`, never throw.
-10. ❌ DO NOT create `src/lib/components/ui/*` from scratch or import `mode-watcher` incorrectly. ✅ DO reuse shadcn-svelte `vega`/`neutral`/`phosphor` primitives, `ModeWatcher` in root layout only, `useTheme()` for `d`-key toggle. NEVER bypass `seo-head.svelte` + `src/lib/seo/site.ts` for meta/JSON-LD.
+10. ❌ DO NOT create `src/lib/components/ui/*` from scratch or import `mode-watcher` incorrectly. ✅ DO reuse shadcn-svelte `vega`/`neutral`/`phosphor` primitives, `ModeWatcher` in root layout only, `theme()` for `d`-key toggle. NEVER bypass `seo-head.svelte` + `src/lib/seo/site.ts` for meta/JSON-LD.
 
 ## Performance Rules
 
@@ -243,4 +194,4 @@ No react-query. SvelteKit `load` + `depends`/`invalidate` ONLY.
 | `project` detail (public) | `projects/[id]/+page.server.ts` `depends('supabase:projects')` + `cache-control max-age=30 s-maxage=300`  | Edge 5 min, browser 30 s                                                                                                       | UUID→slug 301 (`:38-40`); slug clash check on admin update                                             |
 | `project`/`cert` edit     | `admin/**/[id]/+page.server.ts:load` `.eq('id',params.id).single()` → 404 if missing                      | No cache                                                                                                                       | `update` action `redirect(303,...)` on success, `fail(400,{errors:flatten().fieldErrors})` on zod fail |
 
-Mutation pattern: `<form method="POST" action="?/update|?/delete|?/uploadImage|?/uploadVideo|?/guestbook" use:enhance>` + server `actions:{...}` returning `fail()` or `redirect`/`{success,publicUrl}`. Preserve `id`/`slug` hidden inputs. For uploads, separate `slug` + `file` fields (`upload-action.ts:28`). NEVER use `fetch()` POST to actions — use `use:enhance` or native form submit.
+Mutation pattern: `<form method="POST" action="?/update|?/delete|?/uploadImage|?/uploadVideo|?/guestbook" use:enhance>` + server `actions:{...}` returning `fail()` or `redirect`/`{success,publicUrl}`. Preserve `id`/`slug` hidden inputs. NEVER use `fetch()` POST to actions — use `use:enhance` or native form submit.

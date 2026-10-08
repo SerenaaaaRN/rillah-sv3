@@ -8,6 +8,7 @@
 	import { Textarea } from '$lib/components/ui/textarea/index.js';
 	import { slugField } from '$lib/hooks/slug-field.svelte.js';
 	import type { Project } from '$lib/schema/projects.js';
+	import { errorMessage } from '$lib/utils/error.js';
 	import ProjectImagesManager from './project-images-manager.svelte';
 	import ProjectVideoManager from './project-video-manager.svelte';
 
@@ -43,7 +44,7 @@
 		use:enhance={() =>
 			async ({ result, update }) => {
 				if (result.type === 'failure')
-					error = String((result.data as Record<string, unknown>)?.error ?? 'Failed');
+					error = errorMessage((result.data as Record<string, unknown>)?.error, 'Failed');
 				await update();
 			}}
 		class="grid grid-cols-1 gap-6 md:gap-8 lg:grid-cols-3"

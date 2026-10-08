@@ -9,6 +9,7 @@
 	import { type Certificate } from '$lib/schema/certificate.js';
 	import { UNSORTED_ORDER } from '$lib/supabase/types.js';
 	import { toDateInputValue } from '$lib/utils/date.js';
+	import { errorMessage } from '$lib/utils/error.js';
 	import CertificateImageManager from './certificate-image-manager.svelte';
 
 	let { certificate, mode = 'create' }: { certificate?: Certificate; mode: 'create' | 'edit' } =
@@ -40,7 +41,7 @@
 		use:enhance={() =>
 			async ({ result, update }) => {
 				if (result.type === 'failure')
-					error = String((result.data as Record<string, unknown>)?.error ?? 'Failed');
+					error = errorMessage((result.data as Record<string, unknown>)?.error, 'Failed');
 				await update();
 			}}
 		class="grid grid-cols-1 gap-6 md:gap-8 lg:grid-cols-3"

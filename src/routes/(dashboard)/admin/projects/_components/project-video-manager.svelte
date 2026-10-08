@@ -21,8 +21,7 @@
 		bucket: PROJECT_IMAGE_BUCKET,
 		slug: () => slug,
 		folder: PROJECT_VIDEO_FOLDER,
-		maxBytes: 50 * 1024 * 1024,
-		mimePrefix: 'video/'
+		kind: 'video'
 	});
 
 	let videoUrl = $state('');
@@ -31,7 +30,6 @@
 	let seeded = $state(false);
 
 	$effect.pre(() => {
-		// Seed once from server data; never re-seed so removing/uploading a video isn't clobbered.
 		if (!seeded) {
 			videoUrl = currentVideo ?? '';
 			seeded = true;

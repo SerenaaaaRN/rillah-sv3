@@ -1,5 +1,6 @@
 import { createBrowserClient } from '@supabase/ssr';
 import { PUBLIC_SUPABASE_PUBLISHABLE_KEY, PUBLIC_SUPABASE_URL } from '$env/static/public';
+import { formatBytes, mb } from '$lib/utils/bytes.js';
 import type { Database } from './types.js';
 
 let browserClient: ReturnType<typeof createBrowserClient> | null = null;
@@ -62,11 +63,9 @@ export async function uploadPublicFile(
 	file: File,
 	opts: UploadPublicFileOptions = {}
 ): Promise<string> {
-	const maxBytes = opts.maxBytes ?? 5 * 1024 * 1024;
+	const maxBytes = opts.maxBytes ?? mb(5);
 	if (file.size > maxBytes) {
-		throw new Error(
-			`File "${file.name}" terlalu besar. Maksimal ${Math.round(maxBytes / 1024 / 1024)}MB.`
-		);
+		throw new Error(`File "${file.name}" terlalu besar. Maksimal ${formatBytes(maxBytes)}.`);
 	}
 
 	const supabase = getBrowserClient();

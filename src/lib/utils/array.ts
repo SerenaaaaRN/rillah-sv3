@@ -17,3 +17,8 @@ export const parseJsonOrCsv = (val: unknown): string[] => {
 		.map((s) => s.trim())
 		.filter(Boolean);
 };
+
+export const asStringArray = (val: unknown): string[] => {
+	if (Array.isArray(val)) return val.filter((v): v is string => typeof v === 'string');
+	return parseJsonOrCsv(val);
+};

@@ -19,8 +19,7 @@
 
 	const task = uploadTask({
 		bucket: CERTIFICATE_IMAGE_BUCKET,
-		slug: () => slug,
-		mimePrefix: 'image/'
+		slug: () => slug
 	});
 
 	let imageUrl = $state('');

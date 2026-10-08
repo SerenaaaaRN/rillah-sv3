@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import type { ProjectsRow } from '$lib/supabase/types.js';
-import { parseJsonOrCsv } from '$lib/utils/array.js';
+import { asStringArray, parseJsonOrCsv } from '$lib/utils/array.js';
 import { getGithubThumbnailUrl } from '$lib/utils/form.js';
 
 export const ProjectSchema = z.object({
@@ -83,11 +83,6 @@ export function toProjectCard(p: Project): ProjectCard {
 		updated_at: p.updated_at ?? ''
 	};
 }
-
-const asStringArray = (val: unknown): string[] => {
-	if (Array.isArray(val)) return val.filter((v): v is string => typeof v === 'string');
-	return parseJsonOrCsv(val);
-};
 
 export function mapRowToProject(row: ProjectsRow): Project {
 	return {
