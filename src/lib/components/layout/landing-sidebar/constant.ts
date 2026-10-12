@@ -10,6 +10,7 @@ export type Menu = {
 	href: string;
 	label: string;
 	icon: Component;
+	action?: string;
 };
 
 export type SidebarMenu = {

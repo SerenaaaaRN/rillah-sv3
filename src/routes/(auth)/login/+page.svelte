@@ -16,7 +16,7 @@
 </script>
 
 <main class="grid min-h-svh lg:grid-cols-2">
-	<div class="flex flex-col justify-between p-6 md:p-10">
+	<div class="flex flex-col justify-between gap-8 p-6 md:p-10">
 		<a href="/" class="flex items-center gap-2 font-medium">
 			<span
 				class="flex size-6 items-center justify-center rounded-md bg-primary text-primary-foreground"
@@ -110,7 +110,7 @@
 			</div>
 		</form>
 
-		<div class="hidden md:block"></div>
+		<div aria-hidden="true"></div>
 	</div>
 
 	<figure class="relative m-0 hidden bg-muted lg:block">

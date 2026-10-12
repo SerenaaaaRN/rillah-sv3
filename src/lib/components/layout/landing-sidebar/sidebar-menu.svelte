@@ -42,22 +42,41 @@
 				{#each group.menus as item (item.href)}
 					{@const active = isActive(item.href)}
 
-					<Button
-						variant={active ? 'secondary' : 'ghost'}
-						class="mb-1 h-10 w-full justify-between"
-						onclick={onItemClick}
-						href={item.href}
-						data-sveltekit-preload-code="viewport"
-						data-sveltekit-preload-data="hover"
-					>
-						<span class="flex items-center gap-4 truncate">
-							<item.icon size={18} class="shrink-0" />
-							<span class="truncate text-sm">{item.label}</span>
-						</span>
-						<ArrowRight
-							class={cn('size-3.5 transition-opacity', active ? 'opacity-60' : 'opacity-0')}
-						/>
-					</Button>
+					{#if item.action}
+						<form method="POST" action={item.action} class="contents">
+							<Button
+								type="submit"
+								variant={active ? 'secondary' : 'ghost'}
+								class="mb-1 h-10 w-full justify-between"
+								onclick={onItemClick}
+							>
+								<span class="flex items-center gap-4 truncate">
+									<item.icon size={18} class="shrink-0" />
+									<span class="truncate text-sm">{item.label}</span>
+								</span>
+								<ArrowRight
+									class={cn('size-3.5 transition-opacity', active ? 'opacity-60' : 'opacity-0')}
+								/>
+							</Button>
+						</form>
+					{:else}
+						<Button
+							variant={active ? 'secondary' : 'ghost'}
+							class="mb-1 h-10 w-full justify-between"
+							onclick={onItemClick}
+							href={item.href}
+							data-sveltekit-preload-code="viewport"
+							data-sveltekit-preload-data="hover"
+						>
+							<span class="flex items-center gap-4 truncate">
+								<item.icon size={18} class="shrink-0" />
+								<span class="truncate text-sm">{item.label}</span>
+							</span>
+							<ArrowRight
+								class={cn('size-3.5 transition-opacity', active ? 'opacity-60' : 'opacity-0')}
+							/>
+						</Button>
+					{/if}
 				{/each}
 			</li>
 		{/each}

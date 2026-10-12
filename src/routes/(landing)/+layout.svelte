@@ -2,8 +2,13 @@
 	import type { Snippet } from 'svelte';
 	import DockMobile from '$lib/components/layout/dock-mobile.svelte';
 	import Footer from '$lib/components/layout/footer.svelte';
+	import {
+		mainNavData,
+		publicDashboardMenu
+	} from '$lib/components/layout/landing-sidebar/constant.js';
+	import ProfileHeader from '$lib/components/layout/landing-sidebar/profile-header.svelte';
+	import SidebarMain from '$lib/components/layout/landing-sidebar/sidebar-main.svelte';
 	import ScrollProgress from '$lib/components/layout/scroll-progress.svelte';
-	import SidebarMain from '$lib/components/layout/sidebar/sidebar-main.svelte';
 	import FlickeringGrid from '$lib/components/shared/flickering-grid.svelte';
 	import ScrollToTop from '$lib/components/shared/scroll-to-top.svelte';
 
@@ -29,7 +34,11 @@
 
 <div class="container mx-auto min-h-screen pt-12 sm:pt-24">
 	<nav class="md:hidden" aria-label="Mobile navigation">
-		<DockMobile />
+		<DockMobile items={mainNavData(false)} menu={publicDashboardMenu}>
+			{#snippet header()}
+				<ProfileHeader avatar="/rillah-avatar.avif" name="Rillah" handle="@duhairillah" compact />
+			{/snippet}
+		</DockMobile>
 	</nav>
 
 	<div class="flex min-w-0 md:gap-6">
