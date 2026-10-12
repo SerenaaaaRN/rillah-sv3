@@ -63,9 +63,14 @@
 			</p>
 		</CardHeader>
 
-		{#if project.tags.length > 0}
+		{#if project.category.length > 0 || project.tags.length > 0}
 			<CardContent class="px-4 pt-0 pb-2">
 				<ul class="flex flex-wrap gap-1.5">
+					{#each project.category as c (c)}
+						<li>
+							<Badge variant="secondary">{c}</Badge>
+						</li>
+					{/each}
 					{#each visibleTags as tag, idx (tag + idx)}
 						<li>
 							<Badge variant="outline">{tag}</Badge>

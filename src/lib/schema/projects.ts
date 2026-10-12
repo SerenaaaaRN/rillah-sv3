@@ -3,11 +3,12 @@ import type { ProjectsRow } from '$lib/supabase/types.js';
 import { asStringArray, parseJsonOrCsv } from '$lib/utils/array.js';
 import { getGithubThumbnailUrl } from '$lib/utils/form.js';
 
+export const PROJECT_CATEGORIES = ['Full Stack App', 'Data Science', 'AI', 'Education'] as const;
+
 export const ProjectSchema = z.object({
 	title: z.string().min(1, 'Title is required.').max(200),
 	slug: z.string().min(1, 'Slug is required.').max(200),
 	description: z.string().min(1, 'Description is required.').max(1000),
-	content: z.string().optional().default(''),
 	github: z
 		.string()
 		.nullable()
@@ -17,7 +18,10 @@ export const ProjectSchema = z.object({
 		.nullable()
 		.transform((val) => val ?? ''),
 	tags: z.string().transform(parseJsonOrCsv),
-	featured: z.string().transform(parseJsonOrCsv),
+	category: z
+		.string()
+		.transform(parseJsonOrCsv)
+		.refine((v) => v.length > 0, 'Category is required.'),
 	features: z.string().transform(parseJsonOrCsv),
 	display_order: z.coerce.number().optional().default(0),
 	image: z.string().transform(parseJsonOrCsv),
@@ -35,9 +39,8 @@ export type Project = {
 	tags: string[];
 	github: string;
 	demo: string;
-	featured: string[];
+	category: string[];
 	slug: string;
-	content?: string;
 	features?: string[];
 	display_order?: number;
 	created_at?: string;
@@ -61,7 +64,7 @@ export type ProjectCard = {
 	video: string;
 	source_code: string | null;
 	tags: string[];
-	featured: string[];
+	category: string[];
 	created_at: string;
 	updated_at: string;
 };
@@ -78,7 +81,7 @@ export function toProjectCard(p: Project): ProjectCard {
 		video: p.video ?? '',
 		source_code: p.github || null,
 		tags: p.tags,
-		featured: p.featured,
+		category: p.category,
 		created_at: p.created_at ?? '',
 		updated_at: p.updated_at ?? ''
 	};
@@ -90,11 +93,10 @@ export function mapRowToProject(row: ProjectsRow): Project {
 		title: row.title,
 		slug: row.slug,
 		description: row.description,
-		content: row.content ?? '',
 		github: row.github ?? '',
 		demo: row.demo ?? '',
 		tags: asStringArray(row.tags),
-		featured: asStringArray(row.featured),
+		category: asStringArray(row.category),
 		features: asStringArray(row.features),
 		display_order: row.display_order ?? 99,
 		image: asStringArray(row.image),
@@ -116,11 +118,10 @@ export function mapInputToRow(
 		title: input.title.trim(),
 		slug: input.slug.trim(),
 		description: input.description.trim(),
-		content: input.content ?? '',
 		github: input.github || null,
 		demo: input.demo || null,
 		tags: input.tags,
-		featured: input.featured,
+		category: input.category,
 		features: input.features,
 		display_order: input.display_order ?? 99,
 		image,

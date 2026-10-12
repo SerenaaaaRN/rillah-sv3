@@ -6,7 +6,7 @@
 	import PencilSimple from 'phosphor-svelte/lib/PencilSimple';
 	import Plus from 'phosphor-svelte/lib/Plus';
 	import Pulse from 'phosphor-svelte/lib/Pulse';
-	import Star from 'phosphor-svelte/lib/Star';
+	import Tag from 'phosphor-svelte/lib/Tag';
 	import TerminalWindow from 'phosphor-svelte/lib/TerminalWindow';
 	import StatCard from '$lib/components/shared/stat-card.svelte';
 	import { Badge } from '$lib/components/ui/badge/index.js';
@@ -21,7 +21,9 @@
 
 	let totalProjects = $derived(projects.length);
 	let totalCertificates = $derived(certificates.length);
-	let featuredProjectsCount = $derived(projects.filter((p) => p.featured.length > 0).length);
+	let featuredProjectsCount = $derived(
+		new Set(projects.flatMap((p) => p.category ?? []).filter(Boolean)).size
+	);
 
 	let tagCounts = $derived.by(() => {
 		const counts: Record<string, number> = {};
@@ -71,9 +73,9 @@
 			href: undefined
 		},
 		{
-			title: 'Featured Work',
+			title: 'Categories',
 			value: featuredProjectsCount,
-			icon: Star,
+			icon: Tag,
 			href: undefined
 		}
 	]);

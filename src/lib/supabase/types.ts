@@ -3,11 +3,10 @@ export type ProjectsRow = {
 	title: string;
 	slug: string;
 	description: string;
-	content: string | null;
 	github: string | null;
 	demo: string | null;
 	tags: string[] | null;
-	featured: string[] | null;
+	category: string[] | null;
 	features: string[] | null;
 	display_order: number | null;
 	image: string[] | null;
@@ -68,7 +67,7 @@ export type Database = {
 
 export const PROJECTS_TABLE = 'projects';
 export const PROJECTS_SELECT =
-	'id,title,slug,description,content,github,demo,tags,featured,features,display_order,image,video,created_at,updated_at';
+	'id,title,slug,description,github,demo,tags,category,features,display_order,image,video,created_at,updated_at';
 export const PROJECT_IMAGE_BUCKET = 'project-images';
 
 export const CERTIFICATES_TABLE = 'certificates';

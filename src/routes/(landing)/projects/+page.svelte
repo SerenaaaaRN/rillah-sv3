@@ -5,6 +5,7 @@
 	import SeoHead from '$lib/components/shared/seo-head.svelte';
 	import { Button } from '$lib/components/ui/button/index.js';
 	import { searchFilter } from '$lib/hooks/search-filter.svelte.js';
+	import { PROJECT_CATEGORIES } from '$lib/schema/projects.js';
 	import { breadcrumbSchema, canonicalUrl } from '$lib/seo/site.js';
 	import ProjectCard from './_components/project-card.svelte';
 	import ProjectsToolbar, { type SortOption } from './_components/projects-toolbar.svelte';
@@ -14,18 +15,22 @@
 	const projects = $derived(data.projects);
 
 	let sortBy: SortOption = $state('newest');
+	let selectedCategory = $state('All');
 
 	const filter = searchFilter({
 		items: () => projects,
 		filterFn: (p, q) =>
 			p.title.toLowerCase().includes(q) ||
 			(p.description?.toLowerCase().includes(q) ?? false) ||
-			(p.tags?.some((t) => t.toLowerCase().includes(q)) ?? false),
+			(p.tags?.some((t) => t.toLowerCase().includes(q)) ?? false) ||
+			(p.category?.some((c) => c.toLowerCase().includes(q)) ?? false),
 		debounceMs: 300
 	});
 
 	const filteredProjects = $derived.by(() => {
-		const result = filter.filteredItems;
+		const result = filter.filteredItems.filter(
+			(p) => selectedCategory === 'All' || p.category.includes(selectedCategory)
+		);
 		return [...result].sort((a, b) =>
 			sortBy === 'title'
 				? a.title.localeCompare(b.title)
@@ -33,11 +38,14 @@
 		);
 	});
 
-	const hasActiveQuery = $derived(filter.query.trim() !== '' || sortBy !== 'newest');
+	const hasActiveQuery = $derived(
+		filter.query.trim() !== '' || sortBy !== 'newest' || selectedCategory !== 'All'
+	);
 
 	const clearSearch = () => {
 		filter.clear();
 		sortBy = 'newest';
+		selectedCategory = 'All';
 	};
 </script>
 
@@ -67,7 +75,9 @@
 	<MacWindow title="~/projects">
 		<ProjectsToolbar
 			bind:search={filter.query}
+			bind:selectedCategory
 			bind:sortBy
+			categories={['All', ...PROJECT_CATEGORIES]}
 			total={projects.length}
 			count={filteredProjects.length}
 		/>

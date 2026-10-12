@@ -5,9 +5,10 @@
 	import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card/index.js';
 	import * as Field from '$lib/components/ui/field/index.js';
 	import { Input } from '$lib/components/ui/input/index.js';
+	import * as Select from '$lib/components/ui/select/index.js';
 	import { Textarea } from '$lib/components/ui/textarea/index.js';
 	import { slugField } from '$lib/hooks/slug-field.svelte.js';
-	import type { Project } from '$lib/schema/projects.js';
+	import { PROJECT_CATEGORIES, type Project } from '$lib/schema/projects.js';
 	import { errorMessage } from '$lib/utils/error.js';
 	import ProjectImagesManager from './project-images-manager.svelte';
 	import ProjectVideoManager from './project-video-manager.svelte';
@@ -23,6 +24,7 @@
 	});
 	let isUploading = $state(false);
 	let error = $state('');
+	let category = $state([...(source.project?.category ?? [])]);
 </script>
 
 <div class="mx-auto flex max-w-6xl flex-col gap-8 py-4">
@@ -104,16 +106,6 @@
 							class="rounded-none"
 						/>
 					</Field.Field>
-					<Field.Field>
-						<Field.Label>Detailed Content</Field.Label>
-						<Textarea
-							name="content"
-							value={project?.content ?? ''}
-							placeholder="Full project description..."
-							rows={5}
-							class="rounded-none"
-						/>
-					</Field.Field>
 				</CardContent>
 			</Card>
 
@@ -134,14 +126,20 @@
 							<Field.Description>Separate with commas</Field.Description>
 						</Field.Field>
 						<Field.Field>
-							<Field.Label>Featured</Field.Label>
-							<Input
-								name="featured"
-								value={project?.featured?.join(', ') ?? ''}
-								placeholder="Website, Mobile App"
-								class="rounded-none"
-							/>
-							<Field.Description>Separate with commas</Field.Description>
+							<Field.Label>Categories *</Field.Label>
+							<input type="hidden" name="category" value={category.join(', ')} />
+							<Select.Root type="multiple" bind:value={category}>
+								<Select.Trigger class="w-full rounded-none" aria-label="Project categories">
+									<Select.Value placeholder="Select categories" />
+								</Select.Trigger>
+								<Select.Content class="rounded-none">
+									<Select.Group>
+										{#each PROJECT_CATEGORIES as option (option)}
+											<Select.Item value={option} label={option}>{option}</Select.Item>
+										{/each}
+									</Select.Group>
+								</Select.Content>
+							</Select.Root>
 						</Field.Field>
 					</div>
 					<Field.Field>
