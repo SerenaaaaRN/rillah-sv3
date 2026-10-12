@@ -68,12 +68,12 @@
 				<ul class="flex flex-wrap gap-1.5">
 					{#each visibleTags as tag, idx (tag + idx)}
 						<li>
-							<Badge variant="outline" class="rounded-none text-[11px]">{tag}</Badge>
+							<Badge variant="outline">{tag}</Badge>
 						</li>
 					{/each}
 					{#if hiddenTagCount > 0}
 						<li>
-							<Badge variant="outline" class="rounded-none text-[11px]">+{hiddenTagCount}</Badge>
+							<Badge variant="outline">+{hiddenTagCount}</Badge>
 						</li>
 					{/if}
 				</ul>

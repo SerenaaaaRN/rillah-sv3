@@ -2,8 +2,8 @@
 	import CaretDown from 'phosphor-svelte/lib/CaretDown';
 	import CaretUp from 'phosphor-svelte/lib/CaretUp';
 	import BlurFade from '$lib/components/shared/blur-fade.svelte';
-	import Chip from '$lib/components/shared/chip.svelte';
 	import * as SectionHeading from '$lib/components/shared/section-heading';
+	import { Badge } from '$lib/components/ui/badge/index.js';
 	import { Button } from '$lib/components/ui/button/index.js';
 	import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card/index.js';
 	import {
@@ -48,12 +48,12 @@
 		<div class="relative mb-8 w-full flex-col">
 			<Marquee duration="25s">
 				{#each skills_data_top as skill (skill)}
-					<Chip class="mx-1">{skill}</Chip>
+					<Badge variant="secondary" size="md" class="mx-1">{skill}</Badge>
 				{/each}
 			</Marquee>
 			<Marquee reverse duration="25s">
 				{#each skills_data_bottom as skill (skill)}
-					<Chip class="mx-1">{skill}</Chip>
+					<Badge variant="secondary" size="md" class="mx-1">{skill}</Badge>
 				{/each}
 			</Marquee>
 		</div>
@@ -71,13 +71,13 @@
 									{category.name}
 								</div>
 
-								<Chip>{category.skills.length}</Chip>
+								<Badge variant="secondary" size="md">{category.skills.length}</Badge>
 							</CardTitle>
 						</CardHeader>
 						<CardContent class="p-4 pt-0">
 							<div class="flex flex-wrap gap-1.5">
 								{#each category.skills as skill (skill)}
-									<Chip>{skill}</Chip>
+									<Badge variant="secondary" size="md">{skill}</Badge>
 								{/each}
 							</div>
 						</CardContent>

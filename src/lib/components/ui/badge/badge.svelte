@@ -11,15 +11,26 @@
 					'bg-destructive/10 [a]:hover:bg-destructive/20 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 text-destructive dark:bg-destructive/20',
 				outline: 'border-border text-foreground [a]:hover:bg-muted [a]:hover:text-muted-foreground',
 				ghost: 'hover:bg-muted hover:text-muted-foreground dark:hover:bg-muted/50',
-				link: 'text-primary underline-offset-4 hover:underline'
+				link: 'text-primary underline-offset-4 hover:underline',
+				mono: 'h-auto rounded-none border border-border/70 bg-secondary px-2 py-1 font-mono text-[11px] font-medium uppercase tracking-wider text-muted-foreground',
+				'mono-outline':
+					'h-auto rounded-none border border-border bg-transparent px-2 py-1 font-mono text-[11px] font-medium uppercase tracking-wider text-muted-foreground',
+				'mono-ghost':
+					'h-auto rounded-none border border-transparent bg-transparent px-2 py-1 font-mono text-[11px] font-medium uppercase tracking-wider text-muted-foreground'
+			},
+			size: {
+				sm: '',
+				md: 'h-6'
 			}
 		},
 		defaultVariants: {
-			variant: 'default'
+			variant: 'default',
+			size: 'sm'
 		}
 	});
 
 	export type BadgeVariant = VariantProps<typeof badgeVariants>['variant'];
+	export type BadgeSize = VariantProps<typeof badgeVariants>['size'];
 </script>
 
 <script lang="ts">
@@ -31,10 +42,12 @@
 		href,
 		class: className,
 		variant = 'default',
+		size = 'sm',
 		children,
 		...restProps
 	}: WithElementRef<HTMLAnchorAttributes> & {
 		variant?: BadgeVariant;
+		size?: BadgeSize;
 	} = $props();
 </script>
 
@@ -43,7 +56,7 @@
 	bind:this={ref}
 	data-slot="badge"
 	{href}
-	class={cn(badgeVariants({ variant }), className)}
+	class={cn(badgeVariants({ variant, size }), className)}
 	{...restProps}
 >
 	{@render children?.()}

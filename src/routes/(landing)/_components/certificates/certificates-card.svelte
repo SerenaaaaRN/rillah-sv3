@@ -22,6 +22,7 @@
 	role="button"
 	tabindex={0}
 	{onclick}
+	size="sm"
 	onkeydown={(e) => {
 		if (e.key === 'Enter' || e.key === ' ') {
 			e.preventDefault();

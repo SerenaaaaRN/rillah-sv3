@@ -1,7 +1,7 @@
 <script lang="ts">
 	import BlurFade from '$lib/components/shared/blur-fade.svelte';
-	import Chip from '$lib/components/shared/chip.svelte';
 	import * as SectionHeading from '$lib/components/shared/section-heading';
+	import { Badge } from '$lib/components/ui/badge/index.js';
 	import { groupCareersByCompany, type Career } from '$lib/data/career.js';
 
 	let { careers = [] }: { careers?: Career[] } = $props();
@@ -36,7 +36,9 @@
 					{career.subtitle}
 				</p>
 			</div>
-			<Chip class="ml-auto self-start whitespace-nowrap">{career.duration}</Chip>
+			<Badge variant="outline" size="md" class="ml-auto self-start whitespace-nowrap"
+				>{career.duration}</Badge
+			>
 		</div>
 	</div>
 {/snippet}
