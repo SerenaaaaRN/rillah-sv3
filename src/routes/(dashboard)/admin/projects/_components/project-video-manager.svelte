@@ -95,14 +95,7 @@
 			<div
 				class="group relative aspect-16/10 overflow-hidden rounded-none border border-border bg-black"
 			>
-				<video
-					src={videoUrl}
-					class="size-full object-cover"
-					controls={false}
-					autoplay
-					muted
-					loop
-					playsinline
+				<video src={videoUrl} class="size-full object-cover" controls preload="none" playsinline
 				></video>
 				{#if task.uploading}
 					<div

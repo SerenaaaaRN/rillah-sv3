@@ -3,12 +3,15 @@ import { mapRowToCertificate } from '$lib/schema/certificate.js';
 import { CERTIFICATES_SELECT, CERTIFICATES_TABLE } from '$lib/supabase/types.js';
 import type { Actions, PageServerLoad } from './$types.js';
 
-export const load: PageServerLoad = async ({ locals }) => {
+export const load: PageServerLoad = async ({ locals, depends, setHeaders }) => {
+	depends('supabase:certificates');
+	setHeaders({ 'cache-control': 'private, no-store' });
 	const { data, error } = await locals.supabase
 		.from(CERTIFICATES_TABLE)
 		.select(CERTIFICATES_SELECT)
 		.order('display_order', { ascending: true })
-		.order('created_at', { ascending: false });
+		.order('created_at', { ascending: false })
+		.limit(100);
 
 	if (error) {
 		console.error('[admin/certificates] load failed:', error.message);

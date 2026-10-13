@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
+	import { invalidate } from '$app/navigation';
 	import CertificateIcon from 'phosphor-svelte/lib/Certificate';
 	import Pencil from 'phosphor-svelte/lib/Pencil';
 	import Trash from 'phosphor-svelte/lib/Trash';
@@ -10,6 +11,13 @@
 	import { formatFullDate } from '$lib/utils/date.js';
 
 	let { certificates }: { certificates: Certificate[] } = $props();
+
+	const deleteEnhance =
+		() =>
+		async ({ result, update }: { result: { type: string }; update: () => Promise<void> }) => {
+			await update();
+			if (result.type === 'success') await invalidate('supabase:certificates');
+		};
 </script>
 
 <Table.Root>
@@ -32,6 +40,10 @@
 							<img
 								src={cert.image_url}
 								alt={cert.title}
+								width="56"
+								height="36"
+								loading="lazy"
+								decoding="async"
 								class="h-9 w-14 rounded-none border border-border object-cover"
 							/>
 						{:else}
@@ -80,9 +92,9 @@
 										class="rounded-none bg-destructive text-destructive-foreground hover:bg-destructive/90"
 									>
 										{#snippet child({ props })}
-											<form method="POST" action="?/delete" use:enhance {...props}>
+											<form method="POST" action="?/delete" use:enhance={deleteEnhance}>
 												<input type="hidden" name="id" value={cert.id} />
-												<button type="submit" class="w-full">Delete</button>
+												<button type="submit" {...props} class="w-full">Delete</button>
 											</form>
 										{/snippet}
 									</AlertDialog.Action>

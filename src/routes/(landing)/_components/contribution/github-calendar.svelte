@@ -52,7 +52,7 @@
 					{#each week.contributionDays as day (day.date)}
 						{@const bg = day.contributionCount > 0 && day.color ? day.color : undefined}
 						<span
-							class="my-0.5 block h-3 w-3 rounded-sm bg-muted transition-transform duration-150 hover:scale-125"
+							class="my-0.5 block h-3 w-3 rounded-none bg-muted transition-transform duration-150 hover:scale-125"
 							style={bg ? `background-color: ${bg}` : undefined}
 							onmouseenter={() => (selected = { count: day.contributionCount, date: day.date })}
 							onmouseleave={() => (selected = { count: null, date: null })}
@@ -70,9 +70,9 @@
 	<div class="flex items-center gap-2 text-sm">
 		<span class="text-muted-foreground">Less</span>
 		<ul class="flex gap-1">
-			<li class="h-2.5 w-2.5 rounded-sm bg-muted"></li>
+			<li class="h-2.5 w-2.5 rounded-none bg-muted"></li>
 			{#each colors as c (c)}
-				<li class="h-2.5 w-2.5 rounded-sm" style:background-color={c}></li>
+				<li class="h-2.5 w-2.5 rounded-none" style:background-color={c}></li>
 			{/each}
 		</ul>
 		<span>More</span>
@@ -80,7 +80,7 @@
 	<div
 		class={cn(
 			selected.date ? 'opacity-100' : 'opacity-0',
-			'rounded-md bg-muted px-2 text-sm transition-opacity duration-200'
+			'rounded-none bg-muted px-2 text-sm transition-opacity duration-200'
 		)}
 	>
 		{selected.count} contributions on {selected.date}

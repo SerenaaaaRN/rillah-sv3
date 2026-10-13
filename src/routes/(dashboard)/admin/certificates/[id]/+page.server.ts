@@ -4,7 +4,8 @@ import { CERTIFICATES_SELECT, CERTIFICATES_TABLE } from '$lib/supabase/types.js'
 import { formDataToRecord } from '$lib/utils/form.js';
 import type { Actions, PageServerLoad } from './$types.js';
 
-export const load: PageServerLoad = async ({ params, locals }) => {
+export const load: PageServerLoad = async ({ params, locals, setHeaders }) => {
+	setHeaders({ 'cache-control': 'private, no-store' });
 	const { data, error: dbError } = await locals.supabase
 		.from(CERTIFICATES_TABLE)
 		.select(CERTIFICATES_SELECT)

@@ -124,9 +124,9 @@
 										{tech.count === 1 ? 'project' : 'projects'}
 									</span>
 								</div>
-								<div class="h-2 w-full overflow-hidden rounded-full bg-muted">
+								<div class="h-2 w-full overflow-hidden rounded-none bg-muted">
 									<div
-										class="h-full rounded-full bg-linear-to-r from-primary to-primary/60 transition-all duration-500 ease-out"
+										class="h-full rounded-none bg-linear-to-r from-primary to-primary/60 transition-all duration-500 ease-out"
 										style="width: {percentage}%"
 									></div>
 								</div>
@@ -165,18 +165,21 @@
 							<div class="flex min-w-0 items-center gap-4">
 								{#if project.image?.[0]}
 									<div
-										class="relative h-12 w-20 shrink-0 overflow-hidden rounded-lg border border-border"
+										class="relative h-12 w-20 shrink-0 overflow-hidden rounded-none border border-border"
 									>
 										<img
 											src={project.image[0]}
 											alt={project.title}
-											class="h-full w-full object-cover"
+											width="80"
+											height="48"
 											loading="lazy"
+											decoding="async"
+											class="h-full w-full object-cover"
 										/>
 									</div>
 								{:else}
 									<div
-										class="flex h-12 w-20 shrink-0 items-center justify-center rounded-lg border border-border"
+										class="flex h-12 w-20 shrink-0 items-center justify-center rounded-none border border-border"
 									>
 										<GitBranch class="size-5 text-muted-foreground" />
 									</div>
@@ -218,7 +221,7 @@
 						</Card>
 					{:else}
 						<div
-							class="rounded-xl border border-dashed p-8 text-center text-sm text-muted-foreground"
+							class="rounded-none border border-dashed p-8 text-center text-sm text-muted-foreground"
 						>
 							No projects recorded yet.
 						</div>
@@ -255,18 +258,21 @@
 							<div class="flex min-w-0 items-center gap-4">
 								{#if cert.image_url}
 									<div
-										class="relative h-12 w-16 shrink-0 overflow-hidden rounded-lg border border-border"
+										class="relative h-12 w-16 shrink-0 overflow-hidden rounded-none border border-border"
 									>
 										<img
 											src={cert.image_url}
 											alt={cert.title}
-											class="h-full w-full object-cover"
+											width="64"
+											height="48"
 											loading="lazy"
+											decoding="async"
+											class="h-full w-full object-cover"
 										/>
 									</div>
 								{:else}
 									<div
-										class="flex h-12 w-16 shrink-0 items-center justify-center rounded-lg border border-border bg-muted"
+										class="flex h-12 w-16 shrink-0 items-center justify-center rounded-none border border-border bg-muted"
 									>
 										<Certificate class="size-5 text-muted-foreground" />
 									</div>
@@ -290,7 +296,7 @@
 						</Card>
 					{:else}
 						<div
-							class="rounded-xl border border-dashed p-8 text-center text-sm text-muted-foreground"
+							class="rounded-none border border-dashed p-8 text-center text-sm text-muted-foreground"
 						>
 							No certificates uploaded yet.
 						</div>
@@ -300,7 +306,7 @@
 
 			<!-- Activity hint card -->
 			<Card class="flex flex-row items-center gap-4 p-4">
-				<div class="rounded-xl bg-muted p-2 text-muted-foreground">
+				<div class="rounded-none bg-muted p-2 text-muted-foreground">
 					<Pulse class="size-4.5" />
 				</div>
 				<div class="min-w-0">

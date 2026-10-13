@@ -7,8 +7,11 @@
 	import type { SidebarMenu } from '$lib/components/layout/landing-sidebar/constant.js';
 	import { Separator } from '$lib/components/ui/separator/index.js';
 	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
+	import { IsMobile } from '$lib/hooks/is-mobile.svelte.js';
 
 	let { children }: { children: Snippet } = $props();
+
+	const isMobile = new IsMobile();
 
 	const adminMenu: SidebarMenu[] = nav.map((group) => ({
 		groupLabel: group.title,
@@ -23,9 +26,11 @@
 </script>
 
 <Sidebar.Provider>
-	<div class="hidden md:contents">
-		<AppSidebar />
-	</div>
+	{#if !isMobile.current}
+		<div class="hidden md:contents">
+			<AppSidebar />
+		</div>
+	{/if}
 	<Sidebar.Inset>
 		<header class="flex h-16 shrink-0 items-center gap-2 border-b px-4">
 			<Sidebar.Trigger class="-ms-1 max-md:hidden" />
@@ -34,7 +39,9 @@
 		</header>
 		<main class="mx-auto w-full max-w-6xl flex-1 p-4 md:p-6">{@render children()}</main>
 	</Sidebar.Inset>
-	<div class="md:hidden">
-		<DockMobile items={adminItems} menu={adminMenu} />
-	</div>
+	{#if isMobile.current}
+		<div class="md:hidden">
+			<DockMobile items={adminItems} menu={adminMenu} />
+		</div>
+	{/if}
 </Sidebar.Provider>

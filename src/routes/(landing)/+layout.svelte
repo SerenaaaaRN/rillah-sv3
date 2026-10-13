@@ -11,8 +11,11 @@
 	import ScrollProgress from '$lib/components/layout/scroll-progress.svelte';
 	import FlickeringGrid from '$lib/components/shared/flickering-grid.svelte';
 	import ScrollToTop from '$lib/components/shared/scroll-to-top.svelte';
+	import { IsMobile } from '$lib/hooks/is-mobile.svelte.js';
 
 	let { children }: { children?: Snippet } = $props();
+
+	const isMobile = new IsMobile();
 </script>
 
 <ScrollProgress />
@@ -33,16 +36,20 @@
 </div>
 
 <div class="container mx-auto min-h-screen pt-12 sm:pt-24">
-	<nav class="md:hidden" aria-label="Mobile navigation">
-		<DockMobile items={mainNavData(false)} menu={publicDashboardMenu}>
-			{#snippet header()}
-				<ProfileHeader avatar="/rillah-avatar.avif" name="Rillah" handle="@duhairillah" compact />
-			{/snippet}
-		</DockMobile>
-	</nav>
+	{#if isMobile.current}
+		<nav class="md:hidden" aria-label="Mobile navigation">
+			<DockMobile items={mainNavData(false)} menu={publicDashboardMenu}>
+				{#snippet header()}
+					<ProfileHeader avatar="/rillah-avatar.avif" name="Rillah" handle="@duhairillah" compact />
+				{/snippet}
+			</DockMobile>
+		</nav>
+	{/if}
 
 	<div class="flex min-w-0 md:gap-6">
-		<SidebarMain />
+		{#if !isMobile.current}
+			<SidebarMain />
+		{/if}
 
 		<main class="mb-16 w-full min-w-0 overflow-x-clip pt-4">
 			{@render children?.()}

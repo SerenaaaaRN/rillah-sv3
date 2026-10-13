@@ -14,6 +14,7 @@ import {
 	REVIEWS_SELECT,
 	REVIEWS_TABLE
 } from '$lib/supabase/types.js';
+import { formDataToRecord } from '$lib/utils/form.js';
 import type { Actions, PageServerLoad } from './$types';
 
 const GITHUB_USER_ENDPOINT = 'https://api.github.com/graphql';
@@ -129,8 +130,8 @@ export const load: PageServerLoad = async ({ platform }) => {
 		platform?.env?.GITHUB_USERNAME?.trim() || env.GITHUB_USERNAME?.trim() || 'SerenaaaaRN';
 	const supabase = createStaticClient();
 
-	const [github, certifications, guestbook] = await Promise.all([
-		fetchGithubCached(username, token),
+	const github = fetchGithubCached(username, token);
+	const [certifications, guestbook] = await Promise.all([
 		loadCertifications(supabase),
 		loadGuestbook(supabase)
 	]);
@@ -140,13 +141,13 @@ export const load: PageServerLoad = async ({ platform }) => {
 
 export const actions: Actions = {
 	guestbook: async ({ request }) => {
-		const formData = await request.formData();
+		const record = formDataToRecord(await request.formData());
 
-		if (formData.get('website')) return fail(400, { error: 'Spam detected' });
+		if (record.website) return fail(400, { error: 'Spam detected' });
 
 		const { data, error: validationError } = validateGuestbook({
-			name: formData.get('name')?.toString().trim(),
-			message: formData.get('message')?.toString().trim()
+			name: record.name?.trim(),
+			message: record.message?.trim()
 		});
 		if (!data) return fail(400, { error: validationError ?? 'Invalid input' });
 

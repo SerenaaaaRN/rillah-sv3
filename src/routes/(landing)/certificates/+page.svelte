@@ -9,6 +9,7 @@
 	import { type Certificate } from '$lib/schema/certificate.js';
 	import { breadcrumbSchema, canonicalUrl } from '$lib/seo/site.js';
 	import { UNSORTED_ORDER } from '$lib/supabase/types.js';
+	import { parseDisplayDateToISO } from '$lib/utils/date.js';
 	import CertificateGridCard from './_components/certificate-grid-card.svelte';
 	import CertificateLightbox from './_components/certificate-lightbox.svelte';
 	import CertificatesToolbar, { type SortOption } from './_components/certificates-toolbar.svelte';
@@ -38,7 +39,9 @@
 
 	const getTime = (date: string): number => {
 		if (!date) return 0;
-		const time = new Date(date).getTime();
+		const iso = parseDisplayDateToISO(date);
+		if (!iso) return 0;
+		const time = new Date(`${iso}T00:00:00`).getTime();
 		return Number.isNaN(time) ? 0 : time;
 	};
 

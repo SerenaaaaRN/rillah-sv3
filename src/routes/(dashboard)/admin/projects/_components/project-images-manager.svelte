@@ -5,6 +5,7 @@
 	import Plus from 'phosphor-svelte/lib/Plus';
 	import Trash from 'phosphor-svelte/lib/Trash';
 	import Upload from 'phosphor-svelte/lib/Upload';
+	import { onDestroy } from 'svelte';
 	import { Button } from '$lib/components/ui/button/index.js';
 	import { Progress } from '$lib/components/ui/progress/index.js';
 	import { uploadTask } from '$lib/hooks/upload-task.svelte.js';
@@ -35,7 +36,7 @@
 		slug: () => slug
 	});
 
-	let items: ImageItem[] = $state([]);
+	let items: ImageItem[] = $state.raw([]);
 	let seeded = $state(false);
 
 	$effect.pre(() => {
@@ -66,8 +67,11 @@
 		else updateItem(id, { uploading: false, error: errorMessage(task.error) });
 	};
 
+	const UPLOAD_CONCURRENCY = 3;
+
 	const handleFiles = (files: FileList | null) => {
 		if (!files) return;
+		const queue: Array<{ id: string; file: File }> = [];
 		for (let i = 0; i < files.length; i++) {
 			const file = files[i];
 			if (!file.type.startsWith('image/')) continue;
@@ -75,8 +79,18 @@
 			const localUrl = URL.createObjectURL(file);
 			const newItem: ImageItem = { id: tempId, url: localUrl, name: file.name, uploading: true };
 			items = [...items, newItem];
-			uploadFile(tempId, file);
+			queue.push({ id: tempId, file });
 		}
+		// Bounded concurrency: at most 3 uploads in flight to avoid bandwidth spikes
+		// and Supabase Storage contention. uploadTask already tracks pending count.
+		const workers = Array.from({ length: Math.min(UPLOAD_CONCURRENCY, queue.length) }, async () => {
+			while (queue.length > 0) {
+				const next = queue.shift();
+				if (!next) return;
+				await uploadFile(next.id, next.file);
+			}
+		});
+		void Promise.all(workers);
 	};
 
 	const handleDrop = (e: DragEvent) => {
@@ -99,6 +113,12 @@
 		updated.splice(target, 0, moved);
 		items = updated;
 	};
+
+	onDestroy(() => {
+		for (const item of items) {
+			if (item.url.startsWith('blob:')) URL.revokeObjectURL(item.url);
+		}
+	});
 
 	let savedUrls: string[] = $derived(
 		items.filter((i) => !i.uploading && !i.error).map((i) => i.url)

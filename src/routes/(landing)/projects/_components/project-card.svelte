@@ -3,13 +3,7 @@
 	import Globe from 'phosphor-svelte/lib/Globe';
 	import { Badge } from '$lib/components/ui/badge/index.js';
 	import { Button } from '$lib/components/ui/button/index.js';
-	import {
-		Card,
-		CardContent,
-		CardFooter,
-		CardHeader,
-		CardTitle
-	} from '$lib/components/ui/card/index.js';
+	import * as Card from '$lib/components/ui/card/index.js';
 	import type { ProjectCard } from '$lib/schema/projects.js';
 
 	let { project }: { project: ProjectCard } = $props();
@@ -25,7 +19,7 @@
 	const hiddenTagCount = $derived(Math.max(0, project.tags.length - 3));
 </script>
 
-<Card
+<Card.Root
 	class="group flex h-full flex-col overflow-hidden transition-colors hover:border-foreground/20"
 >
 	<a
@@ -44,31 +38,38 @@
 					playsinline
 					preload="metadata"
 					poster={hasImage ? thumbnail : undefined}
+					class="h-full w-full object-cover"
 				></video>
 			{:else if hasImage}
-				<img src={thumbnail} alt={project.title} loading="lazy" decoding="async" />
+				<img
+					src={thumbnail}
+					alt={project.title}
+					loading="lazy"
+					decoding="async"
+					class="h-full w-full object-cover"
+				/>
 			{/if}
 		</div>
 
-		<CardHeader class="space-y-1.5 p-4 pb-2">
-			<CardTitle
+		<Card.Header class="space-y-1.5 p-4 pb-2">
+			<Card.Title
 				class="line-clamp-2 font-display text-base font-bold tracking-tight transition-colors group-hover:text-primary sm:text-lg"
 			>
 				{project.title || 'Untitled'}
-			</CardTitle>
+			</Card.Title>
 			<p
 				class="line-clamp-2 font-sans text-xs leading-snug text-pretty text-muted-foreground sm:text-sm"
 			>
 				{project.description}
 			</p>
-		</CardHeader>
+		</Card.Header>
 
 		{#if project.category.length > 0 || project.tags.length > 0}
-			<CardContent class="px-4 pt-0 pb-2">
+			<Card.Content class="px-4 pt-0 pb-2">
 				<ul class="flex flex-wrap gap-1.5">
 					{#each project.category as c (c)}
 						<li>
-							<Badge variant="secondary">{c}</Badge>
+							<Badge variant="secondary" class="rounded-none">{c}</Badge>
 						</li>
 					{/each}
 					{#each visibleTags as tag, idx (tag + idx)}
@@ -82,18 +83,18 @@
 						</li>
 					{/if}
 				</ul>
-			</CardContent>
+			</Card.Content>
 		{/if}
 	</a>
 
-	<CardFooter class="gap-2">
+	<Card.Footer class="gap-2">
 		{#if project.url}
 			<Button
 				href={project.url}
 				target="_blank"
 				size="sm"
 				variant="secondary"
-				class="h-8 gap-1.5 rounded-md hover:bg-primary hover:text-primary-foreground"
+				class="h-8 gap-1.5 rounded-none hover:bg-primary hover:text-primary-foreground"
 			>
 				<Globe class="size-3.5" />
 				<span class="font-mono text-[11px] font-medium tracking-wider uppercase">Website</span>
@@ -105,11 +106,11 @@
 				target="_blank"
 				size="sm"
 				variant="outline"
-				class="h-8 gap-1.5 rounded-md hover:bg-primary/10"
+				class="h-8 gap-1.5 rounded-none hover:bg-primary/10"
 			>
 				<GitBranch class="size-3.5" />
 				<span class="font-mono text-[11px] font-medium tracking-wider uppercase">Source</span>
 			</Button>
 		{/if}
-	</CardFooter>
-</Card>
+	</Card.Footer>
+</Card.Root>

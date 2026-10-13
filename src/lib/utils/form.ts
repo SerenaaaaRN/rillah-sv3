@@ -6,20 +6,3 @@ export function formDataToRecord(form: FormData): Record<string, string> {
 	});
 	return out;
 }
-/**
- * Merubah link github menjadi thumbnail
- */
-export const getGithubThumbnailUrl = (input: string): string | null => {
-	if (!input) return null;
-
-	const path = input
-		.trim()
-		.replace(/^https?:\/\/github\.com\//i, '')
-		.replace(/\.git$/i, '')
-		.replace(/\/+$/, '');
-	const parts = path.split('/');
-
-	if (parts.length < 2 || !parts[0] || !parts[1]) return null;
-
-	return `https://opengraph.githubassets.com/1/${parts[0]}/${parts[1]}`;
-};
