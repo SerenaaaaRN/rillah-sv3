@@ -95,6 +95,7 @@
 			<div
 				class="group relative aspect-16/10 overflow-hidden rounded-none border border-border bg-black"
 			>
+				<!-- svelte-ignore a11y_media_has_caption -->
 				<video src={videoUrl} class="size-full object-cover" controls preload="none" playsinline
 				></video>
 				{#if task.uploading}

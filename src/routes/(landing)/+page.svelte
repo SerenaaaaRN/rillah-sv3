@@ -19,8 +19,8 @@
 </script>
 
 <SeoHead
-	title="Rillah | Software Engineer"
-	description="Rillah is a software engineering student crafting scalable, production-ready systems."
+	title="Duhairillah | Software Engineer"
+	description="Duhairillah (Rillah) is a software engineer crafting scalable, production-ready systems."
 	canonical={canonicalUrl('/')}
 	jsonLd={[personSchema(), webSiteSchema()]}
 />

@@ -12,6 +12,10 @@ node_modules
 .gemini
 .opencode
 .vscode
+
+# Local diagnostics
+/log
+
 # OS
 .DS_Store
 Thumbs.db

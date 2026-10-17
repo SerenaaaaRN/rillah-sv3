@@ -35,7 +35,7 @@ export function personSchema() {
 		alternateName: SITE_NAME,
 		url: SITE_URL,
 		sameAs: SAME_AS,
-		jobTitle: 'AI Engineer'
+		jobTitle: 'Software Engineer'
 	};
 }
 
@@ -43,7 +43,7 @@ export function webSiteSchema() {
 	return {
 		'@context': 'https://schema.org',
 		'@type': 'WebSite',
-		name: `${SITE_NAME} | AI Engineer`,
+		name: `${SITE_NAME} | Software Engineer`,
 		url: SITE_URL
 	};
 }

@@ -23,7 +23,7 @@ Single architecture — read all sections. This is a single-package SvelteKit ap
 
 ## About the Project
 
-Personal portfolio + headless CMS for Duhairillah (AI Engineer, `https://rillah.dev`). Public landing shows intro, career, education, skills, GitHub contribution calendar, projects, certificates, guestbook (`reviews` table). Single-admin dashboard at `/admin/*` manages `projects` and `certificates` CRUD + Supabase Storage uploads. Business model: personal branding + SEO (`sitemap.xml`, `robots.txt`, JSON-LD in `src/lib/seo/site.ts`) + Cloudflare Workers deploy. Bilingual: code/comments English, user-facing strings Indonesian (`Email wajib diisi.`, `baru saja`, `mnt lalu`, `id-ID` dates).
+Personal portfolio + headless CMS for Duhairillah (Software Engineer, `https://rillah.dev`). Public landing shows intro, career, education, skills, GitHub contribution calendar, projects, certificates, guestbook (`reviews` table). Single-admin dashboard at `/admin/*` manages `projects` and `certificates` CRUD + Supabase Storage uploads. Business model: personal branding + SEO (`sitemap.xml`, `robots.txt`, JSON-LD in `src/lib/seo/site.ts`) + Cloudflare Workers deploy. Bilingual: code/comments English, user-facing strings Indonesian (`Email wajib diisi.`, `baru saja`, `mnt lalu`, `id-ID` dates).
 
 ## Architecture Overview
 
