@@ -9,6 +9,10 @@
 	"preview_urls": false,
 	"vars": {},
 	"observability": {
-		"enabled": false
+		"enabled": true,
+		"head_sampling_rate": 1,
+		"logs": {
+			"invocation_logs": true
+		}
 	}
 }

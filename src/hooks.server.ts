@@ -1,24 +1,25 @@
 import type { Handle } from '@sveltejs/kit';
 import { createSupabaseServerClient } from '$lib/supabase/server.js';
 
-function seoRedirect(url: URL): Response | null {
-	const original = url.pathname;
-	const lower = original.toLowerCase();
+const seoRedirect = (url: URL, method: string): Response | null => {
+	if (method !== 'GET' && method !== 'HEAD') return null;
 
-	if (lower !== original) {
-		return Response.redirect(new URL(lower + url.search, url), 301);
-	}
+	const { pathname, search } = url;
+	const collapsed = pathname.replace(/^\/+/, '/');
+	const lower = collapsed.toLowerCase();
+	const normalized = lower === '/' ? lower : lower.replace(/\/+$/, '') || '/';
 
-	const normalized = lower !== '/' ? lower.replace(/\/+$/, '') : lower;
-	if (normalized !== lower) {
-		return Response.redirect(new URL(normalized + url.search, url), 301);
-	}
+	if (normalized === pathname) return null;
 
-	return null;
+	const target = new URL(url);
+	target.pathname = normalized;
+	target.search = search;
+
+	return new Response(null, { status: 301, headers: { location: target.toString() } });
 }
 
 export const handle: Handle = async ({ event, resolve }) => {
-	const redirect = seoRedirect(event.url);
+	const redirect = seoRedirect(event.url, event.request.method);
 	if (redirect) return redirect;
 
 	const supabase = createSupabaseServerClient(event);
