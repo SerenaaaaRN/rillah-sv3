@@ -1,7 +1,7 @@
 import { z } from 'zod';
-import type { ProjectsRow } from '$lib/supabase/types.js';
-import { asStringArray, parseJsonOrCsv } from '$lib/utils/array.js';
-import { getGithubThumbnailUrl } from '$lib/utils/image.js';
+import type { ProjectsRow } from '#lib/supabase/types.js';
+import { asStringArray, parseJsonOrCsv } from '#lib/utils/array.js';
+import { getGithubThumbnailUrl } from '#lib/utils/image.js';
 
 export const PROJECT_CATEGORIES = ['Full Stack App', 'Data Science', 'AI', 'Education'] as const;
 

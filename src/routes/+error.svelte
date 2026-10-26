@@ -1,13 +1,13 @@
 <script lang="ts">
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import ArrowLeft from 'phosphor-svelte/lib/ArrowLeft';
 	import ArrowRight from 'phosphor-svelte/lib/ArrowRight';
 	import House from 'phosphor-svelte/lib/House';
-	import { Button } from '$lib/components/ui/button/index.js';
-	import { Separator } from '$lib/components/ui/separator/index.js';
+	import { Button } from '#lib/components/ui/button/index.js';
+	import { Separator } from '#lib/components/ui/separator/index.js';
 
-	const status = $derived($page.status);
-	const message = $derived($page.error?.message ?? 'Something went wrong');
+	const status = $derived(page.status);
+	const message = $derived(page.error?.message ?? 'Something went wrong');
 
 	const errorMeta = $derived.by(() => {
 		switch (status) {

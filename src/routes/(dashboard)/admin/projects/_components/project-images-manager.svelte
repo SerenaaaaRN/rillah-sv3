@@ -6,12 +6,12 @@
 	import Trash from 'phosphor-svelte/lib/Trash';
 	import Upload from 'phosphor-svelte/lib/Upload';
 	import { onDestroy } from 'svelte';
-	import { Button } from '$lib/components/ui/button/index.js';
-	import { Progress } from '$lib/components/ui/progress/index.js';
-	import { uploadTask } from '$lib/hooks/upload-task.svelte.js';
-	import { PROJECT_IMAGE_BUCKET } from '$lib/supabase/types.js';
-	import { cn } from '$lib/utils.js';
-	import { errorMessage } from '$lib/utils/error.js';
+	import { Button } from '#lib/components/ui/button/index.js';
+	import { Progress } from '#lib/components/ui/progress/index.js';
+	import { uploadTask } from '#lib/hooks/upload-task.svelte.js';
+	import { PROJECT_IMAGE_BUCKET } from '#lib/supabase/types.js';
+	import { cn } from '#lib/utils.js';
+	import { errorMessage } from '#lib/utils/error.js';
 
 	type ImageItem = {
 		id: string;

@@ -8,10 +8,10 @@
 	import Pulse from 'phosphor-svelte/lib/Pulse';
 	import Tag from 'phosphor-svelte/lib/Tag';
 	import TerminalWindow from 'phosphor-svelte/lib/TerminalWindow';
-	import StatCard from '$lib/components/shared/stat-card.svelte';
-	import { Badge } from '$lib/components/ui/badge/index.js';
-	import { Button } from '$lib/components/ui/button/index.js';
-	import { Card } from '$lib/components/ui/card/index.js';
+	import StatCard from '#lib/components/shared/stat-card.svelte';
+	import { Badge } from '#lib/components/ui/badge/index.js';
+	import { Button } from '#lib/components/ui/button/index.js';
+	import { Card } from '#lib/components/ui/card/index.js';
 	import type { PageData } from './$types.js';
 
 	let { data }: { data: PageData } = $props();

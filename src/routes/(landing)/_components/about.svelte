@@ -1,9 +1,9 @@
 <script lang="ts">
 	import ArrowSquareOut from 'phosphor-svelte/lib/ArrowSquareOut';
 	import FileText from 'phosphor-svelte/lib/FileText';
-	import BlurFade from '$lib/components/shared/blur-fade.svelte';
-	import * as SectionHeading from '$lib/components/shared/section-heading';
-	import { Button } from '$lib/components/ui/button/index.js';
+	import BlurFade from '#lib/components/shared/blur-fade.svelte';
+	import * as SectionHeading from '#lib/components/shared/section-heading/index.js';
+	import { Button } from '#lib/components/ui/button/index.js';
 </script>
 
 <BlurFade delay={0.25} inView>

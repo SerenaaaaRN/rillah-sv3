@@ -1,6 +1,6 @@
 <script lang="ts">
-	import Eyebrow from '$lib/components/shared/eyebrow.svelte';
-	import { Separator } from '$lib/components/ui/separator/index.js';
+	import Eyebrow from '#lib/components/shared/eyebrow.svelte';
+	import { Separator } from '#lib/components/ui/separator/index.js';
 
 	const year = new Date().getFullYear();
 	const COLUMNS: { heading: string; links: { label: string; href: string }[] }[] = [

@@ -1,6 +1,6 @@
 import { isBrowser } from '@supabase/ssr';
-import { createSupabaseBrowserClient } from '$lib/supabase/client.js';
-import { createSupabaseLayoutServerClient } from '$lib/supabase/server.js';
+import { createSupabaseBrowserClient } from '#lib/supabase/client.js';
+import { createSupabaseLayoutServerClient } from '#lib/supabase/ssr.js';
 import type { LayoutLoad } from './$types.js';
 
 export const load: LayoutLoad = async ({ fetch, data, depends }) => {

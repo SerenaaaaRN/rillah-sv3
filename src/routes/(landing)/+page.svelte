@@ -1,9 +1,9 @@
 <script lang="ts">
-	import SeoHead from '$lib/components/shared/seo-head.svelte';
-	import { Skeleton } from '$lib/components/ui/skeleton/index.js';
-	import { careers } from '$lib/data/career.js';
-	import { educations } from '$lib/data/education.js';
-	import { canonicalUrl, personSchema, webSiteSchema } from '$lib/seo/site.js';
+	import SeoHead from '#lib/components/shared/seo-head.svelte';
+	import { Skeleton } from '#lib/components/ui/skeleton/index.js';
+	import { careers } from '#lib/data/career.js';
+	import { educations } from '#lib/data/education.js';
+	import { canonicalUrl, personSchema, webSiteSchema } from '#lib/seo/site.js';
 	import About from './_components/about.svelte';
 	import Career from './_components/career.svelte';
 	import Certification from './_components/certificates/certificates-landing.svelte';

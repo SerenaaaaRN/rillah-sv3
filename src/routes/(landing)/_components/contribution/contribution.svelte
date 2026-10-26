@@ -1,8 +1,8 @@
 <script lang="ts">
-	import BlurFade from '$lib/components/shared/blur-fade.svelte';
-	import * as SectionHeading from '$lib/components/shared/section-heading';
-	import { Badge } from '$lib/components/ui/badge/index.js';
-	import type { GithubCalendar } from '$lib/data/github.js';
+	import BlurFade from '#lib/components/shared/blur-fade.svelte';
+	import * as SectionHeading from '#lib/components/shared/section-heading/index.js';
+	import { Badge } from '#lib/components/ui/badge/index.js';
+	import type { GithubCalendar } from '#lib/data/github.js';
 	import GithubCalendarView from './github-calendar.svelte';
 	import GithubOverview from './github-overview.svelte';
 

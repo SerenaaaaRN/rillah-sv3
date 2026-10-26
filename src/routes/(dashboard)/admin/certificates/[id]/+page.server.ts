@@ -1,7 +1,7 @@
 import { error, fail, redirect } from '@sveltejs/kit';
-import { CertificateSchema, mapInputToRow, mapRowToCertificate } from '$lib/schema/certificate.js';
-import { CERTIFICATES_SELECT, CERTIFICATES_TABLE } from '$lib/supabase/types.js';
-import { formDataToRecord } from '$lib/utils/form.js';
+import { CertificateSchema, mapInputToRow, mapRowToCertificate } from '#lib/schema/certificate.js';
+import { CERTIFICATES_SELECT, CERTIFICATES_TABLE } from '#lib/supabase/types.js';
+import { formDataToRecord } from '#lib/utils/form.js';
 import type { Actions, PageServerLoad } from './$types.js';
 
 export const load: PageServerLoad = async ({ params, locals, setHeaders }) => {

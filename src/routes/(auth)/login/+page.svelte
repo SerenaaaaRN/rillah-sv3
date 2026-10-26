@@ -4,9 +4,9 @@
 	import EyeSlash from 'phosphor-svelte/lib/EyeClosed';
 	import LockKey from 'phosphor-svelte/lib/LockKey';
 	import SpinnerGap from 'phosphor-svelte/lib/SpinnerGap';
-	import { Button } from '$lib/components/ui/button';
-	import { Input } from '$lib/components/ui/input';
-	import { Label } from '$lib/components/ui/label';
+	import { Button } from '#lib/components/ui/button/index.js';
+	import { Input } from '#lib/components/ui/input/index.js';
+	import { Label } from '#lib/components/ui/label/index.js';
 	import type { ActionData } from './$types';
 
 	let { data, form }: { data: { redirectTo: string }; form?: ActionData } = $props();

@@ -1,8 +1,8 @@
 <script lang="ts">
-	import BlurFade from '$lib/components/shared/blur-fade.svelte';
-	import * as SectionHeading from '$lib/components/shared/section-heading';
-	import { Badge } from '$lib/components/ui/badge/index.js';
-	import { groupCareersByCompany, type Career } from '$lib/data/career.js';
+	import BlurFade from '#lib/components/shared/blur-fade.svelte';
+	import * as SectionHeading from '#lib/components/shared/section-heading/index.js';
+	import { Badge } from '#lib/components/ui/badge/index.js';
+	import { groupCareersByCompany, type Career } from '#lib/data/career.js';
 
 	let { careers = [] }: { careers?: Career[] } = $props();
 

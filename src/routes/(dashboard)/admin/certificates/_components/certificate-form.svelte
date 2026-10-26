@@ -1,15 +1,15 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import { untrack } from 'svelte';
-	import { Button } from '$lib/components/ui/button/index.js';
-	import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card/index.js';
-	import * as Field from '$lib/components/ui/field/index.js';
-	import { Input } from '$lib/components/ui/input/index.js';
-	import { slugField } from '$lib/hooks/slug-field.svelte.js';
-	import { type Certificate } from '$lib/schema/certificate.js';
-	import { UNSORTED_ORDER } from '$lib/supabase/types.js';
-	import { toDateInputValue } from '$lib/utils/date.js';
-	import { errorMessage } from '$lib/utils/error.js';
+	import { Button } from '#lib/components/ui/button/index.js';
+	import { Card, CardContent, CardHeader, CardTitle } from '#lib/components/ui/card/index.js';
+	import * as Field from '#lib/components/ui/field/index.js';
+	import { Input } from '#lib/components/ui/input/index.js';
+	import { slugField } from '#lib/hooks/slug-field.svelte.js';
+	import { type Certificate } from '#lib/schema/certificate.js';
+	import { UNSORTED_ORDER } from '#lib/supabase/types.js';
+	import { toDateInputValue } from '#lib/utils/date.js';
+	import { errorMessage } from '#lib/utils/error.js';
 	import CertificateImageManager from './certificate-image-manager.svelte';
 
 	let { certificate, mode = 'create' }: { certificate?: Certificate; mode: 'create' | 'edit' } =

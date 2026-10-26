@@ -1,8 +1,8 @@
 <script lang="ts">
 	import type { WithoutChildren } from 'bits-ui';
 	import CaretRightIcon from 'phosphor-svelte/lib/CaretRight';
-	import { Button, type Props } from '$lib/components/ui/button/index.js';
-	import { cn } from '$lib/utils.js';
+	import { Button, type Props } from '#lib/components/ui/button/index.js';
+	import { cn } from '#lib/utils.js';
 	import { getEmblaContext } from './context.js';
 
 	let {

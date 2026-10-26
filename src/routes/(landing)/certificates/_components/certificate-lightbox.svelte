@@ -1,9 +1,9 @@
 <script lang="ts">
 	import CaretLeft from 'phosphor-svelte/lib/CaretLeft';
 	import CaretRight from 'phosphor-svelte/lib/CaretRight';
-	import { Button } from '$lib/components/ui/button/index.js';
-	import * as Dialog from '$lib/components/ui/dialog/index.js';
-	import type { Certificate } from '$lib/schema/certificate.js';
+	import { Button } from '#lib/components/ui/button/index.js';
+	import * as Dialog from '#lib/components/ui/dialog/index.js';
+	import type { Certificate } from '#lib/schema/certificate.js';
 
 	interface Props {
 		cert: Certificate;

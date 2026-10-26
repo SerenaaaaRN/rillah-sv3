@@ -1,13 +1,13 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
-	import { nav } from '$lib/components/layout/app-sidebar/constant.js';
-	import { AppSidebar } from '$lib/components/layout/app-sidebar/index.js';
-	import DockMobile from '$lib/components/layout/dock-mobile.svelte';
-	import DynamicBreadcrumb from '$lib/components/layout/dynamic-breadcrumb.svelte';
-	import type { SidebarMenu } from '$lib/components/layout/landing-sidebar/constant.js';
-	import { Separator } from '$lib/components/ui/separator/index.js';
-	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
-	import { IsMobile } from '$lib/hooks/is-mobile.svelte.js';
+	import { nav } from '#lib/components/layout/app-sidebar/constant.js';
+	import { AppSidebar } from '#lib/components/layout/app-sidebar/index.js';
+	import DockMobile from '#lib/components/layout/dock-mobile.svelte';
+	import DynamicBreadcrumb from '#lib/components/layout/dynamic-breadcrumb.svelte';
+	import type { SidebarMenu } from '#lib/components/layout/landing-sidebar/constant.js';
+	import { Separator } from '#lib/components/ui/separator/index.js';
+	import * as Sidebar from '#lib/components/ui/sidebar/index.js';
+	import { IsMobile } from '#lib/hooks/is-mobile.svelte.js';
 
 	let { children }: { children: Snippet } = $props();
 

@@ -1,7 +1,7 @@
 // See https://svelte.dev/docs/kit/types#app.d.ts
 // for information about these interfaces
 import type { Session, SupabaseClient, User } from '@supabase/supabase-js';
-import type { Database } from '$lib/supabase/types.js';
+import type { Database } from '#lib/supabase/types.js';
 
 declare global {
 	namespace App {
@@ -17,14 +17,6 @@ declare global {
 			user?: User | null;
 		}
 		// interface PageState {}
-		interface Platform {
-			env?: {
-				GH_READ_USER_TOKEN_PERSONAL?: string;
-				GITHUB_USERNAME?: string;
-			};
-			context: { waitUntil(promise: Promise<unknown>): void };
-			caches: CacheStorage & { default: Cache };
-		}
 	}
 }
 

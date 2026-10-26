@@ -1,5 +1,5 @@
-import { mapRowToCertificate, type Certificate } from '$lib/schema/certificate.js';
-import { CERTIFICATES_SELECT, CERTIFICATES_TABLE } from '$lib/supabase/types.js';
+import { mapRowToCertificate, type Certificate } from '#lib/schema/certificate.js';
+import { CERTIFICATES_SELECT, CERTIFICATES_TABLE } from '#lib/supabase/types.js';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ locals, setHeaders, depends }) => {

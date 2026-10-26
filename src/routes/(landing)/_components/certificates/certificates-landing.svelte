@@ -1,9 +1,9 @@
 <script lang="ts">
 	import ArrowRight from 'phosphor-svelte/lib/ArrowRight';
-	import BlurFade from '$lib/components/shared/blur-fade.svelte';
-	import * as SectionHeading from '$lib/components/shared/section-heading';
-	import * as Dialog from '$lib/components/ui/dialog/index.js';
-	import type { Certificate, Certification } from '$lib/schema/certificate.js';
+	import BlurFade from '#lib/components/shared/blur-fade.svelte';
+	import * as SectionHeading from '#lib/components/shared/section-heading/index.js';
+	import * as Dialog from '#lib/components/ui/dialog/index.js';
+	import type { Certificate, Certification } from '#lib/schema/certificate.js';
 	import CertificateLightbox from '../../certificates/_components/certificate-lightbox.svelte';
 	import CertificationCard from './certificates-card.svelte';
 

@@ -4,10 +4,10 @@
 	import ArrowRight from 'phosphor-svelte/lib/ArrowRight';
 	import Moon from 'phosphor-svelte/lib/Moon';
 	import Sun from 'phosphor-svelte/lib/Sun';
-	import AnimatedThemeToggler from '$lib/components/shared/animated-theme-toggler.svelte';
-	import { Button } from '$lib/components/ui/button/index.js';
-	import { Separator } from '$lib/components/ui/separator/index.js';
-	import { cn } from '$lib/utils.js';
+	import AnimatedThemeToggler from '#lib/components/shared/animated-theme-toggler.svelte';
+	import { Button } from '#lib/components/ui/button/index.js';
+	import { Separator } from '#lib/components/ui/separator/index.js';
+	import { cn } from '#lib/utils.js';
 	import { publicDashboardMenu, type SidebarMenu } from './constant.js';
 
 	let {

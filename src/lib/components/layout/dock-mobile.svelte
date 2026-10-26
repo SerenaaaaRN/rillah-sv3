@@ -5,13 +5,13 @@
 	import type {
 		Menu,
 		SidebarMenu as SidebarMenuGroups
-	} from '$lib/components/layout/landing-sidebar/constant.js';
-	import SidebarMenu from '$lib/components/layout/landing-sidebar/sidebar-menu.svelte';
-	import { buttonVariants } from '$lib/components/ui/button/index.js';
-	import { Separator } from '$lib/components/ui/separator/index.js';
-	import * as Sheet from '$lib/components/ui/sheet/index.js';
-	import * as Tooltip from '$lib/components/ui/tooltip/index.js';
-	import { cn } from '$lib/utils.js';
+	} from '#lib/components/layout/landing-sidebar/constant.js';
+	import SidebarMenu from '#lib/components/layout/landing-sidebar/sidebar-menu.svelte';
+	import { buttonVariants } from '#lib/components/ui/button/index.js';
+	import { Separator } from '#lib/components/ui/separator/index.js';
+	import * as Sheet from '#lib/components/ui/sheet/index.js';
+	import * as Tooltip from '#lib/components/ui/tooltip/index.js';
+	import { cn } from '#lib/utils.js';
 
 	let {
 		items,

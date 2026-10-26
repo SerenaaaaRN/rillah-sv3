@@ -1,14 +1,14 @@
 <script lang="ts">
 	import CertificateIcon from 'phosphor-svelte/lib/Certificate';
 	import Plus from 'phosphor-svelte/lib/Plus';
-	import StatCard from '$lib/components/shared/stat-card.svelte';
-	import { Button } from '$lib/components/ui/button/index.js';
+	import StatCard from '#lib/components/shared/stat-card.svelte';
+	import { Button } from '#lib/components/ui/button/index.js';
 	import CertificatesTable from './_components/certificates-table.svelte';
 	import type { PageData } from './$types.js';
 
 	let { data }: { data: PageData } = $props();
 	let certificates = $derived(
-		(data.certificates ?? []) as import('$lib/schema/certificate.js').Certificate[]
+		(data.certificates ?? []) as import('#lib/schema/certificate.js').Certificate[]
 	);
 
 	let totalCertificates = $derived(certificates.length);

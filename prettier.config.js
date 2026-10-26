@@ -11,7 +11,7 @@ const config = {
 	],
 	overrides: [{ files: '*.svelte', options: { parser: 'svelte' } }],
 	tailwindStylesheet: './src/routes/layout.css',
-	importOrder: ['<BUILTIN_MODULES>', '<THIRD_PARTY_MODULES>', '^\\$lib', '^[./]'],
+	importOrder: ['<BUILTIN_MODULES>', '<THIRD_PARTY_MODULES>', '^\\$app/env', '^\\#lib', '^[./]'],
 	importOrderTypeScriptVersion: '5.0.0'
 };
 

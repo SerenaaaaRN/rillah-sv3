@@ -1,7 +1,7 @@
 import { fail, redirect } from '@sveltejs/kit';
-import { mapInputToRow, ProjectSchema } from '$lib/schema/projects.js';
-import { PROJECTS_TABLE } from '$lib/supabase/types.js';
-import { formDataToRecord } from '$lib/utils/form.js';
+import { mapInputToRow, ProjectSchema } from '#lib/schema/projects.js';
+import { PROJECTS_TABLE } from '#lib/supabase/types.js';
+import { formDataToRecord } from '#lib/utils/form.js';
 import type { Actions } from './$types.js';
 
 export const actions: Actions = {

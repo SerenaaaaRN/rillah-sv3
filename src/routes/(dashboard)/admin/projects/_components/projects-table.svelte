@@ -5,11 +5,11 @@
 	import FolderOpen from 'phosphor-svelte/lib/FolderOpen';
 	import Pencil from 'phosphor-svelte/lib/Pencil';
 	import Trash from 'phosphor-svelte/lib/Trash';
-	import * as AlertDialog from '$lib/components/ui/alert-dialog/index.js';
-	import { Badge } from '$lib/components/ui/badge/index.js';
-	import { Button } from '$lib/components/ui/button/index.js';
-	import * as Table from '$lib/components/ui/table/index.js';
-	import type { Project } from '$lib/schema/projects.js';
+	import * as AlertDialog from '#lib/components/ui/alert-dialog/index.js';
+	import { Badge } from '#lib/components/ui/badge/index.js';
+	import { Button } from '#lib/components/ui/button/index.js';
+	import * as Table from '#lib/components/ui/table/index.js';
+	import type { Project } from '#lib/schema/projects.js';
 
 	let { projects }: { projects: Project[] } = $props();
 

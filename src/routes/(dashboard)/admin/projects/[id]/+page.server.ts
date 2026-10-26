@@ -1,7 +1,7 @@
 import { error, fail, redirect } from '@sveltejs/kit';
-import { mapInputToRow, mapRowToProject, ProjectSchema } from '$lib/schema/projects.js';
-import { PROJECTS_SELECT, PROJECTS_TABLE } from '$lib/supabase/types.js';
-import { formDataToRecord } from '$lib/utils/form.js';
+import { mapInputToRow, mapRowToProject, ProjectSchema } from '#lib/schema/projects.js';
+import { PROJECTS_SELECT, PROJECTS_TABLE } from '#lib/supabase/types.js';
+import { formDataToRecord } from '#lib/utils/form.js';
 import type { Actions, PageServerLoad } from './$types.js';
 
 export const load: PageServerLoad = async ({ params, locals, setHeaders }) => {

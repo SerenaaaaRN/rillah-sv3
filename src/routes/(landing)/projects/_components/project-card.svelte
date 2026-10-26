@@ -1,10 +1,10 @@
 <script lang="ts">
 	import GitBranch from 'phosphor-svelte/lib/GitBranch';
 	import Globe from 'phosphor-svelte/lib/Globe';
-	import { Badge } from '$lib/components/ui/badge/index.js';
-	import { Button } from '$lib/components/ui/button/index.js';
-	import * as Card from '$lib/components/ui/card/index.js';
-	import type { ProjectCard } from '$lib/schema/projects.js';
+	import { Badge } from '#lib/components/ui/badge/index.js';
+	import { Button } from '#lib/components/ui/button/index.js';
+	import * as Card from '#lib/components/ui/card/index.js';
+	import type { ProjectCard } from '#lib/schema/projects.js';
 
 	let { project }: { project: ProjectCard } = $props();
 

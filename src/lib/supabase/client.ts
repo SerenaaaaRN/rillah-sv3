@@ -1,6 +1,6 @@
 import { createBrowserClient } from '@supabase/ssr';
-import { PUBLIC_SUPABASE_PUBLISHABLE_KEY, PUBLIC_SUPABASE_URL } from '$env/static/public';
-import { formatBytes, mb } from '$lib/utils/bytes.js';
+import { PUBLIC_SUPABASE_PUBLISHABLE_KEY, PUBLIC_SUPABASE_URL } from '$app/env/public';
+import { formatBytes, mb } from '#lib/utils/bytes.js';
 import type { Database } from './types.js';
 
 let browserClient: ReturnType<typeof createBrowserClient> | null = null;

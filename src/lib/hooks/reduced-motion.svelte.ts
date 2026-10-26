@@ -7,7 +7,7 @@ import { MediaQuery } from 'svelte/reactivity';
  * Usage:
  * ```svelte
  * <script>
- * 	import { ReducedMotion } from '$lib/hooks/reduced-motion.svelte.js';
+ * 	import { ReducedMotion } from '#lib/hooks/reduced-motion.svelte.js';
  * 	const reducedMotion = new ReducedMotion();
  * </script>
  *

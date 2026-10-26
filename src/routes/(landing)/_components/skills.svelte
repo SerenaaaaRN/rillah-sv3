@@ -1,17 +1,17 @@
 <script lang="ts">
 	import CaretDown from 'phosphor-svelte/lib/CaretDown';
 	import CaretUp from 'phosphor-svelte/lib/CaretUp';
-	import BlurFade from '$lib/components/shared/blur-fade.svelte';
-	import * as SectionHeading from '$lib/components/shared/section-heading';
-	import { Badge } from '$lib/components/ui/badge/index.js';
-	import { Button } from '$lib/components/ui/button/index.js';
-	import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card/index.js';
+	import BlurFade from '#lib/components/shared/blur-fade.svelte';
+	import * as SectionHeading from '#lib/components/shared/section-heading/index.js';
+	import { Badge } from '#lib/components/ui/badge/index.js';
+	import { Button } from '#lib/components/ui/button/index.js';
+	import { Card, CardContent, CardHeader, CardTitle } from '#lib/components/ui/card/index.js';
 	import {
 		skills_data,
 		skills_data_bottom,
 		skills_data_top,
 		skillsStats
-	} from '$lib/data/skills.js';
+	} from '#lib/data/skills.js';
 	import Marquee from './marquee.svelte';
 
 	let showDetail = $state(false);

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
 	import type { HTMLAttributes } from 'svelte/elements';
-	import { ReducedMotion } from '$lib/hooks/reduced-motion.svelte.js';
+	import { ReducedMotion } from '#lib/hooks/reduced-motion.svelte.js';
 
 	let {
 		class: className,

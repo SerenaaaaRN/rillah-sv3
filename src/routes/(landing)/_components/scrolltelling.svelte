@@ -1,7 +1,7 @@
 <script lang="ts">
-	import BlurFade from '$lib/components/shared/blur-fade.svelte';
-	import { SCENES } from '$lib/data/scrolltelling.js';
-	import { cn } from '$lib/utils.js';
+	import BlurFade from '#lib/components/shared/blur-fade.svelte';
+	import { SCENES } from '#lib/data/scrolltelling.js';
+	import { cn } from '#lib/utils.js';
 </script>
 
 <section aria-label="How I work" class="mx-auto mt-16 max-w-4xl space-y-10 md:mt-24 md:space-y-14">

@@ -1,8 +1,8 @@
 <script lang="ts">
 	import ChatText from 'phosphor-svelte/lib/ChatText';
-	import { Card, CardContent } from '$lib/components/ui/card/index.js';
-	import type { GuestbookEntry } from '$lib/schema/guestbook.js';
-	import { timeAgo } from '$lib/utils/date.js';
+	import { Card, CardContent } from '#lib/components/ui/card/index.js';
+	import type { GuestbookEntry } from '#lib/schema/guestbook.js';
+	import { timeAgo } from '#lib/utils/date.js';
 
 	interface Props {
 		entries?: GuestbookEntry[];

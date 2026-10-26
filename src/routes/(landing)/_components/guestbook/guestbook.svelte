@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
-	import BlurFade from '$lib/components/shared/blur-fade.svelte';
-	import * as SectionHeading from '$lib/components/shared/section-heading';
-	import type { GuestbookEntry } from '$lib/schema/guestbook.js';
-	import { errorMessage } from '$lib/utils/error.js';
+	import BlurFade from '#lib/components/shared/blur-fade.svelte';
+	import * as SectionHeading from '#lib/components/shared/section-heading/index.js';
+	import type { GuestbookEntry } from '#lib/schema/guestbook.js';
+	import { errorMessage } from '#lib/utils/error.js';
 	import GuestbookForm from './guestbook-form.svelte';
 	import MessageList from './message-list.svelte';
 

@@ -1,9 +1,9 @@
 <script lang="ts">
 	import ArrowsOut from 'phosphor-svelte/lib/ArrowsOut';
 	import SealCheck from 'phosphor-svelte/lib/SealCheck';
-	import { Card } from '$lib/components/ui/card/index.js';
-	import type { Certificate } from '$lib/schema/certificate.js';
-	import { cn } from '$lib/utils.js';
+	import { Card } from '#lib/components/ui/card/index.js';
+	import type { Certificate } from '#lib/schema/certificate.js';
+	import { cn } from '#lib/utils.js';
 
 	let {
 		cert,

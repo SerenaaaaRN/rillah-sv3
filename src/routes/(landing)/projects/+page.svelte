@@ -1,12 +1,12 @@
 <script lang="ts">
-	import BlurFade from '$lib/components/shared/blur-fade.svelte';
-	import MacWindow from '$lib/components/shared/mac-window.svelte';
-	import * as SectionHeading from '$lib/components/shared/section-heading/index.js';
-	import SeoHead from '$lib/components/shared/seo-head.svelte';
-	import { Button } from '$lib/components/ui/button/index.js';
-	import { searchFilter } from '$lib/hooks/search-filter.svelte.js';
-	import { PROJECT_CATEGORIES } from '$lib/schema/projects.js';
-	import { breadcrumbSchema, canonicalUrl } from '$lib/seo/site.js';
+	import BlurFade from '#lib/components/shared/blur-fade.svelte';
+	import MacWindow from '#lib/components/shared/mac-window.svelte';
+	import * as SectionHeading from '#lib/components/shared/section-heading/index.js';
+	import SeoHead from '#lib/components/shared/seo-head.svelte';
+	import { Button } from '#lib/components/ui/button/index.js';
+	import { searchFilter } from '#lib/hooks/search-filter.svelte.js';
+	import { PROJECT_CATEGORIES } from '#lib/schema/projects.js';
+	import { breadcrumbSchema, canonicalUrl } from '#lib/seo/site.js';
 	import ProjectCard from './_components/project-card.svelte';
 	import ProjectsToolbar, { type SortOption } from './_components/projects-toolbar.svelte';
 	import type { PageData } from './$types';

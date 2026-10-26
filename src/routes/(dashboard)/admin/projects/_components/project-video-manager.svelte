@@ -2,10 +2,10 @@
 	import CircleNotch from 'phosphor-svelte/lib/CircleNotch';
 	import Trash from 'phosphor-svelte/lib/Trash';
 	import VideoCamera from 'phosphor-svelte/lib/VideoCamera';
-	import { Button } from '$lib/components/ui/button/index.js';
-	import { uploadTask } from '$lib/hooks/upload-task.svelte.js';
-	import { PROJECT_IMAGE_BUCKET } from '$lib/supabase/types.js';
-	import { cn } from '$lib/utils.js';
+	import { Button } from '#lib/components/ui/button/index.js';
+	import { uploadTask } from '#lib/hooks/upload-task.svelte.js';
+	import { PROJECT_IMAGE_BUCKET } from '#lib/supabase/types.js';
+	import { cn } from '#lib/utils.js';
 
 	let {
 		currentVideo = '',

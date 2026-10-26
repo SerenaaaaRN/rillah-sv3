@@ -1,4 +1,4 @@
-import { SITE_URL } from '$lib/seo/site.js';
+import { SITE_URL } from '#lib/seo/site.js';
 import type { RequestHandler } from './$types';
 
 const AI_SEARCH_BOTS = ['OAI-SearchBot', 'Claude-SearchBot', 'PerplexityBot'];

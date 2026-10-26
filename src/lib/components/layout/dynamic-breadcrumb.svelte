@@ -1,8 +1,8 @@
 <script lang="ts">
-	import { page } from '$app/stores';
-	import * as Breadcrumb from '$lib/components/ui/breadcrumb/index.js';
+	import { page } from '$app/state';
+	import * as Breadcrumb from '#lib/components/ui/breadcrumb/index.js';
 
-	const segments = $derived($page.url.pathname.split('/').filter(Boolean));
+	const segments = $derived(page.url.pathname.split('/').filter(Boolean));
 
 	const segmentToLabel = (segment: string): string => {
 		return segment

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { DEFAULT_OG_IMAGE, SITE_LOCALE, SITE_NAME, TWITTER_HANDLE } from '$lib/seo/site.js';
+	import { DEFAULT_OG_IMAGE, SITE_LOCALE, SITE_NAME, TWITTER_HANDLE } from '#lib/seo/site.js';
 
 	interface Props {
 		title: string;

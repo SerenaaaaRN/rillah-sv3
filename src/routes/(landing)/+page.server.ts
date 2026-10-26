@@ -1,20 +1,20 @@
 import { fail } from '@sveltejs/kit';
-import { env } from '$env/dynamic/private';
-import { GithubCalendarSchema, type GithubCalendar } from '$lib/data/github';
+import { GH_READ_USER_TOKEN_PERSONAL, GITHUB_USERNAME } from '$app/env/private';
+import { GithubCalendarSchema, type GithubCalendar } from '#lib/data/github.js';
 import {
 	mapCertificateToCertification,
 	mapRowToCertificate,
 	type Certification
-} from '$lib/schema/certificate';
-import { validateGuestbook, type GuestbookEntry } from '$lib/schema/guestbook';
-import { createStaticClient } from '$lib/supabase/static';
+} from '#lib/schema/certificate.js';
+import { validateGuestbook, type GuestbookEntry } from '#lib/schema/guestbook.js';
+import { createStaticClient } from '#lib/supabase/static.js';
 import {
 	CERTIFICATES_SELECT,
 	CERTIFICATES_TABLE,
 	REVIEWS_SELECT,
 	REVIEWS_TABLE
-} from '$lib/supabase/types.js';
-import { formDataToRecord } from '$lib/utils/form.js';
+} from '#lib/supabase/types.js';
+import { formDataToRecord } from '#lib/utils/form.js';
 import type { Actions, PageServerLoad } from './$types';
 
 const GITHUB_USER_ENDPOINT = 'https://api.github.com/graphql';
@@ -121,13 +121,9 @@ async function loadGuestbook(supabase: SupabaseClient): Promise<GuestbookEntry[]
 	}));
 }
 
-export const load: PageServerLoad = async ({ platform }) => {
-	const token =
-		platform?.env?.GH_READ_USER_TOKEN_PERSONAL?.trim() ||
-		env.GH_READ_USER_TOKEN_PERSONAL?.trim() ||
-		undefined;
-	const username =
-		platform?.env?.GITHUB_USERNAME?.trim() || env.GITHUB_USERNAME?.trim() || 'SerenaaaaRN';
+export const load: PageServerLoad = async () => {
+	const token = GH_READ_USER_TOKEN_PERSONAL?.trim() || undefined;
+	const username = GITHUB_USERNAME?.trim() || 'SerenaaaaRN';
 	const supabase = createStaticClient();
 
 	const github = fetchGithubCached(username, token);

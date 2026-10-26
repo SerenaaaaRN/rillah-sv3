@@ -1,15 +1,15 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import { untrack } from 'svelte';
-	import { Button } from '$lib/components/ui/button/index.js';
-	import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card/index.js';
-	import * as Field from '$lib/components/ui/field/index.js';
-	import { Input } from '$lib/components/ui/input/index.js';
-	import * as Select from '$lib/components/ui/select/index.js';
-	import { Textarea } from '$lib/components/ui/textarea/index.js';
-	import { slugField } from '$lib/hooks/slug-field.svelte.js';
-	import { PROJECT_CATEGORIES, type Project } from '$lib/schema/projects.js';
-	import { errorMessage } from '$lib/utils/error.js';
+	import { Button } from '#lib/components/ui/button/index.js';
+	import { Card, CardContent, CardHeader, CardTitle } from '#lib/components/ui/card/index.js';
+	import * as Field from '#lib/components/ui/field/index.js';
+	import { Input } from '#lib/components/ui/input/index.js';
+	import * as Select from '#lib/components/ui/select/index.js';
+	import { Textarea } from '#lib/components/ui/textarea/index.js';
+	import { slugField } from '#lib/hooks/slug-field.svelte.js';
+	import { PROJECT_CATEGORIES, type Project } from '#lib/schema/projects.js';
+	import { errorMessage } from '#lib/utils/error.js';
 	import ProjectImagesManager from './project-images-manager.svelte';
 	import ProjectVideoManager from './project-video-manager.svelte';
 

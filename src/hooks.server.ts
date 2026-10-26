@@ -1,5 +1,5 @@
-import type { Handle } from '@sveltejs/kit';
-import { createSupabaseServerClient } from '$lib/supabase/server.js';
+import type { Handle } from '@sveltejs/kit/hooks';
+import { createSupabaseServerClient } from '#lib/supabase/ssr.js';
 
 const seoRedirect = (url: URL, method: string): Response | null => {
 	if (method !== 'GET' && method !== 'HEAD') return null;
@@ -16,7 +16,7 @@ const seoRedirect = (url: URL, method: string): Response | null => {
 	target.search = search;
 
 	return new Response(null, { status: 301, headers: { location: target.toString() } });
-}
+};
 
 export const handle: Handle = async ({ event, resolve }) => {
 	const redirect = seoRedirect(event.url, event.request.method);

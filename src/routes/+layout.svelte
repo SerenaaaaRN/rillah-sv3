@@ -4,7 +4,7 @@
 	import { invalidate } from '$app/navigation';
 	import { ModeWatcher } from 'mode-watcher';
 	import { onMount } from 'svelte';
-	import { theme } from '$lib/hooks/theme.svelte';
+	import { theme } from '#lib/hooks/theme.svelte.js';
 
 	let { children, data } = $props();
 

@@ -1,6 +1,6 @@
 <script lang="ts">
-	import type { GithubCalendar } from '$lib/data/github.js';
-	import { cn } from '$lib/utils.js';
+	import type { GithubCalendar } from '#lib/data/github.js';
+	import { cn } from '#lib/utils.js';
 
 	let { data }: { data?: GithubCalendar | null } = $props();
 

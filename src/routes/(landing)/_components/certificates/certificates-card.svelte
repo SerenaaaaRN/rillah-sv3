@@ -1,10 +1,10 @@
 <script lang="ts">
 	import CertificateIcon from 'phosphor-svelte/lib/Certificate';
 	import type { HTMLAttributes } from 'svelte/elements';
-	import { Badge } from '$lib/components/ui/badge/index.js';
-	import { Card, CardContent } from '$lib/components/ui/card/index.js';
-	import type { Certification } from '$lib/schema/certificate.js';
-	import { cn } from '$lib/utils.js';
+	import { Badge } from '#lib/components/ui/badge/index.js';
+	import { Card, CardContent } from '#lib/components/ui/card/index.js';
+	import type { Certification } from '#lib/schema/certificate.js';
+	import { cn } from '#lib/utils.js';
 
 	interface Props extends HTMLAttributes<HTMLDivElement> {
 		certification: Certification;

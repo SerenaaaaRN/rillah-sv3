@@ -1,6 +1,6 @@
 <script lang="ts">
 	import SealCheck from 'phosphor-svelte/lib/SealCheck';
-	import { cn } from '$lib/utils.js';
+	import { cn } from '#lib/utils.js';
 
 	let {
 		avatar,

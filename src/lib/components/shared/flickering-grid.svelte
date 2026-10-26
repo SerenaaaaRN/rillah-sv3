@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { ReducedMotion } from '$lib/hooks/reduced-motion.svelte.js';
-	import { cn } from '$lib/utils.js';
+	import { ReducedMotion } from '#lib/hooks/reduced-motion.svelte.js';
+	import { cn } from '#lib/utils.js';
 
 	let {
 		squareSize = 4,

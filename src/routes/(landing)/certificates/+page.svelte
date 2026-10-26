@@ -1,15 +1,15 @@
 <script lang="ts">
-	import BlurFade from '$lib/components/shared/blur-fade.svelte';
-	import MacWindow from '$lib/components/shared/mac-window.svelte';
-	import * as SectionHeading from '$lib/components/shared/section-heading/index.js';
-	import SeoHead from '$lib/components/shared/seo-head.svelte';
-	import { Button } from '$lib/components/ui/button/index.js';
-	import * as Dialog from '$lib/components/ui/dialog/index.js';
-	import { searchFilter } from '$lib/hooks/search-filter.svelte.js';
-	import { type Certificate } from '$lib/schema/certificate.js';
-	import { breadcrumbSchema, canonicalUrl } from '$lib/seo/site.js';
-	import { UNSORTED_ORDER } from '$lib/supabase/types.js';
-	import { parseDisplayDateToISO } from '$lib/utils/date.js';
+	import BlurFade from '#lib/components/shared/blur-fade.svelte';
+	import MacWindow from '#lib/components/shared/mac-window.svelte';
+	import * as SectionHeading from '#lib/components/shared/section-heading/index.js';
+	import SeoHead from '#lib/components/shared/seo-head.svelte';
+	import { Button } from '#lib/components/ui/button/index.js';
+	import * as Dialog from '#lib/components/ui/dialog/index.js';
+	import { searchFilter } from '#lib/hooks/search-filter.svelte.js';
+	import { type Certificate } from '#lib/schema/certificate.js';
+	import { breadcrumbSchema, canonicalUrl } from '#lib/seo/site.js';
+	import { UNSORTED_ORDER } from '#lib/supabase/types.js';
+	import { parseDisplayDateToISO } from '#lib/utils/date.js';
 	import CertificateGridCard from './_components/certificate-grid-card.svelte';
 	import CertificateLightbox from './_components/certificate-lightbox.svelte';
 	import CertificatesToolbar, { type SortOption } from './_components/certificates-toolbar.svelte';

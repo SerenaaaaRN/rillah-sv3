@@ -1,13 +1,13 @@
 <script lang="ts">
 	import FolderOpen from 'phosphor-svelte/lib/FolderOpen';
 	import Plus from 'phosphor-svelte/lib/Plus';
-	import StatCard from '$lib/components/shared/stat-card.svelte';
-	import { Button } from '$lib/components/ui/button/index.js';
+	import StatCard from '#lib/components/shared/stat-card.svelte';
+	import { Button } from '#lib/components/ui/button/index.js';
 	import ProjectsTable from './_components/projects-table.svelte';
 	import type { PageData } from './$types.js';
 
 	let { data }: { data: PageData } = $props();
-	let projects = $derived((data.projects ?? []) as import('$lib/schema/projects.js').Project[]);
+	let projects = $derived((data.projects ?? []) as import('#lib/schema/projects.js').Project[]);
 
 	let totalProjects = $derived(projects.length);
 	let withDemoCount = $derived(projects.filter((p) => p.demo).length);

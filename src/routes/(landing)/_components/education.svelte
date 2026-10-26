@@ -1,9 +1,9 @@
 <script lang="ts">
-	import BlurFade from '$lib/components/shared/blur-fade.svelte';
-	import * as SectionHeading from '$lib/components/shared/section-heading';
-	import { Badge } from '$lib/components/ui/badge/index.js';
-	import { Card, CardContent } from '$lib/components/ui/card/index.js';
-	import type { Education } from '$lib/data/education.js';
+	import BlurFade from '#lib/components/shared/blur-fade.svelte';
+	import * as SectionHeading from '#lib/components/shared/section-heading/index.js';
+	import { Badge } from '#lib/components/ui/badge/index.js';
+	import { Card, CardContent } from '#lib/components/ui/card/index.js';
+	import type { Education } from '#lib/data/education.js';
 
 	let { educations = [] }: { educations?: Education[] } = $props();
 </script>

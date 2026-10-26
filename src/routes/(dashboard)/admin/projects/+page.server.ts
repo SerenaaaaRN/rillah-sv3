@@ -1,6 +1,6 @@
 import { fail } from '@sveltejs/kit';
-import { mapRowToProject } from '$lib/schema/projects.js';
-import { PROJECTS_SELECT, PROJECTS_TABLE } from '$lib/supabase/types.js';
+import { mapRowToProject } from '#lib/schema/projects.js';
+import { PROJECTS_SELECT, PROJECTS_TABLE } from '#lib/supabase/types.js';
 import type { Actions, PageServerLoad } from './$types.js';
 
 export const load: PageServerLoad = async ({ locals, depends, setHeaders }) => {

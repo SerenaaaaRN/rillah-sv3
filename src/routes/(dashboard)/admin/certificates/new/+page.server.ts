@@ -1,7 +1,7 @@
 import { fail, redirect } from '@sveltejs/kit';
-import { CertificateSchema, mapInputToRow } from '$lib/schema/certificate.js';
-import { CERTIFICATES_TABLE } from '$lib/supabase/types.js';
-import { formDataToRecord } from '$lib/utils/form.js';
+import { CertificateSchema, mapInputToRow } from '#lib/schema/certificate.js';
+import { CERTIFICATES_TABLE } from '#lib/supabase/types.js';
+import { formDataToRecord } from '#lib/utils/form.js';
 import type { Actions } from './$types.js';
 
 export const actions: Actions = {

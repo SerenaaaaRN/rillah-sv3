@@ -1,11 +1,11 @@
 <script lang="ts">
 	import ChatText from 'phosphor-svelte/lib/ChatText';
 	import PaperPlaneTilt from 'phosphor-svelte/lib/PaperPlaneTilt';
-	import { Button } from '$lib/components/ui/button/index.js';
-	import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card/index.js';
-	import { Input } from '$lib/components/ui/input/index.js';
-	import Label from '$lib/components/ui/label/label.svelte';
-	import { Textarea } from '$lib/components/ui/textarea/index.js';
+	import { Button } from '#lib/components/ui/button/index.js';
+	import { Card, CardContent, CardHeader, CardTitle } from '#lib/components/ui/card/index.js';
+	import { Input } from '#lib/components/ui/input/index.js';
+	import Label from '#lib/components/ui/label/label.svelte';
+	import { Textarea } from '#lib/components/ui/textarea/index.js';
 
 	interface Props {
 		name?: string;

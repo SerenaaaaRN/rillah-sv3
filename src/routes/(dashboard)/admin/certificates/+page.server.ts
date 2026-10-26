@@ -1,6 +1,6 @@
 import { fail } from '@sveltejs/kit';
-import { mapRowToCertificate } from '$lib/schema/certificate.js';
-import { CERTIFICATES_SELECT, CERTIFICATES_TABLE } from '$lib/supabase/types.js';
+import { mapRowToCertificate } from '#lib/schema/certificate.js';
+import { CERTIFICATES_SELECT, CERTIFICATES_TABLE } from '#lib/supabase/types.js';
 import type { Actions, PageServerLoad } from './$types.js';
 
 export const load: PageServerLoad = async ({ locals, depends, setHeaders }) => {

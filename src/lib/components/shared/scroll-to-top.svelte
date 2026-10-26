@@ -1,7 +1,7 @@
 <script lang="ts">
 	import ArrowUp from 'phosphor-svelte/lib/ArrowUp';
-	import { Button } from '$lib/components/ui/button/index.js';
-	import { cn } from '$lib/utils.js';
+	import { Button } from '#lib/components/ui/button/index.js';
+	import { cn } from '#lib/utils.js';
 
 	let visible = $state(false);
 

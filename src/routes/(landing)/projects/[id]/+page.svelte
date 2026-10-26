@@ -2,19 +2,19 @@
 	import ArrowLeft from 'phosphor-svelte/lib/ArrowLeft';
 	import GitBranch from 'phosphor-svelte/lib/GitBranch';
 	import Globe from 'phosphor-svelte/lib/Globe';
-	import BlurFade from '$lib/components/shared/blur-fade.svelte';
-	import MacWindow from '$lib/components/shared/mac-window.svelte';
-	import * as SectionHeading from '$lib/components/shared/section-heading/index.js';
-	import SeoHead from '$lib/components/shared/seo-head.svelte';
-	import { Badge } from '$lib/components/ui/badge/index.js';
-	import { Button } from '$lib/components/ui/button/index.js';
-	import * as Carousel from '$lib/components/ui/carousel/index.js';
+	import BlurFade from '#lib/components/shared/blur-fade.svelte';
+	import MacWindow from '#lib/components/shared/mac-window.svelte';
+	import * as SectionHeading from '#lib/components/shared/section-heading/index.js';
+	import SeoHead from '#lib/components/shared/seo-head.svelte';
+	import { Badge } from '#lib/components/ui/badge/index.js';
+	import { Button } from '#lib/components/ui/button/index.js';
+	import * as Carousel from '#lib/components/ui/carousel/index.js';
 	import {
 		absoluteUrl,
 		breadcrumbSchema,
 		canonicalUrl,
 		creativeWorkSchema
-	} from '$lib/seo/site.js';
+	} from '#lib/seo/site.js';
 	import type { PageData } from './$types';
 
 	let { data }: { data: PageData } = $props();

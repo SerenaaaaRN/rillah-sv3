@@ -1,6 +1,6 @@
 import { z } from 'zod';
-import { UNSORTED_ORDER, type CertificatesRow } from '$lib/supabase/types.js';
-import { formatDisplayDate } from '$lib/utils/date.js';
+import { UNSORTED_ORDER, type CertificatesRow } from '#lib/supabase/types.js';
+import { formatDisplayDate } from '#lib/utils/date.js';
 
 export type Certificate = {
 	id: string;

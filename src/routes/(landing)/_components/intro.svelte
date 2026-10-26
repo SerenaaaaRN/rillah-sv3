@@ -1,9 +1,9 @@
 <script lang="ts">
 	import ArrowRight from 'phosphor-svelte/lib/ArrowRight';
-	import BlurFade from '$lib/components/shared/blur-fade.svelte';
-	import Eyebrow from '$lib/components/shared/eyebrow.svelte';
-	import { Button } from '$lib/components/ui/button/index.js';
-	import { media_socials } from '$lib/data/social.js';
+	import BlurFade from '#lib/components/shared/blur-fade.svelte';
+	import Eyebrow from '#lib/components/shared/eyebrow.svelte';
+	import { Button } from '#lib/components/ui/button/index.js';
+	import { media_socials } from '#lib/data/social.js';
 	import TypingAnimation from './typing-animation.svelte';
 
 	const roles = ['Software Engineer', 'CS Student'];

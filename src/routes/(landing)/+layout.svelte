@@ -1,17 +1,17 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
-	import DockMobile from '$lib/components/layout/dock-mobile.svelte';
-	import Footer from '$lib/components/layout/footer.svelte';
+	import DockMobile from '#lib/components/layout/dock-mobile.svelte';
+	import Footer from '#lib/components/layout/footer.svelte';
 	import {
 		mainNavData,
 		publicDashboardMenu
-	} from '$lib/components/layout/landing-sidebar/constant.js';
-	import ProfileHeader from '$lib/components/layout/landing-sidebar/profile-header.svelte';
-	import SidebarMain from '$lib/components/layout/landing-sidebar/sidebar-main.svelte';
-	import ScrollProgress from '$lib/components/layout/scroll-progress.svelte';
-	import FlickeringGrid from '$lib/components/shared/flickering-grid.svelte';
-	import ScrollToTop from '$lib/components/shared/scroll-to-top.svelte';
-	import { IsMobile } from '$lib/hooks/is-mobile.svelte.js';
+	} from '#lib/components/layout/landing-sidebar/constant.js';
+	import ProfileHeader from '#lib/components/layout/landing-sidebar/profile-header.svelte';
+	import SidebarMain from '#lib/components/layout/landing-sidebar/sidebar-main.svelte';
+	import ScrollProgress from '#lib/components/layout/scroll-progress.svelte';
+	import FlickeringGrid from '#lib/components/shared/flickering-grid.svelte';
+	import ScrollToTop from '#lib/components/shared/scroll-to-top.svelte';
+	import { IsMobile } from '#lib/hooks/is-mobile.svelte.js';
 
 	let { children }: { children?: Snippet } = $props();
 

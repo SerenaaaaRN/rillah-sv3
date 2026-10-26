@@ -1,7 +1,7 @@
-import { uploadPublicFile } from '$lib/supabase/client.js';
-import { formatBytes, mb } from '$lib/utils/bytes.js';
-import { errorMessage } from '$lib/utils/error.js';
-import { compressImage, type CompressImageOptions } from '$lib/utils/image.js';
+import { uploadPublicFile } from '#lib/supabase/client.js';
+import { formatBytes, mb } from '#lib/utils/bytes.js';
+import { errorMessage } from '#lib/utils/error.js';
+import { compressImage, type CompressImageOptions } from '#lib/utils/image.js';
 
 export interface UploadTaskOptions {
 	bucket: string;

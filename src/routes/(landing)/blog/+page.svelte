@@ -1,10 +1,10 @@
 <script lang="ts">
 	import Article from 'phosphor-svelte/lib/Article';
-	import BlurFade from '$lib/components/shared/blur-fade.svelte';
-	import MacWindow from '$lib/components/shared/mac-window.svelte';
-	import * as SectionHeading from '$lib/components/shared/section-heading/index.js';
-	import SeoHead from '$lib/components/shared/seo-head.svelte';
-	import { canonicalUrl } from '$lib/seo/site.js';
+	import BlurFade from '#lib/components/shared/blur-fade.svelte';
+	import MacWindow from '#lib/components/shared/mac-window.svelte';
+	import * as SectionHeading from '#lib/components/shared/section-heading/index.js';
+	import SeoHead from '#lib/components/shared/seo-head.svelte';
+	import { canonicalUrl } from '#lib/seo/site.js';
 </script>
 
 <SeoHead

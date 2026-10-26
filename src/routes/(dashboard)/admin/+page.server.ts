@@ -1,11 +1,11 @@
-import { mapRowToCertificate } from '$lib/schema/certificate.js';
-import { mapRowToProject } from '$lib/schema/projects.js';
+import { mapRowToCertificate } from '#lib/schema/certificate.js';
+import { mapRowToProject } from '#lib/schema/projects.js';
 import {
 	CERTIFICATES_SELECT,
 	CERTIFICATES_TABLE,
 	PROJECTS_SELECT,
 	PROJECTS_TABLE
-} from '$lib/supabase/types.js';
+} from '#lib/supabase/types.js';
 import type { PageServerLoad } from './$types.js';
 
 export const load: PageServerLoad = async ({ locals, depends, setHeaders }) => {
