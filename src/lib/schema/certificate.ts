@@ -12,12 +12,6 @@ export type Certificate = {
 	created_at: string;
 };
 
-export type CertificateFormState = {
-	status: 'idle' | 'success' | 'error';
-	message: string;
-	errors?: Record<string, string[]>;
-};
-
 export const CertificateSchema = z.object({
 	title: z.string().min(1, 'Title is required.').max(200),
 	issuer: z.string().optional().default(''),

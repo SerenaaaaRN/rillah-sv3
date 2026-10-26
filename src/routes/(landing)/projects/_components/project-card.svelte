@@ -64,14 +64,14 @@
 			</p>
 		</Card.Header>
 
-		{#if project.category.length > 0 || project.tags.length > 0}
+		{#if project.category || project.tags.length > 0}
 			<Card.Content class="px-4 pt-0 pb-2">
 				<ul class="flex flex-wrap gap-1.5">
-					{#each project.category as c (c)}
+					{#if project.category}
 						<li>
-							<Badge variant="secondary" class="rounded-none">{c}</Badge>
+							<Badge variant="secondary" class="rounded-none">{project.category}</Badge>
 						</li>
-					{/each}
+					{/if}
 					{#each visibleTags as tag, idx (tag + idx)}
 						<li>
 							<Badge variant="outline">{tag}</Badge>

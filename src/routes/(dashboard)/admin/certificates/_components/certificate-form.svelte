@@ -1,16 +1,16 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import { untrack } from 'svelte';
+	import FileUpload from '#lib/components/shared/file-upload.svelte';
 	import { Button } from '#lib/components/ui/button/index.js';
 	import { Card, CardContent, CardHeader, CardTitle } from '#lib/components/ui/card/index.js';
 	import * as Field from '#lib/components/ui/field/index.js';
 	import { Input } from '#lib/components/ui/input/index.js';
 	import { slugField } from '#lib/hooks/slug-field.svelte.js';
 	import { type Certificate } from '#lib/schema/certificate.js';
-	import { UNSORTED_ORDER } from '#lib/supabase/types.js';
+	import { CERTIFICATE_IMAGE_BUCKET, UNSORTED_ORDER } from '#lib/supabase/types.js';
 	import { toDateInputValue } from '#lib/utils/date.js';
 	import { errorMessage } from '#lib/utils/error.js';
-	import CertificateImageManager from './certificate-image-manager.svelte';
 
 	let { certificate, mode = 'create' }: { certificate?: Certificate; mode: 'create' | 'edit' } =
 		$props();
@@ -100,9 +100,14 @@
 				<CardContent class="pt-4">
 					<Field.Field>
 						<Field.Label>Certificate Image</Field.Label>
-						<CertificateImageManager
-							currentImage={certificate?.image_url ?? ''}
+						<FileUpload
+							kind="image"
+							bucket={CERTIFICATE_IMAGE_BUCKET}
+							currentUrl={certificate?.image_url ?? ''}
 							slug={field.slug}
+							hiddenName="image_url"
+							accept="image/*"
+							hint="PNG, JPG up to 5MB"
 							onUploadStateChange={(v) => (isUploading = v)}
 						/>
 						<Field.Description>PNG, JPG up to 5MB — stored in certificate-images.</Field.Description

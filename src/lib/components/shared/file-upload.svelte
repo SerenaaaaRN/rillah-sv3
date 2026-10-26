@@ -2,27 +2,39 @@
 	import CircleNotch from 'phosphor-svelte/lib/CircleNotch';
 	import Trash from 'phosphor-svelte/lib/Trash';
 	import Upload from 'phosphor-svelte/lib/Upload';
+	import VideoCamera from 'phosphor-svelte/lib/VideoCamera';
 	import { Button } from '#lib/components/ui/button/index.js';
 	import { uploadTask } from '#lib/hooks/upload-task.svelte.js';
-	import { CERTIFICATE_IMAGE_BUCKET } from '#lib/supabase/types.js';
 	import { cn } from '#lib/utils.js';
 
 	let {
-		currentImage = '',
+		kind,
+		bucket,
+		currentUrl = '',
 		slug = 'temp',
+		hiddenName,
+		accept,
+		hint,
 		onUploadStateChange
 	}: {
-		currentImage?: string;
+		kind: 'image' | 'video';
+		bucket: string;
+		currentUrl?: string;
 		slug?: string;
+		hiddenName: string;
+		accept: string;
+		hint: string;
 		onUploadStateChange?: (v: boolean) => void;
 	} = $props();
 
-	const task = uploadTask({
-		bucket: CERTIFICATE_IMAGE_BUCKET,
-		slug: () => slug
-	});
+	// Props never change during component lifetime (form remounts on navigation);
+	// capturing the initial bucket/kind mirrors the project-form untrack pattern.
+	// svelte-ignore state_referenced_locally
+	const task = uploadTask({ bucket, slug: () => slug, kind });
+	// svelte-ignore state_referenced_locally
+	const isVideo = kind === 'video';
 
-	let imageUrl = $state('');
+	let url = $state('');
 	let isDragging = $state(false);
 	let fileInput: HTMLInputElement | null = $state(null);
 	let seeded = $state(false);
@@ -30,20 +42,20 @@
 	$effect.pre(() => {
 		// Seed once from server data; never re-seed so removing/uploading isn't clobbered.
 		if (!seeded) {
-			imageUrl = currentImage ?? '';
+			url = currentUrl ?? '';
 			seeded = true;
 		}
 	});
 
-	let hasImage = $derived(imageUrl.startsWith('/') || imageUrl.startsWith('http'));
+	let hasFile = $derived(url.startsWith('/') || url.startsWith('http'));
 
 	$effect(() => {
 		onUploadStateChange?.(task.uploading);
 	});
 
 	const uploadFile = async (file: File) => {
-		const url = await task.upload(file);
-		if (url) imageUrl = url;
+		const uploaded = await task.upload(file);
+		if (uploaded) url = uploaded;
 	};
 
 	const handleFile = (files: FileList | null) => {
@@ -57,8 +69,8 @@
 		handleFile((e as DragEvent & { dataTransfer: DataTransfer }).dataTransfer.files);
 	};
 
-	const removeImage = () => {
-		imageUrl = '';
+	const removeFile = () => {
+		url = '';
 		task.reset();
 	};
 </script>
@@ -79,23 +91,37 @@
 		)}
 		role="region"
 	>
-		{#if !hasImage}
+		{#if !hasFile}
 			<button
 				type="button"
 				onclick={() => fileInput?.click()}
 				class="flex w-full flex-col items-center justify-center py-10 text-center"
 			>
 				<div class="flex size-12 items-center justify-center rounded-none bg-muted">
-					<Upload class="size-5 text-muted-foreground" />
+					{#if isVideo}
+						<VideoCamera class="size-5 text-muted-foreground" />
+					{:else}
+						<Upload class="size-5 text-muted-foreground" />
+					{/if}
 				</div>
-				<p class="mt-3 text-sm font-medium">Click or drag image to upload</p>
-				<p class="mt-1 text-xs text-muted-foreground">PNG, JPG up to 5MB</p>
+				<p class="mt-3 text-sm font-medium">
+					Click or drag {isVideo ? 'video' : 'image'} to upload
+				</p>
+				<p class="mt-1 text-xs text-muted-foreground">{hint}</p>
 			</button>
 		{:else}
 			<div
-				class="group relative aspect-16/10 overflow-hidden rounded-none border border-border bg-background"
+				class="group relative aspect-16/10 overflow-hidden rounded-none border border-border {isVideo
+					? 'bg-black'
+					: 'bg-background'}"
 			>
-				<img src={imageUrl} alt="Certificate" class="size-full object-cover" />
+				{#if isVideo}
+					<!-- svelte-ignore a11y_media_has_caption -->
+					<video src={url} class="size-full object-cover" controls preload="none" playsinline
+					></video>
+				{:else}
+					<img src={url} alt={hiddenName} class="size-full object-cover" />
+				{/if}
 				{#if task.uploading}
 					<div
 						class="absolute inset-0 z-20 flex flex-col items-center justify-center gap-2 bg-background/70 backdrop-blur-xs"
@@ -115,7 +141,7 @@
 							type="button"
 							variant="destructive"
 							size="sm"
-							onclick={removeImage}
+							onclick={removeFile}
 							class="px-2 py-0.5 text-[9px]">Discard</Button
 						>
 					</div>
@@ -129,9 +155,9 @@
 								type="button"
 								variant="destructive"
 								size="icon"
-								onclick={removeImage}
+								onclick={removeFile}
 								class="size-6"
-								title="Remove image"><Trash class="size-4" /></Button
+								title="Remove {isVideo ? 'video' : 'image'}"><Trash class="size-4" /></Button
 							>
 						</div>
 					</div>
@@ -142,9 +168,9 @@
 	<input
 		bind:this={fileInput}
 		type="file"
-		accept="image/*"
+		{accept}
 		class="hidden"
 		onchange={(e) => handleFile((e.target as HTMLInputElement).files)}
 	/>
-	<input type="hidden" name="image_url" value={imageUrl} />
+	<input type="hidden" name={hiddenName} value={url} />
 </div>

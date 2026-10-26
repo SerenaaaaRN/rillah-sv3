@@ -26,9 +26,7 @@
 	)}
 	{...restProps}
 >
-	<div
-		class="flex items-center gap-3 rounded-t-2xl border-b border-border/60 bg-muted/40 px-4 py-3"
-	>
+	<div class="flex items-center gap-3 border-b border-border/60 bg-muted/40 px-4 py-3">
 		<div class="flex items-center gap-1.5">
 			<span class="h-3 w-3 rounded-full bg-red-400/90"></span>
 			<span class="h-3 w-3 rounded-full bg-yellow-400/90"></span>

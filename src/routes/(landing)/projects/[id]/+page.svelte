@@ -109,11 +109,11 @@
 				</div>
 			{/if}
 
-			{#if project.category.length > 0 || project.tags?.length}
+			{#if project.category || project.tags?.length}
 				<div class="flex flex-wrap gap-1">
-					{#each project.category as c (c)}
-						<Badge variant="secondary" class="rounded-none text-xs">{c}</Badge>
-					{/each}
+					{#if project.category}
+						<Badge variant="secondary" class="rounded-none text-xs">{project.category}</Badge>
+					{/if}
 					{#if project.tags?.length}
 						{#each project.tags as tag (tag)}
 							<Badge variant="outline" class="rounded-none text-xs">{tag}</Badge>

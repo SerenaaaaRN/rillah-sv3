@@ -19,18 +19,6 @@ export function timeAgo(iso: string): string {
 	}
 }
 
-export const formatDate = (
-	dateString?: string | null,
-	options: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'long' }
-): string => {
-	if (!dateString) return '';
-	const parsed = new Date(dateString);
-	if (!Number.isNaN(parsed.getTime())) return parsed.toLocaleDateString('id-ID', options);
-	const iso = parseDisplayDateToISO(dateString);
-	if (iso) return new Date(`${iso}T00:00:00`).toLocaleDateString('id-ID', options);
-	return dateString;
-};
-
 export const formatFullDate = (dateString?: string | null): string => {
 	if (!dateString) return '';
 	const parsed = new Date(dateString);

@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import { untrack } from 'svelte';
+	import FileUpload from '#lib/components/shared/file-upload.svelte';
 	import { Button } from '#lib/components/ui/button/index.js';
 	import { Card, CardContent, CardHeader, CardTitle } from '#lib/components/ui/card/index.js';
 	import * as Field from '#lib/components/ui/field/index.js';
@@ -9,9 +10,9 @@
 	import { Textarea } from '#lib/components/ui/textarea/index.js';
 	import { slugField } from '#lib/hooks/slug-field.svelte.js';
 	import { PROJECT_CATEGORIES, type Project } from '#lib/schema/projects.js';
+	import { PROJECT_IMAGE_BUCKET } from '#lib/supabase/types.js';
 	import { errorMessage } from '#lib/utils/error.js';
 	import ProjectImagesManager from './project-images-manager.svelte';
-	import ProjectVideoManager from './project-video-manager.svelte';
 
 	let { project, mode = 'create' }: { project?: Project; mode: 'create' | 'edit' } = $props();
 
@@ -24,7 +25,7 @@
 	});
 	let isUploading = $state(false);
 	let error = $state('');
-	let category = $state([...(source.project?.category ?? [])]);
+	let category = $state<string>(source.project?.category ?? '');
 </script>
 
 <div class="mx-auto flex max-w-6xl flex-col gap-8 py-4">
@@ -126,11 +127,11 @@
 							<Field.Description>Separate with commas</Field.Description>
 						</Field.Field>
 						<Field.Field>
-							<Field.Label>Categories *</Field.Label>
-							<input type="hidden" name="category" value={category.join(', ')} />
-							<Select.Root type="multiple" bind:value={category}>
-								<Select.Trigger class="w-full rounded-none" aria-label="Project categories">
-									<Select.Value placeholder="Select categories" />
+							<Field.Label>Category *</Field.Label>
+							<input type="hidden" name="category" value={category} />
+							<Select.Root type="single" bind:value={category}>
+								<Select.Trigger class="w-full rounded-none" aria-label="Project category">
+									<Select.Value placeholder="Select category" />
 								</Select.Trigger>
 								<Select.Content class="rounded-none">
 									<Select.Group>
@@ -164,9 +165,14 @@
 					><CardTitle class="text-base font-semibold">Project Video</CardTitle></CardHeader
 				>
 				<CardContent class="pt-4">
-					<ProjectVideoManager
-						currentVideo={project?.video ?? ''}
+					<FileUpload
+						kind="video"
+						bucket={PROJECT_IMAGE_BUCKET}
+						currentUrl={project?.video ?? ''}
 						slug={field.slug}
+						hiddenName="video"
+						accept="video/mp4, video/webm"
+						hint="MP4, WebM up to 50MB"
 						onUploadStateChange={(v) => (isUploading = v)}
 					/>
 				</CardContent>

@@ -18,10 +18,7 @@ export const ProjectSchema = z.object({
 		.nullable()
 		.transform((val) => val ?? ''),
 	tags: z.string().transform(parseJsonOrCsv),
-	category: z
-		.string()
-		.transform(parseJsonOrCsv)
-		.refine((v) => v.length > 0, 'Category is required.'),
+	category: z.enum(PROJECT_CATEGORIES),
 	features: z.string().transform(parseJsonOrCsv),
 	display_order: z.coerce.number().optional().default(0),
 	image: z.string().transform(parseJsonOrCsv),
@@ -39,18 +36,12 @@ export type Project = {
 	tags: string[];
 	github: string;
 	demo: string;
-	category: string[];
+	category: string;
 	slug: string;
 	features?: string[];
 	display_order?: number;
 	created_at?: string;
 	updated_at?: string;
-};
-
-export type ProjectFormState = {
-	status: 'idle' | 'success' | 'error';
-	message: string;
-	errors?: Record<string, string[]>;
 };
 
 export type ProjectCard = {
@@ -64,7 +55,7 @@ export type ProjectCard = {
 	video: string;
 	source_code: string | null;
 	tags: string[];
-	category: string[];
+	category: string;
 	created_at: string;
 	updated_at: string;
 };
@@ -96,7 +87,7 @@ export function mapRowToProject(row: ProjectsRow): Project {
 		github: row.github ?? '',
 		demo: row.demo ?? '',
 		tags: asStringArray(row.tags),
-		category: asStringArray(row.category),
+		category: row.category ?? '',
 		features: asStringArray(row.features),
 		display_order: row.display_order ?? 99,
 		image: asStringArray(row.image),

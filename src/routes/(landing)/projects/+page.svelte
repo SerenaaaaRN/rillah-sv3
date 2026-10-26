@@ -23,13 +23,13 @@
 			p.title.toLowerCase().includes(q) ||
 			(p.description?.toLowerCase().includes(q) ?? false) ||
 			(p.tags?.some((t) => t.toLowerCase().includes(q)) ?? false) ||
-			(p.category?.some((c) => c.toLowerCase().includes(q)) ?? false),
+			(p.category?.toLowerCase().includes(q) ?? false),
 		debounceMs: 300
 	});
 
 	const filteredProjects = $derived.by(() => {
 		const result = filter.filteredItems.filter(
-			(p) => selectedCategory === 'All' || p.category.includes(selectedCategory)
+			(p) => selectedCategory === 'All' || p.category === selectedCategory
 		);
 		return [...result].sort((a, b) =>
 			sortBy === 'title'

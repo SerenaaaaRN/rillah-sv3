@@ -30,7 +30,7 @@
 	const groups = $derived(menu ?? [{ groupLabel: '', menus: items }]);
 	const itemClass = cn(
 		buttonVariants({ variant: 'ghost', size: 'icon' }),
-		'size-12 rounded-full transition-colors hover:bg-accent/50'
+		'size-12 transition-colors hover:bg-accent/50'
 	);
 
 	function handleItemClick() {
@@ -52,7 +52,7 @@
 				<!-- Dock via shadcn Button + Tooltip + Separator -->
 				<div
 					data-slot="dock-mobile"
-					class="pointer-events-auto relative z-50 flex items-center gap-1 rounded-full border bg-background px-1 py-1 shadow-[0_0_0_1px_rgba(0,0,0,.03),0_2px_4px_rgba(0,0,0,.05),0_12px_24px_rgba(0,0,0,.05)] dark:border-white/10 dark:shadow-[0_-20px_80px_-20px_#ffffff1f_inset]"
+					class="pointer-events-auto relative z-50 flex items-center gap-1 border bg-background px-1 py-1 shadow-[0_0_0_1px_rgba(0,0,0,.03),0_2px_4px_rgba(0,0,0,.05),0_12px_24px_rgba(0,0,0,.05)] dark:border-white/10 dark:shadow-[0_-20px_80px_-20px_#ffffff1f_inset]"
 				>
 					{#each items as item (item.label)}
 						<Tooltip.Root>
@@ -115,9 +115,9 @@
 
 	<Sheet.Content
 		side="bottom"
-		class="max-h-[80vh] overflow-y-auto rounded-t-3xl border-t bg-background p-4 pb-20 shadow-2xl sm:mx-auto sm:max-w-lg"
+		class="max-h-[80vh] overflow-y-auto border-t bg-background p-4 pb-20 shadow-2xl sm:mx-auto sm:max-w-lg"
 	>
-		<div class="mx-auto mb-4 h-1.5 w-12 rounded-full bg-muted"></div>
+		<div class="mx-auto mb-4 h-1.5 w-12 bg-muted"></div>
 		{@render header?.()}
 		<SidebarMenu menu={groups} onItemClick={handleItemClick} />
 	</Sheet.Content>

@@ -50,10 +50,6 @@
 			GitHub contributions unavailable.
 		</div>
 	{/await}
-	{#await data.certifications then certifications}
-		<Certification {certifications} />
-	{/await}
-	{#await data.guestbook then guestbook}
-		<Guestbook entries={guestbook} />
-	{/await}
+	<Certification certifications={data.certifications} />
+	<Guestbook entries={data.guestbook} />
 </main>

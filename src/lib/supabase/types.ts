@@ -6,7 +6,7 @@ export type ProjectsRow = {
 	github: string | null;
 	demo: string | null;
 	tags: string[] | null;
-	category: string[] | null;
+	category: string | null;
 	features: string[] | null;
 	display_order: number | null;
 	image: string[] | null;
