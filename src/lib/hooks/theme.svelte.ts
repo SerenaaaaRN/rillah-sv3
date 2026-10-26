@@ -1,8 +1,14 @@
 import { setMode, userPrefersMode } from 'mode-watcher';
+import { SvelteDate } from 'svelte/reactivity';
 
 type Mode = 'light' | 'dark' | 'system';
 
 export const theme = (themes: Mode[] = ['light', 'dark']) => {
+	if (typeof window !== 'undefined') {
+		const hour = new SvelteDate().getHours();
+		setMode(hour >= 6 && hour < 18 ? 'light' : 'dark');
+	}
+
 	$effect(() => {
 		const handleKeyDown = (e: KeyboardEvent) => {
 			const target = e.target as HTMLElement;
