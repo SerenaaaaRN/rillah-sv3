@@ -4,14 +4,12 @@
 	import StatCard from '#lib/components/shared/stat-card.svelte';
 	import { Button } from '#lib/components/ui/button/index.js';
 	import CertificatesTable from './_components/certificates-table.svelte';
-	import type { PageData } from './$types.js';
+	import type { PageProps } from './$types.js';
 
-	let { data }: { data: PageData } = $props();
-	let certificates = $derived(
-		(data.certificates ?? []) as import('#lib/schema/certificate.js').Certificate[]
-	);
+	let { data }: PageProps = $props();
+	const certificates = $derived(data.certificates);
 
-	let totalCertificates = $derived(certificates.length);
+	const totalCertificates = $derived(data.totalCertificates);
 	let withImageCount = $derived(certificates.filter((c) => c.image_url).length);
 	let withIssuerCount = $derived(certificates.filter((c) => c.issuer).length);
 </script>

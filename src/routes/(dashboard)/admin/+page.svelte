@@ -12,20 +12,20 @@
 	import { Badge } from '#lib/components/ui/badge/index.js';
 	import { Button } from '#lib/components/ui/button/index.js';
 	import { Card } from '#lib/components/ui/card/index.js';
-	import type { PageData } from './$types.js';
+	import type { PageProps } from './$types.js';
 
-	let { data }: { data: PageData } = $props();
+	let { data }: PageProps = $props();
 
-	let totalProjects = $derived((data.projects ?? []).length);
-	let totalCertificates = $derived((data.certificates ?? []).length);
+	let totalProjects = $derived(data.projectCount);
+	let totalCertificates = $derived(data.certificateCount);
 
-	let featuredProjectsCount = $derived(
-		new Set((data.projects ?? []).map((p) => p.category).filter(Boolean)).size
+	let uniqueCategoryCount = $derived(
+		new Set((data.recentProjects ?? []).map((p) => p.category).filter(Boolean)).size
 	);
 
 	let tagCounts = $derived.by(() => {
 		const counts: Record<string, number> = {};
-		for (const project of data.projects ?? []) {
+		for (const project of data.recentProjects ?? []) {
 			for (const tag of project.tags ?? []) {
 				const normalized = tag.trim().toLowerCase();
 				if (!normalized) continue;
@@ -48,8 +48,8 @@
 		topTechnologies.length > 0 ? Math.max(...topTechnologies.map((t) => t.count)) : 1
 	);
 
-	let recentProjects = $derived((data.projects ?? []).slice(0, 3));
-	let recentCertificates = $derived((data.certificates ?? []).slice(0, 3));
+	let recentProjects = $derived(data.recentProjects ?? []);
+	let recentCertificates = $derived(data.recentCertificates ?? []);
 
 	const stats = $derived([
 		{
@@ -72,7 +72,7 @@
 		},
 		{
 			title: 'Categories',
-			value: featuredProjectsCount,
+			value: uniqueCategoryCount,
 			icon: Tag,
 			href: undefined
 		}

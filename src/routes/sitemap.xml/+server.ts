@@ -1,5 +1,6 @@
 import { canonicalUrl } from '#lib/seo/site.js';
-import { PROJECTS_TABLE } from '#lib/supabase/types.js';
+import { listProjectSlugs } from '#lib/server/content.js';
+import { createStaticClient } from '#lib/supabase/static.js';
 import type { RequestHandler } from './$types';
 
 function escapeXml(value: string): string {
@@ -18,7 +19,7 @@ interface SitemapEntry {
 	priority?: number;
 }
 
-export const GET: RequestHandler = async ({ locals, setHeaders }) => {
+export const GET: RequestHandler = async ({ setHeaders }) => {
 	setHeaders({
 		'content-type': 'application/xml; charset=utf-8',
 		'cache-control': 'public, max-age=0, s-maxage=3600'
@@ -32,24 +33,13 @@ export const GET: RequestHandler = async ({ locals, setHeaders }) => {
 		{ loc: canonicalUrl('/certificates'), lastmod: now, changefreq: 'monthly', priority: 0.9 }
 	];
 
-	const { data, error } = await locals.supabase
-		.from(PROJECTS_TABLE)
-		.select('slug, updated_at')
-		.order('display_order', { ascending: true })
-		.order('created_at', { ascending: false });
-
-	if (error) {
-		console.error('[sitemap.xml] projects query failed:', error.message);
-	} else {
-		for (const row of data ?? []) {
-			if (!row.slug) continue;
-			entries.push({
-				loc: canonicalUrl(`/projects/${row.slug}`),
-				lastmod: row.updated_at || now,
-				changefreq: 'monthly',
-				priority: 0.8
-			});
-		}
+	for (const { slug, updated_at } of await listProjectSlugs(createStaticClient())) {
+		entries.push({
+			loc: canonicalUrl(`/projects/${slug}`),
+			lastmod: updated_at || now,
+			changefreq: 'monthly',
+			priority: 0.8
+		});
 	}
 
 	const urls = entries

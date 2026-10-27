@@ -1,6 +1,8 @@
 import { SITE_URL } from '#lib/seo/site.js';
 import type { RequestHandler } from './$types';
 
+export const prerender = true;
+
 const AI_SEARCH_BOTS = ['OAI-SearchBot', 'Claude-SearchBot', 'PerplexityBot'];
 const AI_TRAINING_BOTS = ['GPTBot', 'ClaudeBot', 'CCBot', 'Google-Extended', 'Bytespider'];
 

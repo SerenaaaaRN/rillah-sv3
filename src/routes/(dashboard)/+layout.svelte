@@ -22,7 +22,6 @@
 			action: item.action
 		}))
 	}));
-	const adminItems = adminMenu[0].menus;
 </script>
 
 <Sidebar.Provider>
@@ -40,8 +39,8 @@
 		<main class="mx-auto w-full max-w-6xl flex-1 p-4 md:p-6">{@render children()}</main>
 	</Sidebar.Inset>
 	{#if isMobile.current}
-		<div class="md:hidden">
-			<DockMobile items={adminItems} menu={adminMenu} />
+		<div>
+			<DockMobile menu={adminMenu} fullMenu={adminMenu} />
 		</div>
 	{/if}
 </Sidebar.Provider>

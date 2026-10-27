@@ -1,8 +1,9 @@
 import type { Handle } from '@sveltejs/kit/hooks';
+import { building } from '$app/env';
 import { createSupabaseServerClient } from '#lib/supabase/ssr.js';
 
 const seoRedirect = (url: URL, method: string): Response | null => {
-	if (method !== 'GET' && method !== 'HEAD') return null;
+	if (building || (method !== 'GET' && method !== 'HEAD')) return null;
 
 	const { pathname, search } = url;
 	const collapsed = pathname.replace(/^\/+/, '/');

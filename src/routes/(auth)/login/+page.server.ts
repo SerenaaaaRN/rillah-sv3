@@ -8,10 +8,14 @@ const LoginSchema = z.object({
 	redirectTo: z.string().optional().default('/admin')
 });
 
+/** Allow only same-site relative paths (rejects open redirects like `//evil.com`). */
+const safeRedirectTo = (path: string): string => {
+	return path.startsWith('/') && !path.startsWith('//') && !path.includes('\\') ? path : '/admin';
+};
+
 export const load: PageServerLoad = async ({ locals, url }) => {
 	const { session } = await locals.safeGetSession();
-	const requested = url.searchParams.get('redirectTo') ?? '/admin';
-	const redirectTo = requested.startsWith('/') ? requested : '/admin';
+	const redirectTo = safeRedirectTo(url.searchParams.get('redirectTo') ?? '/admin');
 	if (session) throw redirect(303, redirectTo);
 	return { redirectTo };
 };
@@ -22,7 +26,7 @@ export const actions: Actions = {
 		const parsed = LoginSchema.safeParse({
 			email: String(formData.get('email') ?? ''),
 			password: String(formData.get('password') ?? ''),
-			redirectTo: String(formData.get('redirectTo') ?? '/admin/projects')
+			redirectTo: String(formData.get('redirectTo') ?? '/admin')
 		});
 
 		if (!parsed.success) {
@@ -50,6 +54,6 @@ export const actions: Actions = {
 			});
 		}
 
-		throw redirect(303, parsed.data.redirectTo.startsWith('/') ? parsed.data.redirectTo : '/admin');
+		throw redirect(303, safeRedirectTo(parsed.data.redirectTo));
 	}
 };

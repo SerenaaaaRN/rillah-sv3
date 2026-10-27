@@ -1,9 +1,15 @@
 import { z } from 'zod';
-import type { ProjectsRow } from '#lib/supabase/types.js';
+import { UNSORTED_ORDER, type ProjectsRow } from '#lib/supabase/types.js';
 import { asStringArray, parseJsonOrCsv } from '#lib/utils/array.js';
 import { getGithubThumbnailUrl } from '#lib/utils/image.js';
 
 export const PROJECT_CATEGORIES = ['Full Stack App', 'Data Science', 'AI', 'Education'] as const;
+
+/** Empty/blank inputs resolve to UNSORTED_ORDER instead of 0. */
+const orderInput = z.preprocess(
+	(v) => (v === '' || v === null || v === undefined ? undefined : v),
+	z.coerce.number().int().min(0).optional().default(UNSORTED_ORDER)
+);
 
 export const ProjectSchema = z.object({
 	title: z.string().min(1, 'Title is required.').max(200),
@@ -20,7 +26,7 @@ export const ProjectSchema = z.object({
 	tags: z.string().transform(parseJsonOrCsv),
 	category: z.enum(PROJECT_CATEGORIES),
 	features: z.string().transform(parseJsonOrCsv),
-	display_order: z.coerce.number().optional().default(0),
+	display_order: orderInput,
 	image: z.string().transform(parseJsonOrCsv),
 	video: z.string().optional().default('')
 });
@@ -89,7 +95,7 @@ export function mapRowToProject(row: ProjectsRow): Project {
 		tags: asStringArray(row.tags),
 		category: row.category ?? '',
 		features: asStringArray(row.features),
-		display_order: row.display_order ?? 99,
+		display_order: row.display_order ?? UNSORTED_ORDER,
 		image: asStringArray(row.image),
 		video: row.video ?? '',
 		created_at: row.created_at,
@@ -114,7 +120,7 @@ export function mapInputToRow(
 		tags: input.tags,
 		category: input.category,
 		features: input.features,
-		display_order: input.display_order ?? 99,
+		display_order: input.display_order ?? UNSORTED_ORDER,
 		image,
 		video: input.video || null
 	};

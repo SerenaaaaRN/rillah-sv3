@@ -22,11 +22,3 @@ export const GuestbookSchema = z.object({
 });
 
 export type GuestbookInput = z.infer<typeof GuestbookSchema>;
-
-export function validateGuestbook(input: unknown): { data?: GuestbookInput; error?: string } {
-	const result = GuestbookSchema.safeParse(input);
-	if (!result.success) {
-		return { error: result.error.issues[0]?.message ?? 'Invalid input' };
-	}
-	return { data: result.data };
-}

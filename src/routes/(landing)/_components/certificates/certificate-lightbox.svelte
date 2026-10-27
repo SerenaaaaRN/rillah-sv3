@@ -3,10 +3,18 @@
 	import CaretRight from 'phosphor-svelte/lib/CaretRight';
 	import { Button } from '#lib/components/ui/button/index.js';
 	import * as Dialog from '#lib/components/ui/dialog/index.js';
-	import type { Certificate } from '#lib/schema/certificate.js';
+
+	/** Minimal view model — satisfies the full `Certificate` type structurally. */
+	export interface LightboxCertificate {
+		id: string;
+		title: string;
+		issuer: string;
+		date: string;
+		image_url: string;
+	}
 
 	interface Props {
-		cert: Certificate;
+		cert: LightboxCertificate;
 		index: number;
 		total: number;
 		onPrev: () => void;

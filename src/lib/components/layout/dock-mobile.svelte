@@ -2,11 +2,8 @@
 	import CaretDown from 'phosphor-svelte/lib/CaretDown';
 	import CaretUp from 'phosphor-svelte/lib/CaretUp';
 	import type { Snippet } from 'svelte';
-	import type {
-		Menu,
-		SidebarMenu as SidebarMenuGroups
-	} from '#lib/components/layout/landing-sidebar/constant.js';
-	import SidebarMenu from '#lib/components/layout/landing-sidebar/sidebar-menu.svelte';
+	import type { SidebarMenu } from '#lib/components/layout/landing-sidebar/constant.js';
+	import MenuList from '#lib/components/layout/landing-sidebar/menu-list.svelte';
 	import { buttonVariants } from '#lib/components/ui/button/index.js';
 	import { Separator } from '#lib/components/ui/separator/index.js';
 	import * as Sheet from '#lib/components/ui/sheet/index.js';
@@ -14,20 +11,19 @@
 	import { cn } from '#lib/utils.js';
 
 	let {
-		items,
 		menu,
+		fullMenu,
 		header,
 		onNavigate
 	}: {
-		items: Menu[];
-		menu?: SidebarMenuGroups[];
+		menu: SidebarMenu[];
+		fullMenu: SidebarMenu[];
 		header?: Snippet;
 		onNavigate?: () => void;
 	} = $props();
 
 	let open = $state(false);
 
-	const groups = $derived(menu ?? [{ groupLabel: '', menus: items }]);
 	const itemClass = cn(
 		buttonVariants({ variant: 'ghost', size: 'icon' }),
 		'size-12 transition-colors hover:bg-accent/50'
@@ -49,12 +45,12 @@
 
 		<Tooltip.Provider delayDuration={0}>
 			<div class="relative mx-auto">
-				<!-- Dock via shadcn Button + Tooltip + Separator -->
+				<!-- Dock Items (Menggunakan menu yang sudah difilter public) -->
 				<div
 					data-slot="dock-mobile"
 					class="pointer-events-auto relative z-50 flex items-center gap-1 border bg-background px-1 py-1 shadow-[0_0_0_1px_rgba(0,0,0,.03),0_2px_4px_rgba(0,0,0,.05),0_12px_24px_rgba(0,0,0,.05)] dark:border-white/10 dark:shadow-[0_-20px_80px_-20px_#ffffff1f_inset]"
 				>
-					{#each items as item (item.label)}
+					{#each menu[0].menus as item (item.label)}
 						<Tooltip.Root>
 							<Tooltip.Trigger>
 								{#snippet child({ props })}
@@ -119,6 +115,6 @@
 	>
 		<div class="mx-auto mb-4 h-1.5 w-12 bg-muted"></div>
 		{@render header?.()}
-		<SidebarMenu menu={groups} onItemClick={handleItemClick} />
+		<MenuList menu={fullMenu} onItemClick={handleItemClick} />
 	</Sheet.Content>
 </Sheet.Root>

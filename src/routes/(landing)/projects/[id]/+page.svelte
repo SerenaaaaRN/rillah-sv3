@@ -15,9 +15,9 @@
 		canonicalUrl,
 		creativeWorkSchema
 	} from '#lib/seo/site.js';
-	import type { PageData } from './$types';
+	import type { PageProps } from './$types';
 
-	let { data }: { data: PageData } = $props();
+	let { data }: PageProps = $props();
 	const project = $derived(data.project);
 	const title = $derived(project.title ?? 'Untitled');
 	const description = $derived(project.description ?? '');

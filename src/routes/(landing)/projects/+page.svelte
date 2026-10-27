@@ -9,9 +9,9 @@
 	import { breadcrumbSchema, canonicalUrl } from '#lib/seo/site.js';
 	import ProjectCard from './_components/project-card.svelte';
 	import ProjectsToolbar, { type SortOption } from './_components/projects-toolbar.svelte';
-	import type { PageData } from './$types';
+	import type { PageProps } from './$types';
 
-	let { data }: { data: PageData } = $props();
+	let { data }: PageProps = $props();
 	const projects = $derived(data.projects);
 
 	let sortBy: SortOption = $state('newest');

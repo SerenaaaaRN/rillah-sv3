@@ -1,8 +1,8 @@
 <script lang="ts">
 	import CertificateForm from '../_components/certificate-form.svelte';
-	import type { PageData } from './$types.js';
+	import type { PageProps } from './$types.js';
 
-	let { data }: { data: PageData } = $props();
+	let { data }: PageProps = $props();
 </script>
 
 <CertificateForm mode="edit" certificate={data.certificate} />

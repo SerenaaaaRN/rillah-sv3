@@ -14,10 +14,22 @@
 	} = $props();
 
 	const hasImage = $derived(cert.image_url.trim().length > 0);
+
+	const handleKeydown = (e: KeyboardEvent) => {
+		if (!hasImage) return;
+		if (e.key === 'Enter' || e.key === ' ') {
+			e.preventDefault();
+			onclick();
+		}
+	};
 </script>
 
 <Card
+	role={hasImage ? 'button' : undefined}
+	tabindex={hasImage ? 0 : undefined}
+	aria-disabled={!hasImage}
 	{onclick}
+	onkeydown={handleKeydown}
 	class={cn(
 		'group flex cursor-pointer flex-col rounded-none border border-border p-3 transition-colors hover:border-foreground/20',
 		!hasImage && 'cursor-default opacity-80'

@@ -3,8 +3,8 @@
 	import BlurFade from '#lib/components/shared/blur-fade.svelte';
 	import * as SectionHeading from '#lib/components/shared/section-heading/index.js';
 	import * as Dialog from '#lib/components/ui/dialog/index.js';
-	import type { Certificate, Certification } from '#lib/schema/certificate.js';
-	import CertificateLightbox from '../../certificates/_components/certificate-lightbox.svelte';
+	import type { Certification } from '#lib/schema/certificate.js';
+	import CertificateLightbox from './certificate-lightbox.svelte';
 	import CertificationCard from './certificates-card.svelte';
 
 	let { certifications = [] }: { certifications?: Certification[] } = $props();
@@ -14,21 +14,17 @@
 
 	let previewCertificates = $derived(certifications.slice(0, 3));
 
-	let mappedCertificates = $derived<Certificate[]>(
-		previewCertificates.map((c, idx) => ({
+	let lightboxItems = $derived(
+		previewCertificates.map((c) => ({
 			id: c.id,
 			title: c.title,
 			issuer: c.provider,
 			date: c.issuedDisplay,
-			image_url: c.image ?? '',
-			category: '',
-			credential_url: '',
-			display_order: idx,
-			created_at: new Date().toISOString()
+			image_url: c.image ?? ''
 		}))
 	);
 
-	let selectedCert = $derived(selectedIndex !== null ? mappedCertificates[selectedIndex] : null);
+	let selectedCert = $derived(selectedIndex !== null ? lightboxItems[selectedIndex] : null);
 
 	function openModal(index: number) {
 		selectedIndex = index;
@@ -37,7 +33,7 @@
 
 	function navigate(direction: number) {
 		if (selectedIndex === null) return;
-		const total = mappedCertificates.length;
+		const total = lightboxItems.length;
 		selectedIndex = (selectedIndex + direction + total) % total;
 	}
 </script>
@@ -80,7 +76,7 @@
 					<CertificateLightbox
 						cert={selectedCert}
 						index={selectedIndex}
-						total={mappedCertificates.length}
+						total={lightboxItems.length}
 						onPrev={() => navigate(-1)}
 						onNext={() => navigate(1)}
 					/>

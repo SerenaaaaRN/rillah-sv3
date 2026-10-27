@@ -8,10 +8,10 @@
 	import { Button } from '#lib/components/ui/button/index.js';
 	import { Separator } from '#lib/components/ui/separator/index.js';
 	import { cn } from '#lib/utils.js';
-	import { publicDashboardMenu, type SidebarMenu } from './constant.js';
+	import type { SidebarMenu } from './constant.js';
 
 	let {
-		menu = publicDashboardMenu,
+		menu = [],
 		onItemClick
 	}: {
 		menu?: SidebarMenu[];

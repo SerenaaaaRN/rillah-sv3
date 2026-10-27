@@ -4,12 +4,12 @@
 	import StatCard from '#lib/components/shared/stat-card.svelte';
 	import { Button } from '#lib/components/ui/button/index.js';
 	import ProjectsTable from './_components/projects-table.svelte';
-	import type { PageData } from './$types.js';
+	import type { PageProps } from './$types.js';
 
-	let { data }: { data: PageData } = $props();
-	let projects = $derived((data.projects ?? []) as import('#lib/schema/projects.js').Project[]);
+	let { data }: PageProps = $props();
+	const projects = $derived(data.projects);
 
-	let totalProjects = $derived(projects.length);
+	const totalProjects = $derived(data.totalProjects);
 	let withDemoCount = $derived(projects.filter((p) => p.demo).length);
 	let totalTags = $derived(new Set(projects.flatMap((p) => p.tags)).size);
 </script>

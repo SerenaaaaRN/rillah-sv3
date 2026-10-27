@@ -16,7 +16,10 @@ export const CertificateSchema = z.object({
 	title: z.string().min(1, 'Title is required.').max(200),
 	issuer: z.string().optional().default(''),
 	date: z.string().optional().default(''),
-	display_order: z.coerce.number().optional().default(UNSORTED_ORDER),
+	display_order: z.preprocess(
+		(v) => (v === '' || v === null || v === undefined ? undefined : v),
+		z.coerce.number().int().min(0).optional().default(UNSORTED_ORDER)
+	),
 	image_url: z.string().optional().default('')
 });
 

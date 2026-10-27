@@ -10,12 +10,12 @@
 	import { breadcrumbSchema, canonicalUrl } from '#lib/seo/site.js';
 	import { UNSORTED_ORDER } from '#lib/supabase/types.js';
 	import { parseDisplayDateToISO } from '#lib/utils/date.js';
+	import CertificateLightbox from '../_components/certificates/certificate-lightbox.svelte';
 	import CertificateGridCard from './_components/certificate-grid-card.svelte';
-	import CertificateLightbox from './_components/certificate-lightbox.svelte';
 	import CertificatesToolbar, { type SortOption } from './_components/certificates-toolbar.svelte';
-	import type { PageData } from './$types';
+	import type { PageProps } from './$types';
 
-	let { data }: { data: PageData } = $props();
+	let { data }: PageProps = $props();
 	const certificates = $derived(data.certificates);
 
 	let selectedIssuer = $state('All');

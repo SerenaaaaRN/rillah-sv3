@@ -10,7 +10,7 @@
 	import { Textarea } from '#lib/components/ui/textarea/index.js';
 	import { slugField } from '#lib/hooks/slug-field.svelte.js';
 	import { PROJECT_CATEGORIES, type Project } from '#lib/schema/projects.js';
-	import { PROJECT_IMAGE_BUCKET } from '#lib/supabase/types.js';
+	import { PROJECT_IMAGE_BUCKET, UNSORTED_ORDER } from '#lib/supabase/types.js';
 	import { errorMessage } from '#lib/utils/error.js';
 	import ProjectImagesManager from './project-images-manager.svelte';
 
@@ -229,7 +229,7 @@
 						<Input
 							name="display_order"
 							type="number"
-							value={String(project?.display_order ?? 99)}
+							value={String(project?.display_order ?? UNSORTED_ORDER)}
 							class="rounded-none"
 						/>
 					</Field.Field>

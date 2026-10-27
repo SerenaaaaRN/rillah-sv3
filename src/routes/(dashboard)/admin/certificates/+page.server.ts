@@ -1,33 +1,22 @@
-import { fail } from '@sveltejs/kit';
-import { mapRowToCertificate } from '#lib/schema/certificate.js';
-import { CERTIFICATES_SELECT, CERTIFICATES_TABLE } from '#lib/supabase/types.js';
+import { dbFail, missingIdFail } from '#lib/server/actions.js';
+import { listAdminCertificates } from '#lib/server/content.js';
+import { CERTIFICATES_TABLE } from '#lib/supabase/types.js';
 import type { Actions, PageServerLoad } from './$types.js';
 
 export const load: PageServerLoad = async ({ locals, depends, setHeaders }) => {
 	depends('supabase:certificates');
 	setHeaders({ 'cache-control': 'private, no-store' });
-	const { data, error } = await locals.supabase
-		.from(CERTIFICATES_TABLE)
-		.select(CERTIFICATES_SELECT)
-		.order('display_order', { ascending: true })
-		.order('created_at', { ascending: false })
-		.limit(100);
-
-	if (error) {
-		console.error('[admin/certificates] load failed:', error.message);
-		return { certificates: [] };
-	}
-	return { certificates: (data ?? []).map(mapRowToCertificate) };
+	const { rows, total } = await listAdminCertificates(locals.supabase);
+	return { certificates: rows, totalCertificates: total ?? rows.length };
 };
 
 export const actions: Actions = {
 	delete: async ({ request, locals }) => {
-		const form = await request.formData();
-		const id = String(form.get('id') ?? '').trim();
-		if (!id) return fail(400, { error: 'Missing certificate id.' });
+		const id = String((await request.formData()).get('id') ?? '').trim();
+		if (!id) return missingIdFail('certificate');
 
 		const { error } = await locals.supabase.from(CERTIFICATES_TABLE).delete().eq('id', id);
-		if (error) return fail(500, { error: error.message });
+		if (error) return dbFail(error.message);
 		return { success: true };
 	}
 };

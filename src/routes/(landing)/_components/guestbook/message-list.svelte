@@ -37,9 +37,6 @@
 							<span class="font-mono text-[11px] text-muted-foreground"
 								>{timeAgo(entry.created_at)}</span
 							>
-							{#if entry.id.startsWith('optimistic-')}
-								<span class="font-mono text-[10px] text-muted-foreground italic">sending…</span>
-							{/if}
 						</div>
 						<p
 							class="mt-1.5 text-sm leading-relaxed text-pretty wrap-break-word whitespace-pre-wrap"
