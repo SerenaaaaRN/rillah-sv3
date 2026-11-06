@@ -1,218 +1,261 @@
-# rillah-sv3 — Personal Portfolio + Admin CMS (rillah.dev)
+# rillah-sv3 — Portfolio + Admin CMS (rillah.dev)
 
-Primary context file for AI agents. Read first before any changes.
+Primary context for AI agents. Read this file before changing anything. When a habit conflicts with a rule below, the rule wins.
 
-## Split Architecture Guidance
+One package: SvelteKit 3 + Svelte 5 (runes forced) on Cloudflare Workers, with Supabase for Postgres, Auth, and Storage. No separate backend — server `load` + `actions` are the API.
 
-Single architecture — read all sections. This is a single-package SvelteKit app. Frontend (landing) and backend (SvelteKit `load` + `actions` + Supabase) live in the same `src/routes/` tree distinguished only by route groups: `(landing)`, `(auth)`, `(dashboard)`.
+## 1. Tooling
 
-## Available Skills
+### Skills — load before the matching task
 
-| Skill                              | When to use                                                                                                        |
-| ---------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
-| `svelte-code-writer`               | Wajib for ANY `.svelte`, `.svelte.ts`, `.svelte.js` create/edit/review. Lookup Svelte 5 docs + validate.           |
-| `svelte-core-bestpractices`        | Wajib for Svelte reactivity, `$state`/`$derived`/`$effect`, event handling, a11y, performance.                     |
-| `supabase`                         | Wajib for ANY `src/lib/supabase/*`, `locals.supabase` query, Auth, Storage buckets, SSR (`@supabase/ssr`).         |
-| `supabase-postgres-best-practices` | Wajib when touching `src/lib/supabase/types.ts` tables, `.order()/.select()/.eq()` queries, or adding indexes/RLS. |
+| Skill                              | Use for                                                                                                 |
+| ---------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| `svelte-code-writer`               | MUST for any `.svelte`, `.svelte.ts`, `.svelte.js` create, edit, or review. Svelte 5 docs + validation. |
+| `svelte-core-bestpractices`        | MUST when touching reactivity (`$state`/`$derived`/`$effect`), event handling, a11y, or performance.    |
+| `supabase`                         | MUST for `src/lib/supabase/*`, `locals.supabase` queries, Auth, Storage buckets, SSR (`@supabase/ssr`). |
+| `supabase-postgres-best-practices` | MUST when changing `types.ts` tables, `.select()/.order()/.eq()` queries, indexes, or RLS.              |
 
-## Available MCP
+### MCP
 
-| MCP      | Tools                                                                          | When to use                                                                                                                                                                   |
-| -------- | ------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `svelte` | `list-sections` → `get-documentation` → `svelte-autofixer` → `playground-link` | Wajib FIRST for any Svelte/SvelteKit question. ALWAYS run `svelte-autofixer` before returning Svelte code. NEVER call `playground-link` if code was written to project files. |
+| MCP      | Tools                                                                          | Use for                                                                                                                                                            |
+| -------- | ------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `svelte` | `list-sections` → `get-documentation` → `svelte-autofixer` → `playground-link` | MUST for any Svelte/SvelteKit question. ALWAYS run `svelte-autofixer` before returning Svelte code. NEVER call `playground-link` once code lands in project files. |
 
-## About the Project
+## 2. What this project is
 
-Personal portfolio + headless CMS for Duhairillah (Software Engineer, `https://rillah.dev`). Public landing shows intro, career, education, skills, GitHub contribution calendar, projects, certificates, guestbook (`reviews` table). Single-admin dashboard at `/admin/*` manages `projects` and `certificates` CRUD + Supabase Storage uploads. Business model: personal branding + SEO (`sitemap.xml`, `robots.txt`, JSON-LD in `src/lib/seo/site.ts`) + Cloudflare Workers deploy. Bilingual: code/comments English, user-facing strings Indonesian (`Email wajib diisi.`, `baru saja`, `mnt lalu`, `id-ID` dates).
+A personal portfolio and single-admin CMS for Duhairillah (Software Engineer). Business model: personal branding plus SEO
+(`sitemap.xml`, `robots.txt`, JSON-LD from `src/lib/seo/site.ts`), deployed on Cloudflare Workers.
 
-## Architecture Overview
+Public pages:
 
-SvelteKit 3 + Svelte 5 (runes forced) + Cloudflare Workers. No separate backend; SvelteKit server `load`/`actions` + 3 Supabase client factories + zod schemas are the API layer. No REST `/api/*` except `src/routes/sitemap.xml/+server.ts`, `src/routes/robots.txt/+server.ts`, `src/routes/(auth)/logout/+server.ts`. `robots.txt` and `(landing)/blog` are prerenderable (`export const prerender = true`); home page is NOT (contains actions).
+- `/` — intro/hero (`View My Work` CTA), scrolltelling, about, skills, career, education, GitHub contribution calendar,
+  certificates preview, guestbook. User-facing copy is Indonesian; code and comments are English.
+- `/projects` — grid with category filter, search, and sort. `/projects/[id]` accepts a UUID or slug (UUID + slug → 301 to
+  the slug) and shows an embla carousel of images plus the video.
+- `/certificates` — full grid, sharing `certificate-lightbox.svelte` with the landing preview.
+- `/blog` — static writing page, `noindex`, not prerendered.
 
-| Package                     | Role                                                                                                                                                                                                                                                                                                                                                                                                                                  | Status                    |
-| --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------- |
-| `src/routes/(landing)`      | Public SEO landing, blog, projects, certificates                                                                                                                                                                                                                                                                                                                                                                                      | Active                    |
-| `src/routes/(auth)`         | Login/logout only (`login/+page.server.ts`, `logout/+server.ts`)                                                                                                                                                                                                                                                                                                                                                                      | Active                    |
-| `src/routes/(dashboard)`    | Auth-gated admin CMS (`admin/projects`, `admin/certificates`)                                                                                                                                                                                                                                                                                                                                                                         | Active                    |
-| `src/lib/supabase`          | `ssr.ts` (cookie-aware + layout SSR, ex `server.ts` — renamed because Kit 3 treats `server.ts` filenames as server-only), `client.ts` (browser + `uploadPublicFile`), `static.ts` (anon for public loads), `types.ts` (manual DB types + table/bucket consts)                                                                                                                                                                         | Active, canonical         |
-| `src/lib/hooks`             | `debounce` (internal, used by `searchFilter`), `searchFilter`, `ReducedMotion`, `slugField`, `uploadTask` (owns `kind`→limit policy), `IsMobile`, `theme()` — no `use-` prefix, arrow functions                                                                                                                                                                                                                                       | Active, canonical         |
-| `src/lib/schema`            | zod source of truth: `projects.ts`, `certificate.ts`, `guestbook.ts`                                                                                                                                                                                                                                                                                                                                                                  | Active, canonical         |
-| `src/lib/server`            | Server-only query/action layer: `content.ts` (typed queries — `getProjects`/`getProjectCards`/`getProjectByParam`/`getCertificates`/`listCertifications`/`listGuestbook`/`insertGuestbook`/`getAdminOverview`/`listAdminProjects`/`listAdminCertificates`/`listProjectSlugs` + exported `UUID_RE`), `github.ts` (`fetchGithubCalendar` — 6h cache, 10s timeout), `actions.ts` (`parseForm`/`validationFail`/`dbFail`/`missingIdFail`) | Active, canonical         |
-| `src/lib/utils`             | `array.ts` (`parseJsonOrCsv`, `asStringArray`), `bytes.ts` (`mb`, `formatBytes`), `date.ts` (id-ID format/parse), `error.ts` (`errorMessage`), `form.ts` (`formDataToRecord` only), `image.ts` (`compressImage` JPEG/PNG→WebP, pure, no reactivity + `getGithubThumbnailUrl` opengraph thumbnail)                                                                                                                                     | Active, canonical         |
-| `src/lib/data`              | Static content: `career.ts`, `education.ts`, `skills.ts`, `social.ts`, `scrolltelling.ts`, `github.ts` (zod)                                                                                                                                                                                                                                                                                                                          | Active                    |
-| `src/lib/components/ui`     | shadcn-svelte primitives (button, card, table, sidebar, sheet, field, select, etc.)                                                                                                                                                                                                                                                                                                                                                   | Active — DO NOT duplicate |
-| `src/lib/components/shared` | `seo-head.svelte`, `stat-card.svelte`, `blur-fade.svelte`, `section-heading/*`                                                                                                                                                                                                                                                                                                                                                        | Active                    |
-| `src/lib/components/layout` | `app-sidebar/*` (dashboard composition + `constant.ts` admin nav), `landing-sidebar/*` (landing composition: `sidebar-main`, `sidebar-menu`, `profile-header`, `constant.ts` public nav), `dock-mobile.svelte` (generic mobile dock, landing + dashboard), `dynamic-breadcrumb.svelte`, `footer.svelte`, `scroll-progress.svelte`                                                                                                     | Active                    |
+The landing has **no projects section on purpose**. Projects' entry points are the hero CTA, the sidebar, and the mobile
+dock; `/projects` is the single home for work, so do not re-add a preview section to `/`.
 
-## Project Structure
+## 3. Route map
 
-```
-rillah-sv3/
-├── package.json                     # SvelteKit lib packaging: svelte "./dist/index.js", sideEffects:true. "imports" field declares #lib subpath alias. Scripts: dev/build/start/check/lint/format. Uses bun per config but scripts call vite/svelte-kit.
-├── vite.config.ts                   # Canonical: tailwindcss()+sveltekit(adapter-cloudflare fallback:'plaintext', platformProxy.persist:true) + compilerOptions.runes force-true except node_modules. DO NOT remove.
-├── wrangler.jsonc                   # Cloudflare: main ".svelte-kit/cloudflare/_worker.js", assets ".svelte-kit/cloudflare", compatibility_date "2026-09-20", compatibility_flags ["nodejs_als"]. Secrets via `npx wrangler secret put` (surfaced through $app/env/private), NOT vars.
-├── tsconfig.json                    # Extends $app/tsconfig (NOT .svelte-kit/generated), strict:true, include ["src","vite.config.ts"].
-├── eslint.config.js                 # js+ts+svelte recommended + prettier last + svelte/no-navigation-without-resolve:off (SvelteKit resolve() false-positive).
-├── prettier.config.js               # useTabs:true, singleQuote:true, trailingComma:none, printWidth:100, plugins sort-imports+svelte+tailwindcss, importOrder BUILTIN>THIRD_PARTY>$app/env>#lib>./
-├── components.json                  # shadcn-svelte: css "src/routes/layout.css", baseColor neutral, style vega, iconLibrary phosphor, aliases #lib/components,#lib/utils,#lib/hooks.
-├── src/
-│   ├── env.ts                       # defineEnvVars (@sveltejs/kit/env): PUBLIC_SUPABASE_*, GH_READ_USER_TOKEN_PERSONAL, GITHUB_USERNAME. Replaces $env/* modules (removed in Kit 4).
-│   ├── app.html                     # Shell. DO NOT add script tags; use +layout.svelte.
-│   ├── app.d.ts                     # App.Locals {supabase:SupabaseClient<Database>, safeGetSession, session, user}, PageData {session,user}. NO App.Platform (removed in Kit 3 / adapter-cloudflare 8). Update here when adding locals.
-│   ├── hooks.server.ts              # Canonical middleware: 1) seoRedirect (lowercase+trailing-slash 301), 2) createSupabaseServerClient(event)->event.locals.supabase, 3) safeGetSession (sb-*-auth-token cookie check -> getUser -> getSession). DO NOT call getSession without cookie guard.
-│   ├── lib/
-│   │   ├── supabase/
-│   │   │   └── types.ts             # Manual DB types (NOT supabase gen): ProjectsRow/CertificatesRow/ReviewsRow + Database. Update manually when SQL changes.
-│   │   └── server/
-│   │       ├── content.ts           # Typed query layer for all Supabase reads/writes (projects/certificates/reviews): public getters, admin lists (.limit(100) + exact count), getAdminOverview (exact counts + 3 previews), listProjectSlugs (sitemap). Exported UUID_RE. Error = console.* + [] / null fallback, NEVER throw (public admin per caller).
-│   │       ├── github.ts            # fetchGithubCalendar(): GraphQL contribution calendar, module githubCache TTL 6h (GITHUB_TTL_MS), 10s AbortSignal.timeout, response.ok + payload.errors checks. Returns null on ANY failure (never throws).
-│   │       └── actions.ts           # Admin action helpers: parseForm(schema, record) -> {data,errors} union, validationFail(errors)=fail(400{error,errors}), dbFail(msg)=fail(500), missingIdFail(noun)=fail(400 "Missing <noun> id.").
-│   └── routes/
-│       ├── layout.css               # Tailwind v4: @import tailwindcss+tw-animate-css+shadcn-svelte/tailwind.css, @font-face Inter/Bricolage/Instrument Serif/JetBrains Mono, @custom-variant dark, CSS vars neutral + --radius:0rem (sharp). Design token source.
-│       ├── +layout.svelte           # Imports ./layout.css, ModeWatcher, theme(), onAuthStateChange->invalidate('supabase:auth'). Root only; no UI.
-│       ├── +layout.ts               # Creates browser/server supabase client, depends('supabase:auth'), reuses data.session (NO getSession call — server already validated). Returns {supabase,session,user}.
-│       ├── +layout.server.ts        # Returns {session,user,cookies:getAll().filter(sb-*)} via safeGetSession. Feeds +layout.ts cookies for SSR.
-│       ├── (landing)/               # Public. _components/* co-located (intro, about, career, education, skills, marquee, scrolltelling, typing-animation, contribution/*, certificates/* incl. certificate-lightbox.svelte shared by landing preview + /certificates grid, guestbook/*). +page.server.ts loads certifications+guestbook via Promise.all through content.ts helpers, github returned UN-awaited for streaming (`{#await}` + Skeleton in +page.svelte); guestbook action: honeypot silent-success + GuestbookSchema.safeParse (via `formDataToRecord`).
-│       │   └── projects/
-│       │       └── [id]/+page.server.ts  # Canonical slug/UUID loader: depends('supabase:projects'), cache-control public max-age=30 s-maxage=300, UUID regex -> by id else by slug, 301 /projects/:slug if UUID hit with slug.
-│       ├── (auth)/
-│       │   └── login/
-│       │       └── +page.server.ts  # LoginSchema zod (email wajib diisi, password wajib diisi, redirectTo default /admin). signInWithPassword, Indonesian error mapping Invalid login credentials->Email atau password salah.
-│       └── (dashboard)/
-│           ├── +layout.server.ts    # THE guard: safeGetSession, if !session redirect 303 /login?redirectTo=<encoded path>. All /admin/* inherit. DO NOT add second guard. `export const prerender = false` (routes contain actions).
-│           └── admin/
-│               └── projects|certificates/  # CRUD: +page.server.ts list, new/+page.server.ts insert, [id]/+page.server.ts update, project-form.svelte/certificate-form.svelte + *-table.svelte + *-manager.svelte. Uploads via `uploadTask` hook + `uploadPublicFile`. Admin loads: `private, no-store` headers + `depends('supabase:...')` + `.limit()`; deletes `invalidate()` targeted tag (not `refreshAll`).
-```
+| Route                 | Responsibility                                                                                         |
+| --------------------- | ------------------------------------------------------------------------------------------------------ |
+| `(landing)/`          | Public SEO pages: `/`, `projects`, `certificates`, `blog`. See the notes below.                        |
+| `(auth)/login`        | `LoginSchema`, `signInWithPassword`, Indonesian error mapping. Signed-in visitors are redirected away. |
+| `(auth)/logout`       | `POST` only: `locals.supabase.auth.signOut()` then `redirect(303, '/login')`.                          |
+| `(dashboard)/`        | Layout guard for every `/admin/*` route. Sets `prerender = false` (the tree contains actions).         |
+| `(dashboard)/admin`   | Overview: exact counts plus 3 latest rows per table via `getAdminOverview`.                            |
+| `(dashboard)/admin/*` | `projects` and `certificates` CRUD: list, `new/` insert, `[id]/` update, plus `_components/*` forms.   |
+| root                  | Root layout, auth load, `+error.svelte`, `layout.css`, `robots.txt` and `sitemap.xml` handlers.        |
 
-## Tech Stack & Technical Decisions
+Landing notes:
 
-| Decision        | Choice                                                                                                                          | Reason                                                                                                                                   |
-| --------------- | ------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
-| Framework       | SvelteKit `^3.1.0` + Svelte `^5.57.1`, runes forced via `compilerOptions.runes` in the `sveltekit()` plugin in `vite.config.ts` | Single codebase SSR+actions, no API server. Runes `true` outside node_modules gives `$state`/`$derived`/`$effect` everywhere.            |
-| Deploy          | `@sveltejs/adapter-cloudflare@^8.0.0` + `wrangler ^4.67`, `wrangler.jsonc` Workers                                              | Edge SSR. `platform` removed in Kit 3 — env/token via `$app/env/private` (`src/env.ts`), NOT `platform.env`.                             |
-| Styling         | `tailwindcss@^4.3.0` + `@tailwindcss/vite@^4.3.0` + `tw-animate-css@^1.4.0`, `layout.css` tokens, `--radius:0rem`               | Sharp brutalist (radius 0), dark via `.dark` + `mode-watcher@^1.1.0`.                                                                    |
-| UI              | `bits-ui@^2.18.0` + `shadcn-svelte@^1.6.1` `vega/neutral/phosphor`                                                              | Canonical primitives in `src/lib/components/ui/*`. Never rebuild dialog/sheet/table/select.                                              |
-| DB+Auth+Storage | `@supabase/supabase-js@^2.116.0` + `@supabase/ssr@^0.12.7`                                                                      | 3 clients: `ssr.ts` (cookie `getAll`/`setAll` path `/`), `client.ts` (browser), `static.ts` (public anon for landing loads).             |
-| Validation      | `zod@^4.6.5` (`z.coerce.number`, `.transform(parseJsonOrCsv)`)                                                                  | All forms: `ProjectSchema`, `CertificateSchema`, `GuestbookSchema`, `GithubCalendarSchema`, `LoginSchema`. Never trust `FormData` raw.   |
-| Icons/Media     | `phosphor-svelte@^3.1.0`, `embla-carousel-svelte@^8.6.0`                                                                        | Phosphor only (components.json). Embla ONLY for project-detail image carousel (`(landing)/projects/[id]/+page.svelte`); lists are grids. |
-| Utils           | `clsx@^2.1.1` + `tailwind-merge@^3.6.0` + `tailwind-variants@^3.3.1` via `cn()` in `src/lib/utils.ts:4-6`                       | Single class merge entry. Always use `cn()`, never string concat.                                                                        |
-| Lint/Format     | `eslint@^10.4.1` + `typescript-eslint@^8.60.1` + `eslint-plugin-svelte@^3.19.0` + `prettier@^3.8.3`                             | `bun run lint` = `prettier --check . && eslint .`. Tabs, single quotes, no trailing comma.                                               |
-| Check           | `svelte-check@^4.6.0`, `vite@^8.0.16`, `typescript@^6.0.3`                                                                      | `bun run check` = `svelte-kit sync && svelte-check`. Must pass before PR.                                                                |
-| Fonts           | Self-hosted `/static/fonts/*.woff2` via `@font-face` in `layout.css:5-43`                                                       | Inter + Bricolage Grotesque + Instrument Serif + JetBrains Mono, `display:swap`. Never Google Fonts CDN.                                 |
+- `+page.server.ts` loads certifications and guestbook in one `Promise.all` and returns `github` un-awaited (streamed through
+  `{#await}` plus a skeleton). The guestbook action also lives there.
+- `career.svelte` is an accordion **on mobile only** (`IsMobile`); every description stays visible on desktop.
+- `education.svelte` is a 2-column grid with an institution eyebrow, a duration badge, and a `GraduationCap` fallback when
+  `image` is null.
+- `robots.txt` sets `prerender = true`; `/blog` is `noindex` and not prerendered. Root layout owns `layout.css`, `ModeWatcher`,
+  `theme()`, and the auth invalidation on sign-in/out.
 
-## Backend/API Conventions
+Root config: `vite.config.ts` is canonical (tailwind + sveltekit, adapter-cloudflare `fallback: 'plaintext'`, runes forced
+outside `node_modules`) — do not remove. `wrangler.jsonc` holds the Workers entry and assets; secrets go through
+`npx wrangler secret put`, never `vars`. Import order and formatting come from `prettier.config.js` and `eslint.config.js`;
+shadcn aliases and style come from `components.json`.
 
-No REST. Canonical is SvelteKit `load` + named `actions` + `locals.supabase` + zod + `fail()` / `redirect()`.
+## 4. Module map (`src/lib`)
 
-Route files stay thin: `load` and shared queries go through `src/lib/server/content.ts` helpers (`getProjects`, `getProjectCards`, `getProjectByParam`, `getCertificates`, `listCertifications`, `listGuestbook`, `insertGuestbook`, `getAdminOverview`, `listAdminProjects`, `listAdminCertificates`, `listProjectSlugs`); form actions go through `src/lib/server/actions.ts` helpers. Canonical admin table pattern (see `src/routes/(dashboard)/admin/projects/[id]/+page.server.ts`): `load` fetches one row by `id` via `locals.supabase` and throws 404 if missing; `update`/`create` actions call `parseForm(Schema, formDataToRecord(form))` → on `!data` return `validationFail(errors)`, check slug clash with `.neq('id', id).maybeSingle()`, return `dbFail(...)` on DB error, and `throw redirect(303, ...)` on success.
+| Module              | Contents                                                                                                                                                                                             |
+| ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `components/ui`     | shadcn-svelte primitives (accordion, badge, button, card, dialog, field, select, sheet, sidebar, table, tabs, …). NEVER rebuild or duplicate one.                                                    |
+| `components/shared` | `seo-head`, `section-heading/*`, `stat-card`, `blur-fade`, `flickering-grid`, `eyebrow`, `mac-window`, `filter-toolbar`, `file-upload`, `delete-confirm`, `scroll-to-top`, `animated-theme-toggler`. |
+| `components/layout` | `app-sidebar/*` (dashboard nav), `landing-sidebar/*` (public nav), `dock-mobile`, `dynamic-breadcrumb`, `footer`, `scroll-progress`.                                                                 |
+| `supabase`          | `ssr.ts` (cookie server client), `client.ts` (browser + `uploadPublicFile`), `static.ts` (anon public reads), `types.ts` (manual DB types + constants).                                              |
+| `server`            | `content.ts` (query layer), `github.ts`, `actions.ts`. Server-only.                                                                                                                                  |
+| `schema`            | zod source of truth: `projects.ts`, `certificate.ts`, `guestbook.ts`.                                                                                                                                |
+| `hooks`             | Reactive hooks, `*.svelte.ts` (see UI conventions).                                                                                                                                                  |
+| `utils.ts`          | `cn()` plus the `WithoutChild`, `WithoutChildren`, `WithElementRef` types.                                                                                                                           |
+| `utils/`            | Domain helpers: `array`, `bytes`, `date`, `error`, `form`, `image`.                                                                                                                                  |
+| `seo`               | `site.ts`: site constants, canonical/absolute URLs, and the JSON-LD builders.                                                                                                                        |
+| `data`              | Static content: `career`, `education`, `skills`, `social`, `scrolltelling`, `github` (zod).                                                                                                          |
 
-Rules:
+### Query layer — `src/lib/server/content.ts`
 
-- ALWAYS `formDataToRecord(form)` (`src/lib/utils/form.ts`) before `parseForm`/zod. NEVER `Object.fromEntries(formData)` — it leaks `File` into string schemas.
-- ALWAYS route-file Supabase queries for projects/certificates/reviews through `#lib/server/content.js` helpers. Inline chains (`*.from(...).order(...)`) in routes only for specialist single-table actions (admin delete, detail by id, slug clash check) — duplicated query rules are a correctness hazard.
-- ALWAYS `mapRowTo*` on read, `mapInputToRow` on write (`src/lib/schema/projects.ts`, `certificate.ts`). NEVER inline row mapping.
-- ALWAYS slug clash check with `.neq('id', id).maybeSingle()` before update (projects `[id]/+page.server.ts`). Certificates have no `slug` column — no clash check applicable.
-- ALWAYS `fail(400,{error,errors})` (via `validationFail`) for validation, `fail(500,{error:dbError.message})` (via `dbFail`) for DB, `missingIdFail(noun)` for missing id, `throw redirect(303,...)` on success. Public guestbook: honeypot filled → silent `{success:true}` (NEVER reveal the honeypot), zod fail → `fail(400,{error:firstMessage})`, DB fail → `fail(500,{error:'Something went wrong. Please try again later.'})`, success → `{success:true}` without redirect.
-- ALWAYS `locals.supabase` in `load`/`actions` under `(dashboard)` (cookie-authenticated). Use `createStaticClient()` (`src/lib/supabase/static.ts`) ONLY for public reads in `(landing)/+page.server.ts` and `sitemap.xml/+server.ts`. NEVER use static client in admin — it bypasses user session.
-- Uploads: ONLY via `uploadTask({bucket, slug, folder, kind})` hook (`src/lib/hooks/upload-task.svelte.ts`) + `uploadPublicFile()` (`src/lib/supabase/client.ts`). Limits owned by hook `kind` preset: images `5MB mimePrefix:'image/'`, videos `50MB mimePrefix:'video/'`; explicit `maxBytes`/`mimePrefix` override allowed. Buckets `project-images` / `certificate-images`. Storage path `{slug}/{Date.now()}-{slug}.{ext}` — one folder per project slug holding images + video together, no per-kind subfolders; original filename discarded, ext taken from the final file (`.webp` for converted photos). Hook pre-validates `file instanceof File && file.size>0 && file.type.startsWith(prefix)` with `formatBytes()` message. Photos (`kind:'image'`) auto-convert JPEG/PNG→WebP via `compressImage()` (`src/lib/utils/image.ts`, 1920px/q0.85, native canvas, GIF/SVG/HEIC pass through, fallback to original on failure) BEFORE the size check; `compress:false` opts out, `kind:'video'` never compresses.
-- Ordering: ALWAYS `.order('display_order',{ascending:true})` then `.order('created_at',{ascending:false})` for projects; certificates `.order('display_order')`; guestbook `.order('created_at',{ascending:false})` with NO limit (intentional, small dataset).
-- Logging: `console.error('[content] <fn> failed:', ...)` inside `src/lib/server/content.ts`, `console.error('[admin/...] load failed:', ...)` in admin route files, `console.warn('[github] load fallback ...')` for public fallbacks returning `[]`/`null`. NEVER throw on public load failure.
+- Public reads: `getProjects`, `getProjectCards`, `getProjectByParam`, `getCertificates`, `listCertifications`, `listGuestbook`, `listProjectSlugs`.
+- Writes: `insertGuestbook`.
+- Admin: `getAdminOverview`, `listAdminProjects`, `listAdminCertificates`.
+- Also exports `UUID_RE`. On failure it logs and returns `[]`/`null` — it never throws, because public pages must still render.
 
-## Frontend/UI Conventions
+### Action helpers — `src/lib/server/actions.ts`
 
-- Routing: SvelteKit route groups `(landing)`, `(auth)`, `(dashboard)`. Co-locate private components as `_components/*` or `*/_components/*` (e.g. `(landing)/_components/guestbook/guestbook.svelte`, `admin/projects/_components/project-form.svelte`). Files starting `_` are NOT routes. NEVER put shared UI in routes — put in `src/lib/components/*`.
-- State: Svelte 5 runes ONLY (`$props()`, `$state`, `$derived`, `$effect`). `vite.config.ts:20-23` forces `runes:true`. Example canonical: `let { children, data } = $props()` in `src/routes/+layout.svelte:8`. NEVER use Svelte 4 `export let`, stores for local UI, or `on:` directives.
-- Data fetching: SvelteKit `load` only. No tanstack-query/fetch wrappers. `depends('supabase:auth')` in `src/routes/+layout.ts:6` + `invalidate('supabase:auth')` on auth change (`+layout.svelte:12-16`); `depends('supabase:projects')` in `projects/[id]/+page.server.ts:6`. After mutation, `throw redirect` or `invalidate()`. NEVER client-fetch Supabase directly for SSR data.
-- Components: `shadcn-svelte` `ui/*` primitives + `cn()` (`src/lib/utils.ts:4-6`) + `WithoutChild`/`WithoutChildren`/`WithElementRef` types. Tags SELALU `Badge` (`secondary`/`outline` pill; `size="md"` (h-6) untuk tag landing, `sm` (h-5) default untuk konteks padat seperti table/toolbar; variant preservasi `mono`/`mono-outline`/`mono-ghost` keep dulu, hapus atau pakai diputuskan akhir evaluasi). Permukaan SELALU `Card`, JANGAN wrapper `Surface`/`Chip` custom (dihapus). Shared keep: `seo-head.svelte` (JSON-LD via `src/lib/seo/site.ts:30-87`), `section-heading/*`, `stat-card.svelte` (komposisi di atas `Card`), `blur-fade`. Icons: `phosphor-svelte` ONLY. Theme: `mode-watcher` + `theme()` (`src/lib/hooks/theme.svelte.ts`) — `d` key toggles mode, ignores inputs (`closest('input,textarea,select,button,a[href]')`). NEVER hardcode colors; use `bg-background text-foreground border-border` tokens.
-- Navigation layers: `ui/sidebar/*` = shadcn primitive (dashboard only); `layout/landing-sidebar/*` = landing composition; `layout/app-sidebar/*` = dashboard composition. PUBLIC nav data is single-sourced in `landing-sidebar/constant.ts`: `publicNavItems(isAuthenticated)` (Menu[]) + `buildPublicMenu(isAuthenticated)` (SidebarMenu[]); auth item = `/admin` "Dashboard" (SquaresFour) when logged in, `/login` "Login" (SignIn) when not — NEVER hardcode `/profile` (no such route). `layout/dock-mobile.svelte` is the generic mobile dock `{items: Menu[], menu?: SidebarMenu[], header?: Snippet, onNavigate?}` — landing passes public nav + `ProfileHeader` snippet, dashboard passes mapped admin nav without header. `Menu` supports `action?` for POST items (logout); both dock bar and `sidebar-menu` render `<form POST>` when present. NEVER hardcode nav data or profile inside dock.
-- Hooks: `src/lib/hooks/*.svelte.ts` — no `use-` prefix, arrow functions, `kebab-case` filenames. Current set: `debounce` (internal, only used by `searchFilter`), `searchFilter` (landing projects + certificates pages; do NOT reuse in admin tables), `ReducedMotion` (`blur-fade`, `flickering-grid`), `slugField` (project + certificate forms), `uploadTask` (3 upload managers, owns `kind`→limit/mime policy), `IsMobile` (sidebar + conditional mount in `(dashboard)`/`(landing)` layouts), `theme()` (`+layout.svelte`, `d`-key toggle). New hook layak only if reactive state (`$state`/`$derived`/`$effect`) + used in ≥2 places. `blur-fade`/`flickering-grid` keep inline `IntersectionObserver`; `scroll-progress`/`scroll-to-top` fully inline (no hook).
-- Styling: Tailwind v4 in `layout.css`. Fonts via `font-sans`/`font-display`/`font-serif`/`font-mono` theme vars (`layout.css:127-130`). Radius is `0px` everywhere — Dilarang adding `rounded-*`. Dark variant `@custom-variant dark (&:is(.dark *))`.
-- Naming: `kebab-case.svelte` files, `PascalCase` zod schemas (`ProjectSchema`), `UPPER_SNAKE` table/bucket consts (`PROJECTS_TABLE`, `PROJECT_IMAGE_BUCKET`), `mapRowToX`/`mapInputToRow`/`toProjectCard` mappers. Form state type `{status:'idle'|'success'|'error',message,errors?}` (`schema/projects.ts:50-54`).
-- SEO: Every landing page MUST use `SeoHead` + `canonicalUrl()`/`absoluteUrl()`/`personSchema()`/`breadcrumbSchema()`/`creativeWorkSchema()` from `src/lib/seo/site.ts`. `SITE_URL=https://rillah.dev`. `hooks.server.ts:4-18` lowercases + strips trailing slash (301). Sitemap/robots via `+server.ts`. NEVER add meta tags manually.
+`parseForm(schema, record)` returns a `{ data, errors }` union; `validationFail(errors)` is `fail(400, { error, errors })`;
+`dbFail(message)` is `fail(500)`; `missingIdFail(noun)` is `fail(400, 'Missing <noun> id.')`.
 
-## Database & ORM
+### SEO — `src/lib/seo/site.ts`
 
-No Prisma/Drizzle. Direct `supabase-js` + manual types in `src/lib/supabase/types.ts:1-63`.
+`SITE_URL`, `SITE_NAME`, `SITE_LOCALE`, `TWITTER_HANDLE`, `GOOGLE_SITE_VERIFICATION`, `DEFAULT_OG_IMAGE`, `SAME_AS`,
+`canonicalUrl`, `absoluteUrl`, `personSchema`, `webSiteSchema`, `breadcrumbSchema`, `creativeWorkSchema`.
 
-| Table                 | Key columns                                                                                                                                                                       | ID              | Notes                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
-| --------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `projects`            | `id, title, slug UNIQUE, description, github, demo, tags[]\|null, category text\|null, features[]\|null, display_order\|null, image[]\|null, video\|null, created_at, updated_at` | `uuid string`   | `Insert` requires `title,slug,description`. Order by `display_order asc, created_at desc`. Slug is URL (`/projects/[id]` tries UUID then slug). `display_order ?? UNSORTED_ORDER` (99) = unsorted; both project+certificate schemas preprocess blank/undefined order input to UNSORTED_ORDER via `z.preprocess` (empty field can NOT become 0). `category` is SINGLE string (migrated `text[]`→`text`, migration `projects_category_single_text`, legacy multi-rows take first element) constrained to `PROJECT_CATEGORIES` in `schema/projects.ts` (Full Stack App, Data Science, AI, Education), chosen via shadcn `Select type="single"` + zod `z.enum(PROJECT_CATEGORIES)` in admin form, shown as one `secondary` `Badge` on landing, single-select filter on `/projects` (mirrors certificates issuer filter). |
-| `certificates`        | `id, title, issuer\|null, date\|null (stored "15 September 2026" id-ID), image_url\|null, display_order\|null, created_at`                                                        | `uuid string`   | `UNSORTED_ORDER=99` (`certificate.ts:7`). Date normalized via `formatDisplayDate()` on write, parsed via `parseDisplayDateToISO()` on read (`utils/date.ts`).                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
-| `reviews` (guestbook) | `id number, name\|null, message\|null, created_at`                                                                                                                                | `serial number` | Public insert allowed (static client). NO limit (intentional, small dataset). XSS guard `FORBIDDEN_CONTENT=/<\s*(script\|iframe)/i` + honeypot `website` field.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+## 5. Server conventions
+
+- Keep routes thin. Every project/certificate/review read goes through the `content.ts` helpers above; inline
+  `supabase.from(...)` chains are allowed only for single-table specialist actions (admin delete, detail by id, slug clash
+  check). Duplicated query rules drift silently.
+- Admin write flow: `parseForm(Schema, formDataToRecord(form))` → `validationFail(errors)` when parsing fails → slug clash
+  `.neq('id', id).maybeSingle()` → `dbFail(error.message)` → `throw redirect(303, '/admin/...')`. The matching `load` fetches
+  one row by `id` and throws 404 when it is missing.
+- ALWAYS `formDataToRecord(form)` (`utils/form.ts`) before zod. NEVER `Object.fromEntries(formData)` — it leaks `File`
+  objects into string schemas.
+- ALWAYS `mapRowTo*` on read and `mapInputToRow` on write (`schema/projects.ts`, `schema/certificate.ts`). NEVER map a row
+  inline.
+- ALWAYS use `locals.supabase` under `(dashboard)`. `createStaticClient()` is for public reads only (`(landing)` loads and
+  the sitemap); in admin it has no session, so RLS hides the rows you meant to edit.
+- Ordering: projects `.order('display_order')` then `.order('created_at', { ascending: false })`; certificates
+  `.order('display_order')`; guestbook `.order('created_at', { ascending: false })` with NO limit (intentional, small data).
+- Admin loads set `cache-control: private, no-store`, declare `depends('supabase:...')`, and use `.limit()`; counts use
+  `count: 'exact'` through the helpers, never estimated from a limited window. Deletes call `invalidate()` on the targeted
+  tag instead of refreshing everything.
+- Logging: `console.error('[content] <fn> failed:', …)` in `content.ts`, `console.error('[admin/...] load failed:', …)` in
+  admin routes, `console.warn('[github] …')` for public fallbacks. NEVER throw on a public load failure.
+- Guestbook action (public): honeypot `website` filled → silent `{ success: true }` (never reveal it); zod failure →
+  `fail(400, { error: firstMessage })`; insert failure → `fail(500, { error: 'Something went wrong. Please try again later.' })`;
+  success → `{ success: true }` and the enhanced form re-runs the load.
+- Uploads: only through `uploadTask({ bucket, slug, folder, kind })` plus `uploadPublicFile()`. The hook owns the policy —
+  `image`: 5 MB, `image/*`, JPEG/PNG converted to WebP by `compressImage()` (1920 px, q0.85; GIF/SVG/HEIC pass through)
+  before the size check; `video`: 50 MB, `video/*`, never compressed. Storage path is `{slug}/{Date.now()}-{slug}.{ext}`, one
+  folder per slug for images and video. Buckets: `project-images`, `certificate-images`. Uploads are client-side; the URL
+  lands in a hidden input of the same form, so there is no upload action.
+
+## 6. Database and schema
+
+| Table                 | Columns                                                                                                                                              | Notes                                                          |
+| --------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------- |
+| `projects`            | `id`, `title`, `slug` (unique), `description`, `github`, `demo`, `tags[]`, `category`, `features[]`, `display_order`, `image[]`, `video`, timestamps | `Insert` requires `title`, `slug`, `description`.              |
+| `certificates`        | `id`, `title`, `issuer`, `date`, `image_url`, `display_order`, `created_at`                                                                          | `date` is the display string `15 September 2026`, never ISO.   |
+| `reviews` (guestbook) | `id` (serial), `name`, `message`, `created_at`                                                                                                       | Public insert; no limit (small dataset); honeypot + XSS guard. |
 
 Rules:
 
-- ALWAYS update `src/lib/supabase/types.ts` manually when SQL changes. No codegen, no migrations folder in repo — ⚠️ UNCERTAIN: RLS/migration source (Supabase dashboard?). Check dashboard before assuming RLS.
-- IDs: projects/certificates `uuid` (gen server-side), reviews `number`. NEVER coerce project id to number.
-- Arrays stored as `text[]\|null` but forms submit CSV/JSON strings → ALWAYS `parseJsonOrCsv()` (`utils/array.ts:1-19`) via zod `.transform()` + `asStringArray()` on read. NEVER store raw CSV string.
-- Dates: certificates store display string `15 September 2026`, NOT ISO. ALWAYS `formatDisplayDate()` before insert (`certificate.ts:66`), `toDateInputValue()` for `<input type=date>`, `formatDate`/`formatFullDate`/`timeAgo` (`baru saja`/`mnt lalu`/`jam lalu`/`hari lalu` Indonesian) for display. NEVER `new Date(row.date)` directly.
-- Storage buckets: `project-images` (images + video, grouped per project slug), `certificate-images`. Public URLs via `getPublicUrl()`. Upload entry is `uploadPublicFile()` + `UploadPublicFileOptions` (`client.ts`); path sanitized + slug prefix inside `buildStoragePath()`.
+- Update `src/lib/supabase/types.ts` by hand whenever SQL changes. There is no codegen and no migrations folder in the repo.
+- IDs: projects and certificates are `uuid` generated server-side, reviews are integers. NEVER coerce a project id to a number.
+- Arrays are `text[]`, but forms submit CSV or JSON strings: `parseJsonOrCsv()` via zod `.transform()` on write,
+  `asStringArray()` on read. NEVER store the raw CSV.
+- `display_order` blank or missing MUST preprocess to `UNSORTED_ORDER` (99), never `0`.
+- `category` is a SINGLE string, `z.enum(PROJECT_CATEGORIES)`: Full Stack App, Data Science, AI, Education. Edited with shadcn
+  `Select type="single"`, rendered as one `secondary` badge, filtered with a single select. It was migrated from `text[]`
+  (legacy multi-value rows kept their first element) — never write an array or CSV here.
+- Dates: certificates store the display string. Use `formatDisplayDate()` on write, `parseDisplayDateToISO()` on read,
+  `toDateInputValue()` for `<input type="date">`, and `formatDate`/`formatFullDate`/`timeAgo` for output (`baru saja`,
+  `mnt lalu`, `jam lalu`, `hari lalu`). NEVER `new Date(row.date)`.
+- Storage: public URLs via `getPublicUrl()`; the path is sanitized and slug-prefixed inside `buildStoragePath()`.
 
-## Auth & Authorization
+## 7. UI conventions
 
-Single-admin, NO RBAC/roles. `hooks.server.ts` + `(dashboard)/+layout.server.ts` are the ONLY guards.
+- Co-locate private components in `_components/*` beside the route; `_`-prefixed files are never routes. Shared UI belongs in
+  `src/lib/components/*`, never in `src/routes`.
+- Runes only: `$props`, `$state`, `$derived`, `$effect`. `vite.config.ts` forces `runes: true`. NEVER `export let`,
+  `on:click`, `$$props`, or stores for local UI state.
+- Data comes from `load`. No tanstack-query, no client-side Supabase fetch for SSR data. Public detail routes keep their
+  `cache-control: public, max-age=30, s-maxage=300`.
+- Surfaces are shadcn `Card`; never add a custom `Surface`/`Chip` wrapper. Tags are `Badge` — `secondary` or `outline`,
+  `size="md"` (h-6) on the landing, `size="sm"` (h-5) in tables and toolbars.
+- Icons are `phosphor-svelte` only. Colors come from tokens (`bg-background`, `text-foreground`, `border-border`); NEVER
+  hardcode a color. Radius is `0` everywhere — NEVER add `rounded-*`.
+- Class merging uses `cn()` from `src/lib/utils.ts`; the `WithoutChild`/`WithoutChildren`/`WithElementRef` types live there
+  too. Domain helpers stay in `src/lib/utils/`.
+- Navigation: `ui/sidebar/*` is the primitive (dashboard only); `layout/landing-sidebar/*` and `layout/app-sidebar/*` are
+  compositions; `layout/dock-mobile.svelte` is the generic mobile dock (`items`, optional `menu`, `header`, `onNavigate`).
+  Public nav is single-sourced in `landing-sidebar/constant.ts` (`publicNavItems`, `buildPublicMenu`): `/admin` "Dashboard"
+  when signed in, `/login` "Login" otherwise. NEVER hardcode nav items, and never link `/profile` — that route does not exist.
+- Hooks live in `src/lib/hooks/*.svelte.ts`: kebab-case, arrow functions, no `use-` prefix. Current set: `debounce`
+  (internal, only `searchFilter` uses it), `searchFilter` (landing projects + certificates only, not admin tables),
+  `reduced-motion`, `slug-field`, `upload-task`, `is-mobile` (sidebars, conditional layout mount, and the mobile-only career
+  accordion), `theme` (`d` toggles mode and ignores inputs). Add a hook only if it owns reactive state and is used in two or
+  more places.
+- Styling: Tailwind v4 tokens in `src/routes/layout.css`; fonts are self-hosted `@font-face` (Inter → `font-sans`, Bricolage →
+  `font-display`, Instrument Serif → `font-serif`, JetBrains Mono → `font-mono`, all `display: swap`). NEVER load Google Fonts.
+- Naming: `kebab-case.svelte`, `PascalCase` zod schemas, `UPPER_SNAKE` table and bucket constants, `mapRowToX`/`mapInputToRow`/
+  `toProjectCard` mappers. Form state is `{ status: 'idle' | 'success' | 'error', message, errors? }`.
+- SEO: every public page renders `SeoHead` with helpers from `src/lib/seo/site.ts` (canonical URL, JSON-LD). NEVER write meta
+  tags by hand. `hooks.server.ts` lowercases the path and strips trailing slashes with a 301 before routing.
 
-| Role × Resource                          | Public landing (`/`, `/projects`, `/certificates`, `/blog`) | Guestbook POST                 | `/login`                       | `/admin/*` (projects, certificates CRUD + upload) | `/logout`                |
-| ---------------------------------------- | ----------------------------------------------------------- | ------------------------------ | ------------------------------ | ------------------------------------------------- | ------------------------ |
-| Anonymous                                | ✅ read via `createStaticClient` / `locals.supabase`        | ✅ with honeypot+zod+XSS check | ✅ view + POST                 | ❌ 303 → `/login?redirectTo=%2Fadmin...`          | —                        |
-| Authenticated (any `supabase.auth` user) | ✅                                                          | ✅                             | ❌ 303 → `/admin` (if session) | ✅ full CRUD                                      | ✅ `POST` clears session |
+## 8. Auth and access
 
-Canonical guard (`src/routes/(dashboard)/+layout.server.ts`): `load` calls `locals.safeGetSession()`, and if there is no session throws `redirect(303, ...)` to `/login` with the current path as encoded `redirectTo`. All `/admin/*` routes inherit it.
+Single admin, no roles or RBAC. The only guards are `hooks.server.ts` and `(dashboard)/+layout.server.ts`.
 
-- ALWAYS rely on this layout guard for admin. Dilarang adding per-page session checks — redundant.
-- ALWAYS `locals.safeGetSession()` (cookie `sb-*-auth-token` pre-check in `hooks.server.ts:29-32`), NEVER `supabase.auth.getSession()` server-side for auth decisions (unsafe). `+layout.ts` does NOT call `getSession()` at all — it reuses `data.session` already validated server-side.
-- Login POST: `LoginSchema` (`redirectTo` default `/admin`), `signInWithPassword({email,password})`, Indonesian errors, `fail(400,{status:'error',message,email})`. Preserve `email` on fail for refill. Redirect target ALWAYS via `safeRedirectTo()` (`login/+page.server.ts`: `startsWith('/') && !startsWith('//') && !includes('\\')` else `/admin`) — blocks open redirects like `//evil.com`. Same policy in `load` for logged-in users.
-- Guestbook POST (public, `(landing)/+page.server.ts`): honeypot `record.website` filled → silent `{success:true}`; `GuestbookSchema.safeParse` fail → `fail(400,{error:first message})`; insert error → `fail(500,{error:'Something went wrong. Please try again later.'})` + console detail; success `{success:true}` (form enhance re-runs load).
-- Logout: `src/routes/(auth)/logout/+server.ts` — ⚠️ UNCERTAIN content (not re-read this session), verify it calls `supabase.auth.signOut()`.
+| Role × resource                          | Public pages | Guestbook POST                 | `/login`       | `/admin/*`                            | `/logout`                 |
+| ---------------------------------------- | ------------ | ------------------------------ | -------------- | ------------------------------------- | ------------------------- |
+| Anonymous                                | read         | allowed (honeypot + zod + XSS) | view + POST    | 303 → `/login?redirectTo=%2Fadmin...` | —                         |
+| Authenticated (any `supabase.auth` user) | read         | allowed                        | 303 → `/admin` | full CRUD                             | `POST` clears the session |
 
-## Environment Variables
+- Rely on the `(dashboard)` layout guard for admin. NEVER add a second per-page session check — duplicate redirects corrupt
+  `redirectTo`.
+- Auth decisions use `await locals.safeGetSession()` (cookie `sb-*-auth-token` pre-check, then `getUser()`). NEVER call
+  `supabase.auth.getSession()` in server code for authorization — it trusts unvalidated storage. `+layout.ts` reuses
+  `data.session` and never calls `getSession()`.
+- Login POST: `LoginSchema` (`redirectTo` defaults to `/admin`), Indonesian errors (`Email atau password salah`), and on
+  failure `fail(400, { status: 'error', message, email })` so the field can refill. The redirect target ALWAYS goes through
+  `safeRedirectTo()` — relative paths only, rejecting `//` and `\` — which blocks open redirects like `//evil.com`. The same
+  policy applies to the logged-in redirect inside `load`.
 
-| Variable                          | Client                                                                                                                   | Server                                                                  | Notes                                                                                                                                                                                          |
-| --------------------------------- | ------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `PUBLIC_SUPABASE_URL`             | ✅ `$app/env/public` (`src/env.ts`, `{ public:true, static:true }`) in `supabase/ssr.ts:3`, `client.ts:2`, `static.ts:2` | ✅                                                                      | Wajib. Supabase project URL.                                                                                                                                                                   |
-| `PUBLIC_SUPABASE_PUBLISHABLE_KEY` | ✅ same                                                                                                                  | ✅                                                                      | Wajib. Anon publishable key (NOT secret).                                                                                                                                                      |
-| `GH_READ_USER_TOKEN_PERSONAL`     | ❌                                                                                                                       | ✅ `$app/env/private` (`src/env.ts`) read in `src/lib/server/github.ts` | GitHub GraphQL token. Missing → `console.warn missing_token` + calendar `null`, page still renders. In Cloudflare set via `npx wrangler secret put GH_READ_USER_TOKEN_PERSONAL`, local `.env`. |
-| `GITHUB_USERNAME`                 | ❌                                                                                                                       | ✅ same, default `'SerenaaaaRN'`                                        | Override per-deploy.                                                                                                                                                                           |
+## 9. Quality gates and performance
 
-`.env.example` lists all four. NEVER prefix server secrets with `PUBLIC_`. NEVER commit `.env`.
+| Command          | Runs                              |
+| ---------------- | --------------------------------- |
+| `bun run dev`    | `bun --bun vite dev`              |
+| `bun run build`  | `bun --bun vite build`            |
+| `bun run check`  | `svelte-kit sync && svelte-check` |
+| `bun run lint`   | `prettier --check . && eslint .`  |
+| `bun run format` | `prettier --write .`              |
 
-## Common Mistakes to Avoid
+`bun run check` and `bun run lint` MUST pass before push — the Cloudflare build fails on `svelte-check` errors. Formatting is
+tabs, single quotes, no trailing commas, 100 columns, with import sorting and Tailwind class sorting.
 
-1. ❌ DO NOT use `Object.fromEntries(formData)` or `formData.get()` directly into zod. ✅ DO `formDataToRecord(form)` (`utils/form.ts`) then `ProjectSchema`/`CertificateSchema.safeParse()` — Files must be skipped or image/video string transforms fail.
-2. ❌ DO NOT query admin tables with `createStaticClient()` or `createSupabaseBrowserClient()` in `load`/`actions`. ✅ DO `locals.supabase` (cookie-authenticated from `hooks.server.ts:24`). Static client has no user session and breaks RLS.
-3. ❌ DO NOT call `supabase.auth.getSession()` in `*.server.ts` for guard decisions. ✅ DO `await locals.safeGetSession()` (cookie `sb-` check + `getUser()` validation). `getSession` alone trusts unvalidated storage.
-4. ❌ DO NOT add a second auth guard in `admin/*/​+page.server.ts`. ✅ DO rely on `(dashboard)/+layout.server.ts` redirect. Duplicate redirects break `redirectTo` param.
-5. ❌ DO NOT store CSV string or `null` mishandled for `tags`/`features`/`image`. ✅ DO zod `.transform(parseJsonOrCsv)` + `mapInputToRow` trim/null-coalesce (`github||null`, `video||null`, `display_order ?? UNSORTED_ORDER`). DB expects arrays/null for those. Blank/undefined order inputs MUST preprocess to `UNSORTED_ORDER` (99), never 0. `category` is the exception: SINGLE string via `z.enum(PROJECT_CATEGORIES)` (shadcn `Select type="single"` + plain hidden input) — never array, never CSV.
-6. ❌ DO NOT store certificate `date` as ISO or raw datepicker value. ✅ DO `formatDisplayDate(input.date)` on write (`schema/certificate.ts:66`), `toDateInputValue()` for inputs, `formatDate`/`formatFullDate` for display. DB format is `15 September 2026`.
-7. ❌ DO NOT upload without `uploadTask` hook or skip mime/size checks. ✅ DO `uploadTask({bucket, slug, folder, kind:'image'|'video'})`. Images 5 MB, videos 50 MB — owned by hook `kind` preset.
-8. ❌ DO NOT use Svelte 4 syntax (`export let`, `$$props`, `on:click`, writable stores for local state) or `rounded-*` classes. ✅ DO runes (`$props`/`$state`/`$derived`/`$effect`), `onclick={}`, `cn()` + square `radius 0` tokens. `vite.config.ts` forces runes; prettier/tailwind plugins enforce style.
-9. ❌ DO NOT client-fetch GitHub GraphQL directly or remove the 6h cache. ✅ DO `fetchGithubCalendar()` (`src/lib/server/github.ts`: `GITHUB_TTL_MS=6*60*60*1000`, module `githubCache`, 10s `AbortSignal.timeout`, `response.ok` + `payload.errors` checks) with token from `$app/env/private` + `User-Agent:rillah-sv3` + `X-GitHub-Api-Version` headers. Missing token must fallback to `null`, never throw.
-10. ❌ DO NOT create `src/lib/components/ui/*` from scratch or import `mode-watcher` incorrectly. ✅ DO reuse shadcn-svelte `vega`/`neutral`/`phosphor` primitives, `ModeWatcher` in root layout only, `theme()` for `d`-key toggle. NEVER bypass `seo-head.svelte` + `src/lib/seo/site.ts` for meta/JSON-LD.
-11. ❌ DO NOT chain Supabase queries inline in route files for projects/certificates/reviews reads. ✅ DO `#lib/server/content.js` helpers — duplicated query rules diverge silently. Inline chains allowed only for single-table specialist actions (admin delete, detail by id, slug clash check).
-12. ❌ DO NOT redirect to an unvalidated `redirectTo`. ✅ DO the `safeRedirectTo` policy (`login/+page.server.ts`): relative path only, reject `//` prefix (protocol-relative open redirect) and `\`.
+- GitHub calendar: module-level `githubCache` with a 6 h TTL (`GITHUB_TTL_MS`) inside `github.ts`. Serve the cache while it is
+  fresh; on failure return `null` and `console.warn`. The landing returns `github` un-awaited so certifications and the
+  guestbook are never blocked — never await it sequentially.
+- Project detail sets `public, max-age=30, s-maxage=300`. Admin loads set `private, no-store`. Public lists select explicit
+  columns, never `select('*')`.
+- Images: compress before upload and prefer the `image[0]` thumbnail (`toProjectCard`). Videos live beside images in the slug
+  folder, max 50 MB, never inlined as base64.
+- Fonts: self-hosted `woff2` with `display: swap`; no Google Fonts links, and no new `@font-face` without the `100 900`
+  variable range.
+- Bundle: private site, no package publishing (`private: true`). Route code imports through the `#lib/*` alias from
+  `package.json`, never a `node_modules` path.
+- Latency target: keep public `load` under ~500 ms P50 (explicit selects, no joins). New queries need `.limit()` and, if they
+  filter or sort on it, a `display_order` index.
 
-## Performance Rules
+## 10. Data flow
 
-- GitHub calendar: in-memory `githubCache {at,data}` TTL 6h (`src/lib/server/github.ts`). ALWAYS serve cache if `Date.now()-at < GITHUB_TTL_MS`. On fetch fail return `null` + `console.warn`, NEVER block `listCertifications`/`listGuestbook` — github is returned UN-awaited (streamed promise, `{#await}` + Skeleton in `+page.svelte`), certs+guestbook run `Promise.all`. Dilarang sequential awaits.
-- Project detail: `setHeaders({'cache-control':'public, max-age=30, s-maxage=300'})` (`projects/[id]/+page.server.ts`). Preserve on any new public detail page. Admin loads: explicit `private, no-store` + `depends('supabase:...')` + `.limit()`, `prerender = false` on `(dashboard)` layout. Admin counts use `count:'exact'` via content.ts helpers (never approximate from a `.limit()`ted window). Public lists use explicit `*_SELECT`, never `select('*')`.
-- Images: `perf: reduce size image` history — ALWAYS compress before upload, prefer `project-card.svelte` thumbnails (`image[0]` via `toProjectCard`); project detail uses an embla carousel. Videos live alongside images in the project slug folder, max 50 MB, NEVER inline base64.
-- Fonts: self-hosted `woff2` `display:swap` (`layout.css:5-43`). Dilarang Google Fonts links or new `@font-face` without `100 900` variable range.
-- Bundle: Private site — NO npm/publish packaging (`prepack`/`dist`/`exports` removed from `package.json`, now `private: true`). Dilarang importing `node_modules` directly in routes; use `#lib/*` alias (`package.json` imports). Run `bun run check` + `bun run lint` before push — Cloudflare build fails on `svelte-check` errors.
-- Latency target: ⚠️ UNCERTAIN — no APM. Keep public `load` <500 ms P50 (explicit `*_SELECT`, guestbook no limit by intent, no joins). If adding queries, add `.limit()` + `display_order` index (verify in Supabase dashboard).
+| Data                      | Loader                                                               | Cache                            | Invalidated by                                                            |
+| ------------------------- | -------------------------------------------------------------------- | -------------------------------- | ------------------------------------------------------------------------- |
+| `session`, `user`         | `+layout.server.ts` → `+layout.ts`                                   | per request via `safeGetSession` | `onAuthStateChange` → `invalidate('supabase:auth')`                       |
+| GitHub calendar           | `fetchGithubCalendar()`                                              | module cache, 6 h                | TTL only                                                                  |
+| Certifications, guestbook | `listCertifications`, `listGuestbook` (static client)                | per request                      | full page reload                                                          |
+| Projects grid             | `getProjectCards` (`/projects`), `getCertificates` (`/certificates`) | per request                      | full page reload                                                          |
+| Admin lists and overview  | `listAdminProjects`, `listAdminCertificates`, `getAdminOverview`     | `private, no-store`              | delete → `invalidate('supabase:projects')` or `('supabase:certificates')` |
+| Project detail            | `getProjectByParam`                                                  | edge 5 min, browser 30 s         | UUID + slug → 301 to the slug                                             |
 
-## Data Fetching Pattern
+Mutations are `<form method="POST" action="?/update|?/create|?/delete|?/guestbook" use:enhance>` against server `actions`,
+returning `fail()` or `redirect()`. Keep `id`/`slug` in hidden inputs. NEVER `fetch()` a form action — use `use:enhance` or a
+native submit.
 
-No react-query. SvelteKit `load` + `depends`/`invalidate` ONLY.
+## 11. Environment
 
-| Data                      | Loader                                                                                                      | Cache / Revalidate                                                                                                             | Invalidation                                                                                                           |
-| ------------------------- | ----------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------- |
-| `session,user`            | `src/routes/+layout.server.ts` → `+layout.ts` (`depends('supabase:auth')`)                                  | SSR per-request via `safeGetSession`; client sync via `onAuthStateChange→invalidate('supabase:auth')` (`+layout.svelte:12-16`) | `invalidate('supabase:auth')` on auth change, login redirect, logout                                                   |
-| `github` calendar         | `fetchGithubCalendar()` (`src/lib/server/github.ts`)                                                        | Module `githubCache` 6h (`GITHUB_TTL_MS`), 10s timeout, no `setHeaders`, returned as streamed promise                          | Time expiry only; Dilarang manual invalidate                                                                           |
-| `certifications` (public) | `listCertifications()` via `createStaticClient` (content.ts)                                                | Per-request, no browser cache                                                                                                  | New admin cert → full page reload fetches fresh                                                                        |
-| `guestbook` (all entries) | `listGuestbook()` `REVIEWS_SELECT.order(created_at desc)` NO limit                                          | Per-request                                                                                                                    | Guestbook action returns `{success:true}` → re-run `load` via form enhance                                             |
-| `projects` list (admin)   | `listAdminProjects(locals.supabase)` `.limit(100)` + `count:'exact'` → `{projects, totalProjects}`          | Explicit `private, no-store` + `depends('supabase:projects')`                                                                  | Delete action returns `{success:true}` → `invalidate('supabase:projects')`; update/new `redirect(303,/admin/projects)` |
-| `admin` overview          | `getAdminOverview(locals.supabase)` — exact counts + 3 latest previews per table (2 concurrent round-trips) | Explicit `private, no-store` + depends                                                                                         | Mutation on either table → `invalidate('supabase:projects'                                                             | 'supabase:certificates')` |
-| `project` detail (public) | `projects/[id]/+page.server.ts` `depends('supabase:projects')` + `cache-control max-age=30 s-maxage=300`    | Edge 5 min, browser 30 s                                                                                                       | UUID→slug 301 (`:38-40`); slug clash check on admin update                                                             |
-| `project`/`cert` edit     | `admin/**/[id]/+page.server.ts:load` `.eq('id',params.id).single()` → 404 if missing                        | Explicit `private, no-store`                                                                                                   | `update` action `redirect(303,...)` on success, `validationFail` on zod fail                                           |
+| Variable                          | Side   | Notes                                                                                                                            |
+| --------------------------------- | ------ | -------------------------------------------------------------------------------------------------------------------------------- |
+| `PUBLIC_SUPABASE_URL`             | client | MUST be set. Supabase project URL.                                                                                               |
+| `PUBLIC_SUPABASE_PUBLISHABLE_KEY` | client | MUST be set. Publishable (anon) key, not a secret.                                                                               |
+| `GH_READ_USER_TOKEN_PERSONAL`     | server | GitHub GraphQL token. Missing → warning plus a `null` calendar; the page still renders. `npx wrangler secret put` in Cloudflare. |
+| `GITHUB_USERNAME`                 | server | Defaults to `SerenaaaaRN`.                                                                                                       |
 
-Mutation pattern: `<form method="POST" action="?/update|?/create|?/delete|?/guestbook" use:enhance>` + server `actions:{...}` returning `fail()` or `redirect`. Preserve `id`/`slug` hidden inputs. Uploads do NOT use form actions — they are client-side via the `uploadTask` hook + `uploadPublicFile()`; the resulting URL goes into a hidden input submitted with the full form. NEVER use `fetch()` POST to actions — use `use:enhance` or native form submit.
+Declared in `src/env.ts` (`$app/env/public` and `$app/env/private`), consumed through `locals`/helpers — not `platform.env`,
+which was removed in Kit 3. `.env.example` lists all four. NEVER prefix a secret with `PUBLIC_` and never commit `.env`.
+
+## 12. Known gaps
+
+- RLS policies and the migration history live outside this repo (Supabase dashboard). Verify them there before assuming a
+  policy exists or that a column change is safe.
+- No APM is wired up, so the latency figures above are estimates rather than measurements.

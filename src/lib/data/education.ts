@@ -22,7 +22,7 @@ export const educations: Education[] = [
 		id: '2',
 		title: 'Social Sciences Student',
 		subtitle: 'MAN 1 Palembang',
-		duration: 'Aug 2020 - May 2023',
+		duration: 'July 2020 - May 2023',
 		created_at: '2026-08-31',
 		updated_at: '2026-09-01'
 	}

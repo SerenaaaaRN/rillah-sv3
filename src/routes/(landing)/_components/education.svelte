@@ -1,4 +1,5 @@
 <script lang="ts">
+	import GraduationCap from 'phosphor-svelte/lib/GraduationCap';
 	import BlurFade from '#lib/components/shared/blur-fade.svelte';
 	import * as SectionHeading from '#lib/components/shared/section-heading/index.js';
 	import { Badge } from '#lib/components/ui/badge/index.js';
@@ -9,23 +10,36 @@
 </script>
 
 {#snippet educationItem(edu: Education)}
-	<Card
-		size="sm"
-		class="overflow-visible rounded-none border border-border text-base shadow-sm ring-0 transition-colors hover:border-foreground/20 hover:bg-accent/40"
-	>
-		<CardContent class="flex-row items-center gap-4">
-			<img
-				src={edu.image ?? '/no-image.jpg'}
-				alt={`${edu.title} logo`}
-				width={56}
-				height={56}
-				class="size-14 shrink-0 rounded-full border border-border object-cover"
-			/>
+	<Card size="sm" class="rounded-none border border-border shadow-none ring-0">
+		<CardContent class="flex-row items-start gap-4">
+			{#if edu.image}
+				<img
+					src={edu.image}
+					alt={`${edu.title} logo`}
+					width={48}
+					height={48}
+					class="size-12 shrink-0 rounded-full bg-white object-contain p-1 ring-1 ring-border"
+				/>
+			{:else}
+				<div
+					class="flex size-12 shrink-0 items-center justify-center rounded-full bg-white p-1 ring-1 ring-border"
+				>
+					<GraduationCap class="size-6 text-muted-foreground" aria-hidden="true" />
+				</div>
+			{/if}
 			<div class="min-w-0 flex-1">
-				<p class="font-display text-sm font-semibold text-foreground">{edu.title}</p>
-				<p class="text-xs text-muted-foreground">{edu.subtitle}</p>
+				<p class="font-mono text-[10px] tracking-wider text-muted-foreground uppercase">
+					{edu.subtitle}
+				</p>
+				<h3
+					class="mt-1 line-clamp-2 font-display text-sm font-semibold tracking-tight text-pretty text-foreground sm:text-base"
+				>
+					{edu.title}
+				</h3>
+				<Badge variant="outline" size="md" class="mt-2 whitespace-nowrap">
+					{edu.duration}
+				</Badge>
 			</div>
-			<Badge variant="outline" size="md" class="ml-auto shrink-0 self-start">{edu.duration}</Badge>
 		</CardContent>
 	</Card>
 {/snippet}
@@ -43,7 +57,7 @@
 		</SectionHeading.Root>
 
 		{#if educations.length > 0}
-			<div class="mt-6 space-y-3">
+			<div class="mt-6 grid gap-3 md:grid-cols-2">
 				{#each educations as edu (edu.id)}
 					{@render educationItem(edu)}
 				{/each}
