@@ -6,11 +6,11 @@
 	import { media_socials } from '#lib/data/social.js';
 	import TypingAnimation from './typing-animation.svelte';
 
-	const roles = ['Data Science', 'Software Engineer', 'CS Student'];
+	const roles = ['Data Science Enthusiast ', 'Software Engineer Student', 'CS Student'];
 
 	const HERO_STATS = [
 		{ label: 'Current Focus', value: 'Scalable Architectures' },
-		{ label: 'Stack', value: 'Python, TS' },
+		{ label: 'Stack', value: 'Python, TypeScript' },
 		{ label: 'Availability', value: 'Open to Work' },
 		{ label: 'Current Semester', value: '3' }
 	];

@@ -1,7 +1,6 @@
 import Brain from 'phosphor-svelte/lib/Brain';
 import Code from 'phosphor-svelte/lib/Code';
 import Database from 'phosphor-svelte/lib/Database';
-import HardDrive from 'phosphor-svelte/lib/HardDrive';
 import Monitor from 'phosphor-svelte/lib/Monitor';
 import Robot from 'phosphor-svelte/lib/Robot';
 import type { Component } from 'svelte';
@@ -14,30 +13,26 @@ export interface SkillCategory {
 
 export const skills_data: SkillCategory[] = [
 	{
-		name: 'Frontend Development',
-		skills: ['React.js', 'Next.js', 'SvelteKit', 'TanStack', 'Tailwind CSS'],
-		icon: Monitor
-	},
-	{
-		name: 'Backend Development',
-		skills: ['Bun', 'Elysia.js', 'FastAPI'],
-		icon: HardDrive
-	},
-	{
 		name: 'Programming Languages',
-		skills: ['Python', 'TypeScript', 'JavaScript', 'Java', 'C++'],
+		skills: ['Python', 'TypeScript', 'Java', 'Rust'],
 		icon: Code
 	},
 	{
-		name: 'Databases',
-		skills: ['PostgreSQL', 'MySQL', 'Supabase', 'Drizzle ORM'],
-		icon: Database
-	},
-	{
 		name: 'Data Science',
-		skills: ['Pandas', 'Scikit-learn', 'Seaborn', 'Matplotlib', 'PyTorch', 'Keras', 'Gradio'],
+		skills: ['Pandas', 'Scikit-learn', 'Seaborn', 'PyTorch', 'Keras', 'Gradio'],
 		icon: Brain
 	},
+	{
+		name: 'Web Development',
+		skills: ['ReactJS', 'NextJS', 'SvelteKit', 'Tailwind CSS', 'ElysiaJS', 'FastAPI'],
+		icon: Monitor
+	},
+	{
+		name: 'Databases',
+		skills: ['PostgreSQL', 'MySQL', 'Supabase', 'Drizzle ORM', 'SQLAlchemy'],
+		icon: Database
+	},
+
 	{
 		name: 'AI Tools',
 		skills: ['OpenCode', 'Antigravity', 'Claude Code', 'Cursor'],
@@ -48,16 +43,16 @@ export const skills_data: SkillCategory[] = [
 export const skills_data_top = [
 	'Python',
 	'Typescript',
-	'Javascript',
+	'Rust',
 	'FastAPI',
-	'React.js',
-	'Next.js',
+	'ReactJS',
+	'NextJS',
 	'Tailwind CSS',
 	'SvelteKit',
 	'Java',
 	'Bun',
-	'Elysia.js',
-	'Claude Code'
+	'ElysiaJS',
+	'ClaudeCode'
 ];
 
 export const skills_data_bottom = [
@@ -67,7 +62,7 @@ export const skills_data_bottom = [
 	'Java',
 	'SvelteKit',
 	'FastAPI',
-	'Elysia.js',
+	'ElysiaJS',
 	'OpenCode',
 	'Antigravity'
 ];

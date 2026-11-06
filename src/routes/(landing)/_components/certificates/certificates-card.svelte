@@ -48,10 +48,11 @@
 					{title}
 				</h3>
 				<p class="text-xs text-muted-foreground">{provider}</p>
-				<div class="mt-1.5">
+				<div class="mt-1.5 flex items-center gap-2">
 					<Badge variant="secondary" class="rounded-none border px-2 py-0 text-[11px] font-normal">
 						Issued &middot; {issuedDisplay}
 					</Badge>
+					<span class="text-[11px] text-muted-foreground">Tap to view</span>
 				</div>
 			</div>
 		</div>
